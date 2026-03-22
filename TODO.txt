@@ -1,0 +1,20 @@
+Controller → Service → Repository (JpaRepository) → DB
+Controller → Service (interface) → ServiceImpl → Repository → DB
+Controller → Service → Repository (@Repository class) → DB
+
+Controller
+↓ ↑
+DTO
+↓ ↑
+Service
+↓ ↑
+Entity ← vždy existuje (JPA i bez JPA)
+↓ ↑
+Repository
+↓ ↑
+DB
+
+Takže entity manager bude, budeme muset udělat vlastní react dispetcher
+pro přechody mezi stránkam atd...
+
+stránky - main page, product page, user page, order page, history page
