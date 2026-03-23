@@ -44,6 +44,9 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     <svg class="icon" role="presentation" aria-hidden="true"><use href="/icons.svg#social-icon"></use></svg>
     <h2>Connect with us</h2>
     <p>Join the Vite community</p>
+    <p id= "hello-con"><p>
+    <p id= "users-list"><p>
+
     <ul>
       <li><a href="https://github.com/vitejs/vite" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#github-icon"></use></svg>GitHub</a></li>
       <li><a href="https://chat.vite.dev/" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#discord-icon"></use></svg>Discord</a></li>
@@ -58,3 +61,13 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 `
 
 setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+let response = await fetch("/api/hello", {
+  method: "GET",
+})
+
+let userRes = await fetch("/api/users", {
+  method: "GET",
+})
+
+document.querySelector<HTMLParagraphElement>('#hello-con')!.textContent = response.ok ? await response.text() : "Failed to fetch hello message";
+document.querySelector<HTMLParagraphElement>('#users-list')!.textContent = userRes.ok ? JSON.stringify(await userRes.json()) : "Failed to fetch users";
