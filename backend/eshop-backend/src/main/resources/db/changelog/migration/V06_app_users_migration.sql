@@ -1,0 +1,12 @@
+CREATE TABLE app_users (
+    user_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(50) UNIQUE NOT NULL,
+    password_hash BYTEA NOT NULL,
+    password_salt BYTEA NOT NULL,
+    role_id INT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    created_by INT NOT NULL,
+    updated_by INT NOT NULL
+);
