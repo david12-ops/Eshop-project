@@ -8,7 +8,7 @@ CREATE TABLE products (
     unit_price NUMERIC(10,2) NOT NULL,
     tax_rate NUMERIC(5,2) NOT NULL,
     category_id INT,
-    is_active BOOLEAN NOT NULL,
+    is_active BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_by INT NOT NULL,

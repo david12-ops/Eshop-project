@@ -5,8 +5,8 @@ CREATE TABLE app_users (
     password_hash BYTEA NOT NULL,
     password_salt BYTEA NOT NULL,
     role_id INT NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_by INT NOT NULL,
     updated_by INT NOT NULL
 );

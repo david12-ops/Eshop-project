@@ -46,9 +46,8 @@ CREATE INDEX idx_app_users_updated_at ON app_users (updated_at);
 ---------------------------------------------------------------------------------------------------------------------------
 
 -- Currencies
-ALTER TABLE currencies ADD CONSTRAINT chk_currencies_currency_code CHECK (currency_code ~ '[A-Z][A-Z][A-Z]');
+ALTER TABLE currencies ADD CONSTRAINT chk_currencies_currency_code CHECK (trim(currency_code) ~ '^[A-Z]{3}$');
 ALTER TABLE currencies ADD CONSTRAINT chk_currencies_currency_name CHECK (public.fn_is_name_valid(currency_name::varchar(50)));
-ALTER TABLE currencies ADD CONSTRAINT chk_currencies_symbol CHECK (public.fn_is_currency_symbol_valid(symbol::varchar(5))); 
 ALTER TABLE currencies ADD CONSTRAINT chk_currencies_timestamps CHECK (created_at <= updated_at);
 
 ALTER TABLE currencies ADD CONSTRAINT fk_currencies_created_by FOREIGN KEY (created_by) REFERENCES app_users(user_id);
@@ -96,9 +95,9 @@ CREATE INDEX idx_payment_methods_updated_at ON payment_methods (updated_at);
 -- Addresses
 ALTER TABLE addresses ADD CONSTRAINT chk_addresses_timestamps CHECK (created_at <= updated_at);
 ALTER TABLE addresses ADD CONSTRAINT chk_addresses_names CHECK (
-	(public.fn_is_name_valid(street_name::varchar(100))) AND
-	(public.fn_is_name_valid(city_name::varchar(100))) AND
-	(public.fn_is_name_valid(state_name::varchar(100))) AND
+	(public.fn_is_name_valid(street_name::varchar(50))) AND
+	(public.fn_is_name_valid(city_name::varchar(50))) AND
+	(public.fn_is_name_valid(state_name::varchar(50))) AND
 	(public.fn_is_name_valid(country_name::varchar(50))));
 ALTER TABLE addresses ADD CONSTRAINT chk_addresses_postal_code CHECK (postal_code ~ '^[0-9A-Za-z]{3,10}$');
 
@@ -155,12 +154,10 @@ CREATE INDEX idx_products_updated_at ON products (updated_at);
 -- Customers
 ALTER TABLE customers ADD CONSTRAINT chk_customers_timestamps CHECK (created_at <= updated_at);
 ALTER TABLE customers ADD CONSTRAINT chk_customers_names CHECK (branch_name IS NOT NULL OR (first_name IS NOT NULL AND last_name IS NOT NULL));
-
 ALTER TABLE customers ADD CONSTRAINT chk_customers_phone_number CHECK (
     LENGTH(phone_number) BETWEEN 9 AND 16
     AND phone_number ~ '^\+?[0-9]+$'
 );
-ALTER TABLE customers ADD CONSTRAINT chk_customers_email CHECK (email ~ '^[^@\s]+@[^@\s]+\.[^@\s]+$');
 ALTER TABLE customers ADD CONSTRAINT chk_customers_names_format CHECK (
 	(public.fn_is_name_valid(branch_name::varchar(50))) AND
 	(public.fn_is_name_valid(first_name::varchar(50))) AND
@@ -182,6 +179,7 @@ CREATE INDEX idx_customers_updated_at ON customers (updated_at);
 
 -- Orders
 ALTER TABLE orders ADD CONSTRAINT chk_orders_timestamps CHECK (created_at <= updated_at);
+ALTER TABLE orders ADD CONSTRAINT chk_orders_currency_code CHECK (trim(currency_code) ~ '^[A-Z]{3}$');
 ALTER TABLE orders ADD CONSTRAINT chk_orders_subtotal CHECK (subtotal >= 0);
 ALTER TABLE orders ADD CONSTRAINT chk_orders_tax_amount CHECK (tax_amount >= 0);
 ALTER TABLE orders ADD CONSTRAINT chk_orders_total_amount CHECK (total_amount >= 0 AND total_amount = subtotal + tax_amount);
@@ -225,7 +223,7 @@ ALTER TABLE invoices ADD CONSTRAINT chk_invoices_tax CHECK (tax_amount >= 0);
 ALTER TABLE invoices ADD CONSTRAINT chk_invoices_total_amount CHECK (total_amount >= 0 AND total_amount = subtotal + tax_amount);
 ALTER TABLE invoices ADD CONSTRAINT chk_invoices_dates_nullable_payment CHECK 
 (due_date >= issue_date AND (payment_date IS NULL OR payment_date >= issue_date));
-ALTER TABLE invoices ADD CONSTRAINT chk_invoices_currency_code_format CHECK (currency_code ~ '[A-Z][A-Z][A-Z]');
+ALTER TABLE invoices ADD CONSTRAINT chk_invoices_currency_code_format CHECK (trim(currency_code) ~ '^[A-Z]{3}$');
 
 ALTER TABLE invoices ADD CONSTRAINT fk_invoices_order_id FOREIGN KEY (order_id) REFERENCES orders(order_id);
 ALTER TABLE invoices ADD CONSTRAINT fk_invoices_payment_method_id FOREIGN KEY (payment_method_id) REFERENCES payment_methods(payment_method_id);
@@ -288,7 +286,7 @@ CREATE INDEX idx_discounts_updated_at ON discounts (updated_at);
 ----------------------------------------------------------------------------------------------------------------------------------
 
 -- Regions
-ALTER TABLE regions ADD CONSTRAINT chk_regions_currency_code CHECK (currency_code ~ '[A-Z][A-Z][A-Z]');
+ALTER TABLE regions ADD CONSTRAINT chk_regions_currency_code CHECK (trim(currency_code) ~ '^[A-Z]{3}$');
 ALTER TABLE regions ADD CONSTRAINT chk_regions_region_name CHECK (public.fn_is_name_valid(region_name::varchar(50)));
 ALTER TABLE regions ADD CONSTRAINT chk_regions_timestamps CHECK (created_at <= updated_at);
 
