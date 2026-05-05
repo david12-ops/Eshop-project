@@ -179,6 +179,3 @@ CREATE OR REPLACE VIEW public.vw_inactive_products_with_categories AS
 SELECT *
 FROM public.vw_products_with_categories
 WHERE product_is_active IS NOT TRUE OR category_is_active IS NOT TRUE;
-
-
-DROP FUNCTION IF EXISTS public.fn_is_currency_symbol_valid();
