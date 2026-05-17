@@ -1,4 +1,4 @@
--- Roles
+-- roles
 ALTER TABLE roles ADD CONSTRAINT chk_roles_role_name CHECK (public.fn_is_name_valid(role_name::varchar(50)));
 ALTER TABLE roles ADD CONSTRAINT chk_roles_timestamps CHECK (created_at <= updated_at);
 
@@ -13,7 +13,7 @@ CREATE INDEX idx_roles_updated_at ON roles (updated_at);
 
 --------------------------------------------------------------------------------------------------------------------------
 
--- AppPermissions
+-- app_permissions
 ALTER TABLE app_permissions ADD CONSTRAINT chk_app_permissions_timestamps CHECK (created_at <= updated_at);
 
 ALTER TABLE app_permissions ADD CONSTRAINT fk_app_permissions_role_id FOREIGN KEY (role_id) REFERENCES roles(role_id);
@@ -29,7 +29,7 @@ CREATE INDEX idx_app_permissions_updated_at ON app_permissions (updated_at);
 
 ---------------------------------------------------------------------------------------------------------------------------
 
--- AppUsers
+-- app_users
 ALTER TABLE app_users ADD CONSTRAINT chk_app_users_username CHECK (public.fn_is_name_valid(username::varchar(50)));
 ALTER TABLE app_users ADD CONSTRAINT chk_app_users_email CHECK (email ~ '^[^@\s]+@[^@\s]+\.[^@\s]+$');
 ALTER TABLE app_users ADD CONSTRAINT chk_app_users_timestamps CHECK (created_at <= updated_at);
@@ -45,7 +45,7 @@ CREATE INDEX idx_app_users_updated_at ON app_users (updated_at);
 
 ---------------------------------------------------------------------------------------------------------------------------
 
--- Currencies
+-- currencies
 ALTER TABLE currencies ADD CONSTRAINT chk_currencies_currency_code CHECK (trim(currency_code) ~ '^[A-Z]{3}$');
 ALTER TABLE currencies ADD CONSTRAINT chk_currencies_currency_name CHECK (public.fn_is_name_valid(currency_name::varchar(50)));
 ALTER TABLE currencies ADD CONSTRAINT chk_currencies_timestamps CHECK (created_at <= updated_at);
@@ -61,7 +61,7 @@ CREATE INDEX idx_currencies_updated_at ON currencies (updated_at);
 
 ----------------------------------------------------------------------------------------------------------------------------
 
--- OrderStatuses
+-- order_statuses
 ALTER TABLE order_statuses ADD CONSTRAINT chk_order_statuses_timestamps CHECK (created_at <= updated_at);
 ALTER TABLE order_statuses ADD CONSTRAINT chk_order_statuses_status_name CHECK (public.fn_is_name_valid(status_name::varchar(50)));
 
@@ -77,7 +77,7 @@ CREATE INDEX idx_order_statuses_updated_at ON order_statuses (updated_at);
 
 -----------------------------------------------------------------------------------------------------------------------------
 
--- PaymentMethods
+-- payment_methods
 ALTER TABLE payment_methods ADD CONSTRAINT chk_payment_methods_timestamps CHECK (created_at <= updated_at);
 ALTER TABLE payment_methods ADD CONSTRAINT chk_payment_methods_method_name CHECK (public.fn_is_name_valid(method_name::varchar(50)));
 
@@ -92,7 +92,7 @@ CREATE INDEX idx_payment_methods_updated_at ON payment_methods (updated_at);
 
 -----------------------------------------------------------------------------------------------------------------------------
 
--- Addresses
+-- addresses
 ALTER TABLE addresses ADD CONSTRAINT chk_addresses_timestamps CHECK (created_at <= updated_at);
 ALTER TABLE addresses ADD CONSTRAINT chk_addresses_names CHECK (
 	(public.fn_is_name_valid(street_name::varchar(50))) AND
@@ -113,7 +113,7 @@ CREATE INDEX idx_addresses_region_id ON addresses(region_id);
 
 -----------------------------------------------------------------------------------------------------------------------------
 
--- Categories
+-- categories
 ALTER TABLE categories ADD CONSTRAINT chk_categories_timestamps CHECK (created_at <= updated_at);
 ALTER TABLE categories ADD CONSTRAINT chk_categories_category_name CHECK (public.fn_is_name_valid(category_name::varchar(50)));
 
@@ -128,7 +128,7 @@ CREATE INDEX idx_categories_updated_at ON categories (updated_at);
 
 ------------------------------------------------------------------------------------------------------------------------------
 
--- Products
+-- products
 ALTER TABLE products ADD CONSTRAINT chk_products_timestamps CHECK (created_at <= updated_at);
 ALTER TABLE products ADD CONSTRAINT chk_products_recommended_price CHECK (recommended_price >= 0);
 ALTER TABLE products ADD CONSTRAINT chk_products_unit_price CHECK (unit_price >= 0);
@@ -151,7 +151,7 @@ CREATE INDEX idx_products_updated_at ON products (updated_at);
 
 ------------------------------------------------------------------------------------------------------------------------------
 
--- Customers
+-- customers
 ALTER TABLE customers ADD CONSTRAINT chk_customers_timestamps CHECK (created_at <= updated_at);
 ALTER TABLE customers ADD CONSTRAINT chk_customers_names CHECK (branch_name IS NOT NULL OR (first_name IS NOT NULL AND last_name IS NOT NULL));
 ALTER TABLE customers ADD CONSTRAINT chk_customers_phone_number CHECK (
@@ -177,7 +177,7 @@ CREATE INDEX idx_customers_updated_at ON customers (updated_at);
 
 -------------------------------------------------------------------------------------------------------------------------------
 
--- Orders
+-- orders
 ALTER TABLE orders ADD CONSTRAINT chk_orders_timestamps CHECK (created_at <= updated_at);
 ALTER TABLE orders ADD CONSTRAINT chk_orders_currency_code CHECK (trim(currency_code) ~ '^[A-Z]{3}$');
 ALTER TABLE orders ADD CONSTRAINT chk_orders_subtotal CHECK (subtotal >= 0);
@@ -203,7 +203,7 @@ CREATE INDEX idx_orders_updated_at ON orders (updated_at);
 
 -------------------------------------------------------------------------------------------------------------------------------
 
--- OrderItems
+-- order_items
 ALTER TABLE order_items ADD CONSTRAINT chk_order_items_line_total CHECK (line_total >= 0 AND line_total = unit_price * quantity);
 ALTER TABLE order_items ADD CONSTRAINT chk_order_items_quantity CHECK (quantity >= 0);
 
@@ -215,7 +215,7 @@ CREATE INDEX idx_order_items_product_id ON order_items(product_id);
 
 -------------------------------------------------------------------------------------------------------------------------------
 
--- Invoices
+-- invoices
 ALTER TABLE invoices ADD CONSTRAINT chk_invoices_invoice_code CHECK (invoice_code ~ '^INV-[0-9]{6}-[0-9]{3,8}$');
 ALTER TABLE invoices ADD CONSTRAINT chk_invoices_timestamps CHECK (created_at <= updated_at);
 ALTER TABLE invoices ADD CONSTRAINT chk_invoices_subtotal CHECK (subtotal >= 0);
@@ -241,7 +241,7 @@ CREATE INDEX idx_invoices_updated_at ON invoices (updated_at);
 
 --------------------------------------------------------------------------------------------------------------------------------
 
--- InvoiceItems
+-- invoice_items
 ALTER TABLE invoice_items ADD CONSTRAINT chk_invoice_items_line_total CHECK (line_total >= 0 AND line_total = unit_price * quantity);
 ALTER TABLE invoice_items ADD CONSTRAINT chk_invoice_items_quantity CHECK (quantity >= 0);
 
@@ -253,7 +253,7 @@ CREATE INDEX idx_invoice_items_product_id ON invoice_items(product_id);
 
 ---------------------------------------------------------------------------------------------------------------------------------
 
--- Discounts
+-- discounts
 ALTER TABLE discounts ADD CONSTRAINT chk_discounts_timestamps CHECK (created_at <= updated_at);
 ALTER TABLE discounts ADD CONSTRAINT chk_discounts_discount_value CHECK (
 	(discount_type = 'percent' AND discount_value >= 0 AND discount_value <= 100)
@@ -285,7 +285,7 @@ CREATE INDEX idx_discounts_updated_at ON discounts (updated_at);
 
 ----------------------------------------------------------------------------------------------------------------------------------
 
--- Regions
+-- regions
 ALTER TABLE regions ADD CONSTRAINT chk_regions_currency_code CHECK (trim(currency_code) ~ '^[A-Z]{3}$');
 ALTER TABLE regions ADD CONSTRAINT chk_regions_region_name CHECK (public.fn_is_name_valid(region_name::varchar(50)));
 ALTER TABLE regions ADD CONSTRAINT chk_regions_timestamps CHECK (created_at <= updated_at);
