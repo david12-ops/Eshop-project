@@ -32,3 +32,9 @@ Využít alespoň jednu transakci (nebo jiný způsob rollbacku) - není
 Vytvořit FTP přístup nebo alespoň nového uživatele na vašem DB serveru s jinými právy než root uživatel - máme
 Využití GIT (stačí pro aplikaci, nemusí být pro databázi) - máme
 Alespoň 2 formuláře - není
+
+odstraněno
+order_discounts
+invoice_discounts
+invoice_items
+order_items z resource_type z app_permissions
