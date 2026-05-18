@@ -31,6 +31,6 @@ CREATE TABLE roles (
     role_description TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    created_by INT NOT NULL,
-    updated_by INT NOT NULL
+    created_by INT,
+    updated_by INT
 );
