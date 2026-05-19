@@ -15,6 +15,7 @@ target
 .env
 V21_new_db_user_migration.sql
 V28_example_users_migration.sql
+V33_password_update_migration.sql
 
 # Editor directories and files
 .vscode/*

@@ -35,7 +35,7 @@ public class Application {
             AppPermissionService appPermissionService) {
         return args -> {
             Role role = new Role();
-            role.setRoleName("Administrator");
+            role.setRoleName("System Administrator");
             role.setRoleType(RoleType.ADMIN);
             role.setRoleDescription("System administrator");
             role.setCreatedAt(OffsetDateTime.now());
