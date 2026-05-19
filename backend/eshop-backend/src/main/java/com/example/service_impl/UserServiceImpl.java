@@ -8,8 +8,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.model.AppUser;
+import com.example.model.MyUserDetail;
 import com.example.repository.UserRepository;
-import com.example.security.MyUserDetail;
 import com.example.service_interface.UserService;
 
 import jakarta.persistence.EntityManager;
