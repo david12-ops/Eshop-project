@@ -1,7 +1,7 @@
 package com.example.model.view;
 
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.Instant;
 
 public class ProductCategoryView {
 
@@ -18,16 +18,16 @@ public class ProductCategoryView {
 
     private boolean productIsActive;
 
-    private OffsetDateTime productCreatedAt;
-    private OffsetDateTime productUpdatedAt;
+    private Instant productCreatedAt;
+    private Instant productUpdatedAt;
 
     private String categoryName;
     private String categoryDescription;
 
     private boolean categoryIsActive;
 
-    private OffsetDateTime categoryCreatedAt;
-    private OffsetDateTime categoryUpdatedAt;
+    private Instant categoryCreatedAt;
+    private Instant categoryUpdatedAt;
 
     public ProductCategoryView() {
     }
@@ -104,19 +104,19 @@ public class ProductCategoryView {
         this.productIsActive = productIsActive;
     }
 
-    public OffsetDateTime getProductCreatedAt() {
+    public Instant getProductCreatedAt() {
         return productCreatedAt;
     }
 
-    public void setProductCreatedAt(OffsetDateTime productCreatedAt) {
+    public void setProductCreatedAt(Instant productCreatedAt) {
         this.productCreatedAt = productCreatedAt;
     }
 
-    public OffsetDateTime getProductUpdatedAt() {
+    public Instant getProductUpdatedAt() {
         return productUpdatedAt;
     }
 
-    public void setProductUpdatedAt(OffsetDateTime productUpdatedAt) {
+    public void setProductUpdatedAt(Instant productUpdatedAt) {
         this.productUpdatedAt = productUpdatedAt;
     }
 
@@ -144,19 +144,19 @@ public class ProductCategoryView {
         this.categoryIsActive = categoryIsActive;
     }
 
-    public OffsetDateTime getCategoryCreatedAt() {
+    public Instant getCategoryCreatedAt() {
         return categoryCreatedAt;
     }
 
-    public void setCategoryCreatedAt(OffsetDateTime categoryCreatedAt) {
+    public void setCategoryCreatedAt(Instant categoryCreatedAt) {
         this.categoryCreatedAt = categoryCreatedAt;
     }
 
-    public OffsetDateTime getCategoryUpdatedAt() {
+    public Instant getCategoryUpdatedAt() {
         return categoryUpdatedAt;
     }
 
-    public void setCategoryUpdatedAt(OffsetDateTime categoryUpdatedAt) {
+    public void setCategoryUpdatedAt(Instant categoryUpdatedAt) {
         this.categoryUpdatedAt = categoryUpdatedAt;
     }
 }

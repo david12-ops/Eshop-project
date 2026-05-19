@@ -1,6 +1,6 @@
 package com.example;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -38,8 +38,8 @@ public class Application {
             role.setRoleName("System Administrator");
             role.setRoleType(RoleType.ADMIN);
             role.setRoleDescription("System administrator");
-            role.setCreatedAt(OffsetDateTime.now());
-            role.setUpdatedAt(OffsetDateTime.now());
+            role.setCreatedAt(Instant.now());
+            role.setUpdatedAt(Instant.now());
             role.setCreatedBy(null);
             role.setUpdatedBy(null);
 
@@ -50,8 +50,8 @@ public class Application {
             user.setEmail("admin2@example.com");
             user.setPassword("admin2");
             user.setRole(role);
-            user.setCreatedAt(OffsetDateTime.now());
-            user.setUpdatedAt(OffsetDateTime.now());
+            user.setCreatedAt(Instant.now());
+            user.setUpdatedAt(Instant.now());
             user.setCreatedBy(null);
             user.setUpdatedBy(null);
 
@@ -63,8 +63,8 @@ public class Application {
             permission.setResourceType(ResourceType.APP_USERS);
             permission.setOperationType(OperationType.CREATE);
 
-            permission.setCreatedAt(OffsetDateTime.now());
-            permission.setUpdatedAt(OffsetDateTime.now());
+            permission.setCreatedAt(Instant.now());
+            permission.setUpdatedAt(Instant.now());
 
             permission.setCreatedBy(user.getId());
             permission.setUpdatedBy(user.getId());

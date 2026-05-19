@@ -5,14 +5,18 @@ import com.example.model.enums.ResourceType;
 import com.example.model.keys.AppPermissionId;
 import jakarta.persistence.*;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "app_permissions")
 @IdClass(AppPermissionId.class)
+@EntityListeners(AuditingEntityListener.class)
 public class AppPermission {
 
     @Id
@@ -32,11 +36,13 @@ public class AppPermission {
     @Column(name = "operation_type", columnDefinition = "operation_type_enum")
     private OperationType operationType;
 
+    @CreatedDate
     @Column(name = "created_at", nullable = false)
-    private OffsetDateTime createdAt;
+    private Instant createdAt;
 
+    @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
-    private OffsetDateTime updatedAt;
+    private Instant updatedAt;
 
     @Column(name = "created_by", nullable = false)
     private Integer createdBy;
@@ -71,19 +77,19 @@ public class AppPermission {
         this.operationType = operationType;
     }
 
-    public OffsetDateTime getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(OffsetDateTime createdAt) {
+    public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
 
-    public OffsetDateTime getUpdatedAt() {
+    public Instant getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(OffsetDateTime updatedAt) {
+    public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
     }
 
