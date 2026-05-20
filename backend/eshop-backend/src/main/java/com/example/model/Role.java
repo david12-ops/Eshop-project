@@ -31,7 +31,7 @@ public class Role {
     @Column(name = "role_type", columnDefinition = "role_type_enum")
     private RoleType roleType;
 
-    @Column(name = "role_description")
+    @Column(name = "role_description", columnDefinition = "TEXT")
     private String roleDescription;
 
     @CreatedDate

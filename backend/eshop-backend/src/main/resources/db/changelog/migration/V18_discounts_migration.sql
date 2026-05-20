@@ -26,3 +26,5 @@ CREATE TABLE invoice_discounts(
 	discount_id INT REFERENCES discounts(discount_id),
 	PRIMARY KEY(invoice_id, discount_id)
 );
+
+-- je model

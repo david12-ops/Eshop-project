@@ -14,3 +14,5 @@ CREATE TABLE products (
     created_by INT NOT NULL,
     updated_by INT NOT NULL
 );
+
+--je model

@@ -8,3 +8,5 @@ CREATE TABLE invoice_items(
     unit_price NUMERIC(10,2) NOT NULL,
     CONSTRAINT uq_invoice_item UNIQUE (invoice_id, product_id) 
 );
+
+-- je model

@@ -6,29 +6,32 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.example.model.enums.PaymentMethodType;
+
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "categories")
+@Table(name = "payment_methods")
 @EntityListeners(AuditingEntityListener.class)
-public class Category {
+public class PaymentMethod {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "category_id")
+    @Column(name = "payment_method_id")
     private Integer id;
 
-    @Column(name = "category_name", nullable = false, unique = true, length = 50)
-    private String categoryName;
+    @Column(name = "method_name", nullable = false, unique = true, length = 50)
+    private String methodName;
 
-    @Column(name = "category_description", columnDefinition = "TEXT")
-    private String categoryDescription;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "method_type", nullable = false)
+    private PaymentMethodType methodType;
 
-    @Column(name = "is_active", nullable = false)
-    private boolean active;
+    @Column(name = "method_description", columnDefinition = "TEXT")
+    private String methodDescription;
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
     @LastModifiedDate
@@ -41,7 +44,7 @@ public class Category {
     @Column(name = "updated_by", nullable = false)
     private Integer updatedBy;
 
-    public Category() {
+    public PaymentMethod() {
     }
 
     public Integer getId() {
@@ -52,28 +55,28 @@ public class Category {
         this.id = id;
     }
 
-    public String getCategoryName() {
-        return categoryName;
+    public String getMethodName() {
+        return methodName;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
     }
 
-    public String getCategoryDescription() {
-        return categoryDescription;
+    public PaymentMethodType getMethodType() {
+        return methodType;
     }
 
-    public void setCategoryDescription(String categoryDescription) {
-        this.categoryDescription = categoryDescription;
+    public void setMethodType(PaymentMethodType methodType) {
+        this.methodType = methodType;
     }
 
-    public boolean isActive() {
-        return active;
+    public String getMethodDescription() {
+        return methodDescription;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setMethodDescription(String methodDescription) {
+        this.methodDescription = methodDescription;
     }
 
     public Instant getCreatedAt() {

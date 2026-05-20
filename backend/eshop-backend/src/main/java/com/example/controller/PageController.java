@@ -9,13 +9,13 @@ public class PageController {
     @GetMapping("/")
     public String root() {
 
-        return "redirect:/home";
+        return "redirect:/adminHome";
     }
 
-    @GetMapping("/home")
-    public String home() {
+    @GetMapping("/adminHome")
+    public String adminHome() {
 
-        return "home";
+        return "adminHome";
     }
 
     @GetMapping("/login")

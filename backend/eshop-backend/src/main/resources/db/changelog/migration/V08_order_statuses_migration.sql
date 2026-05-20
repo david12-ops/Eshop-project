@@ -17,3 +17,5 @@ CREATE TABLE order_statuses (
     created_by INT NOT NULL,
     updated_by INT NOT NULL
 );
+
+-- je model

@@ -7,3 +7,5 @@ CREATE TABLE regions(
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_by INT NOT NULL
 );
+
+-- je model

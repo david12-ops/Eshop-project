@@ -40,7 +40,7 @@ public class SecurityConfig {
                                 .authorizeHttpRequests(requests -> requests
                                                 .requestMatchers(
                                                                 "/",
-                                                                "/home",
+                                                                "/adminHome",
                                                                 "/login",
                                                                 "/403",
                                                                 "/css/**",
@@ -66,7 +66,7 @@ public class SecurityConfig {
                                 .formLogin(form -> form
                                                 .loginPage("/login")
                                                 .loginProcessingUrl("/login")
-                                                .defaultSuccessUrl("/home", true)
+                                                .defaultSuccessUrl("/adminHome", true)
                                                 .failureUrl("/login?error=true")
                                                 .permitAll())
 

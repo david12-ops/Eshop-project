@@ -18,3 +18,5 @@ CREATE TABLE payment_methods (
     created_by INT NOT NULL,
     updated_by INT NOT NULL
 );
+
+-- je model

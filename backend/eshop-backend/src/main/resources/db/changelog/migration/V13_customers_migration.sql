@@ -13,3 +13,7 @@ CREATE TABLE customers (
     updated_by INT NOT NULL,
     CONSTRAINT uq_customers_person UNIQUE (first_name, last_name, birth_date)
 );
+
+-- je model
+
+-- frontend udělat do 5.června !!!!

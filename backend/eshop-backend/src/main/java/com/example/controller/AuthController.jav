@@ -12,10 +12,22 @@ public class AuthController {
         return "auth/login";
     }
 
-    @GetMapping("/home")
-    public String home() {
+    @GetMapping("/adminHome")
+    public String adminHome() {
 
-        return "home";
+        return "adminHome";
+    }
+
+    @GetMapping("/stuffHome")
+    public String stuffHome() {
+
+        return "stuffHome";
+    }
+
+    @GetMapping("/customerHome")
+    public String customerHome() {
+
+        return "customerHome";
     }
 
     @GetMapping("/403")

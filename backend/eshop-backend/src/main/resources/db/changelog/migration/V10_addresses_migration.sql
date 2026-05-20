@@ -12,3 +12,5 @@ CREATE TABLE addresses(
     updated_by INT NOT NULL,
     CONSTRAINT uq_addresses_full_address UNIQUE (country_name, state_name, city_name, street_name, postal_code)
 );
+
+-- je model

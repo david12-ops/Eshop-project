@@ -25,7 +25,7 @@ public class Product {
     @Column(name = "product_code", nullable = false, unique = true, length = 25)
     private String productCode;
 
-    @Column(name = "product_description")
+    @Column(name = "product_description", columnDefinition = "TEXT")
     private String productDescription;
 
     @Column(name = "product_image_url", nullable = false)
@@ -40,7 +40,7 @@ public class Product {
     @Column(name = "tax_rate", nullable = false, precision = 5, scale = 2)
     private BigDecimal taxRate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 

@@ -14,3 +14,5 @@ CREATE TABLE orders (
     created_by INT NOT NULL,
     updated_by INT NOT NULL
 );
+
+-- je model

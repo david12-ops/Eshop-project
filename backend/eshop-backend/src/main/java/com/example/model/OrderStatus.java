@@ -6,29 +6,32 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.example.model.enums.OrderStatusType;
+
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "categories")
+@Table(name = "order_statuses")
 @EntityListeners(AuditingEntityListener.class)
-public class Category {
+public class OrderStatus {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "category_id")
+    @Column(name = "status_id")
     private Integer id;
 
-    @Column(name = "category_name", nullable = false, unique = true, length = 50)
-    private String categoryName;
+    @Column(name = "status_name", nullable = false, unique = true, length = 50)
+    private String statusName;
 
-    @Column(name = "category_description", columnDefinition = "TEXT")
-    private String categoryDescription;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_type", nullable = false)
+    private OrderStatusType statusType;
 
-    @Column(name = "is_active", nullable = false)
-    private boolean active;
+    @Column(name = "status_description", columnDefinition = "TEXT")
+    private String statusDescription;
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
     @LastModifiedDate
@@ -41,7 +44,7 @@ public class Category {
     @Column(name = "updated_by", nullable = false)
     private Integer updatedBy;
 
-    public Category() {
+    public OrderStatus() {
     }
 
     public Integer getId() {
@@ -52,28 +55,28 @@ public class Category {
         this.id = id;
     }
 
-    public String getCategoryName() {
-        return categoryName;
+    public String getStatusName() {
+        return statusName;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
     }
 
-    public String getCategoryDescription() {
-        return categoryDescription;
+    public OrderStatusType getStatusType() {
+        return statusType;
     }
 
-    public void setCategoryDescription(String categoryDescription) {
-        this.categoryDescription = categoryDescription;
+    public void setStatusType(OrderStatusType statusType) {
+        this.statusType = statusType;
     }
 
-    public boolean isActive() {
-        return active;
+    public String getStatusDescription() {
+        return statusDescription;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setStatusDescription(String statusDescription) {
+        this.statusDescription = statusDescription;
     }
 
     public Instant getCreatedAt() {
