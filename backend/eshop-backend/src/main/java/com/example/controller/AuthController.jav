@@ -10,6 +10,23 @@ public class AuthController {
     public String login() {
 
         return "auth/login";
+    }    
+    
+    @GetMapping("/register")
+    public String register(Model model) {
+
+        model.addAttribute("user", new AppUser());
+
+        return "auth/register";
+    }
+
+    @PostMapping
+    public String register(
+            @ModelAttribute AppUser user) {
+
+        userService.registerUser(user);
+
+        return "redirect:/login?registered=true";
     }
 
     @GetMapping("/adminHome")

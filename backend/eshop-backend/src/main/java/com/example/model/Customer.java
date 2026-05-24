@@ -3,16 +3,21 @@ package com.example.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
 import java.time.Instant;
 import java.time.LocalDate;
 
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -43,11 +48,13 @@ public class Customer {
     @Column(name = "phone_number", length = 20, nullable = false, unique = true)
     private String phoneNumber;
 
-    @Column(name = "address_id", nullable = false)
-    private Integer addressId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id", nullable = false)
+    private Address customerAddress;
 
-    @Column(name = "user_id", unique = true)
-    private Integer userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private AppUser customerUser;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -57,9 +64,11 @@ public class Customer {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @Column(name = "created_by", nullable = false)
+    @CreatedBy
+    @Column(name = "created_by", nullable = false, updatable = false)
     private Integer createdBy;
 
+    @LastModifiedBy
     @Column(name = "updated_by", nullable = false)
     private Integer updatedBy;
 
@@ -114,20 +123,20 @@ public class Customer {
         this.phoneNumber = phoneNumber;
     }
 
-    public Integer getAddressId() {
-        return addressId;
+    public Address getCustomerAddress() {
+        return customerAddress;
     }
 
-    public void setAddressId(Integer addressId) {
-        this.addressId = addressId;
+    public void setCustomerAddress(Address customerAddress) {
+        this.customerAddress = customerAddress;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public AppUser getCustomerUser() {
+        return customerUser;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setCustomerUser(AppUser customerUser) {
+        this.customerUser = customerUser;
     }
 
     public Instant getCreatedAt() {

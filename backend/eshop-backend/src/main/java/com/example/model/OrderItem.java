@@ -28,9 +28,6 @@ public class OrderItem {
     @Column(name = "order_item_id")
     private Integer orderItemId;
 
-    // @Column(name = "order_id", nullable = false)
-    // private Integer orderId;
-
     @Column(name = "product_id", nullable = false)
     private Integer productId;
 
@@ -40,15 +37,15 @@ public class OrderItem {
     @Column(name = "line_total", precision = 10, scale = 2, nullable = false)
     private BigDecimal lineTotal;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
-    private Order order;
-
     @Column(name = "notes", columnDefinition = "TEXT")
     private String notes;
 
     @Column(name = "unit_price", precision = 10, scale = 2, nullable = false)
     private BigDecimal unitPrice;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
 
     public OrderItem() {
     }
@@ -61,24 +58,8 @@ public class OrderItem {
         this.orderItemId = orderItemId;
     }
 
-    // public Integer getOrderId() {
-    // return orderId;
-    // }
-
-    // public void setOrderId(Integer orderId) {
-    // this.orderId = orderId;
-    // }
-
     public Integer getProductId() {
         return productId;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
     }
 
     public void setProductId(Integer productId) {
@@ -115,5 +96,13 @@ public class OrderItem {
 
     public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 }

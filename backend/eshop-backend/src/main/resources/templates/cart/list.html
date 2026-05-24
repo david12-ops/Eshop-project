@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<!-- QUANTITY -->
+<div class="col-md-2">
+
+    <form th:action="@{/cart/update/{id}(id=${item.product.id})}" method="post">
+
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+        <input type="number" name="quantity" th:value="${item.quantity}" min="1" class="form-control mb-2">
+
+        <button type="submit" class="btn btn-outline-primary btn-sm w-100">
+
+            Update
+
+        </button>
+
+    </form>
+
+</div>
+
+<!-- TOTAL -->
+<div class="col-md-2 text-center">
+
+    <div class="fw-bold fs-5" th:text="${item.totalPrice}">
+
+        0.00
+
+    </div>
+
+</div>
+
+<!-- REMOVE -->
+<div class="col-md-1 text-end">
+
+    <form th:action="@{/cart/remove/{id}(id=${item.product.id})}" method="post">
+
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+        <button type="submit" class="btn btn-danger btn-sm">
+
+            <i class="bi bi-trash"></i>
+
+        </button>
+
+    </form>
+
+</div>
+
+</div>
+
+</div>
+
+</div>

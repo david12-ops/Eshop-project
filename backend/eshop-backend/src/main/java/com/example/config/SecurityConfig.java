@@ -32,33 +32,56 @@ public class SecurityConfig {
                 auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
         }
 
+        @Bean
         public SecurityFilterChain filterChain(HttpSecurity http)
                         throws Exception {
 
                 http
 
                                 .authorizeHttpRequests(requests -> requests
+                                                // PUBLIC
                                                 .requestMatchers(
                                                                 "/",
-                                                                "/adminHome",
                                                                 "/login",
-                                                                "/403",
+                                                                "/register",
+                                                                "/errors/**",
                                                                 "/css/**",
                                                                 "/js/**",
                                                                 "/images/**")
                                                 .permitAll()
 
-                                                .requestMatchers("/admin/**")
+                                                // ADMIN ONLY
+                                                .requestMatchers(
+                                                                "/adminHome/**",
+                                                                "/users/**",
+                                                                "/roles/**",
+                                                                "/appPermissions/**",
+                                                                "/errors/**")
                                                 .hasRole("ADMIN")
 
+                                                // ADMIN + STAFF
                                                 .requestMatchers(
                                                                 "/products/**",
+                                                                "/addresses/**",
                                                                 "/categories/**",
-                                                                "/orders/**",
+                                                                "/currencies/**",
                                                                 "/customers/**",
-                                                                "/users/**",
-                                                                "/invoices/**")
-                                                .authenticated()
+                                                                "/discounts/**",
+                                                                "/invoices/**",
+                                                                "/orders/**",
+                                                                "/orderStatuses/**",
+                                                                "/paymentMethods/**",
+                                                                "/regions/**",
+                                                                "/errors/**")
+                                                .hasAnyRole("ADMIN", "STAFF")
+
+                                                // CUSTOMER
+                                                .requestMatchers(
+                                                                "/customerHome/**",
+                                                                "/cart/**",
+                                                                "/wishlist/**",
+                                                                "/errors/**")
+                                                .hasRole("CUSTOMER")
 
                                                 .anyRequest()
                                                 .authenticated())
@@ -66,7 +89,22 @@ public class SecurityConfig {
                                 .formLogin(form -> form
                                                 .loginPage("/login")
                                                 .loginProcessingUrl("/login")
-                                                .defaultSuccessUrl("/adminHome", true)
+                                                .successHandler((request, response, authentication) -> {
+                                                        var authorities = authentication.getAuthorities();
+                                                        System.out.println(authorities);
+
+                                                        if (authorities.stream().anyMatch(
+                                                                        a -> a.getAuthority().equals("ROLE_ADMIN")))
+                                                                response.sendRedirect("/adminHome");
+                                                        else if (authorities.stream().anyMatch(
+                                                                        a -> a.getAuthority().equals("ROLE_STAFF")))
+                                                                response.sendRedirect("/staffHome");
+                                                        else if (authorities.stream().anyMatch(
+                                                                        a -> a.getAuthority().equals("ROLE_CUSTOMER")))
+                                                                response.sendRedirect("/customerHome");
+                                                        else
+                                                                response.sendRedirect("/login?error=true");
+                                                })
                                                 .failureUrl("/login?error=true")
                                                 .permitAll())
 

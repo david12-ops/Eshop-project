@@ -1,12 +1,14 @@
 package com.example.service_impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.exception.ResourceNotFoundException;
 import com.example.model.AppUser;
 import com.example.model.MyUserDetail;
 import com.example.repository.UserRepository;
@@ -31,11 +33,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AppUser getUser(Integer id) {
-        if (id == null)
-            return null;
-
-        return userRepository.findById(id).orElse(null);
+    public AppUser getUserById(Integer id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 
     @Override
@@ -43,22 +43,11 @@ public class UserServiceImpl implements UserService {
         if (user == null)
             return;
 
-        if (user.getPassword().isBlank()) {
-            Integer id = user.getId();
-            if (id == null)
-                return;
-
-            userRepository.findById(id)
-                    .ifPresent(original -> user.setPassword(original.getPassword()));
-        } else {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
-
         userRepository.save(user);
     }
 
     @Override
-    public void deleteUser(Integer id) {
+    public void deleteUserById(Integer id) {
         if (id == null)
             return;
 
@@ -72,7 +61,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        AppUser user = userRepository.findByUsername(userName);
-        return new MyUserDetail(user);
+        Optional<AppUser> user = userRepository.findByUsername(userName);
+        return new MyUserDetail(
+                user.orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + userName)));
     }
 }

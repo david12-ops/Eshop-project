@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Currency Detail</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+
+    <div class="container mt-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <h1>Currency Detail</h1>
+
+            <a href="javascript:history.back()" class="btn btn-secondary">
+                Back
+            </a>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-body">
+
+                <table class="table table-bordered">
+
+                    <tr>
+                        <th>Currency Code</th>
+                        <td th:text="${currency.currencyCode}"></td>
+                    </tr>
+
+                    <tr>
+                        <th>Currency Name</th>
+                        <td th:text="${currency.currencyName}"></td>
+                    </tr>
+
+                    <tr>
+                        <th>Symbol</th>
+                        <td th:text="${currency.symbol}"></td>
+                    </tr>
+
+                    <tr>
+                        <th>Created At</th>
+                        <td th:text="${currency.createdAt}"></td>
+                    </tr>
+
+                    <tr>
+                        <th>Updated At</th>
+                        <td th:text="${currency.updatedAt}"></td>
+                    </tr>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

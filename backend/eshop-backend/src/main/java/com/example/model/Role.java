@@ -9,7 +9,9 @@ import java.util.Set;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -42,16 +44,18 @@ public class Role {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @Column(name = "created_by")
+    @CreatedBy
+    @Column(name = "created_by", nullable = false, updatable = false)
     private Integer createdBy;
 
-    @Column(name = "updated_by")
+    @LastModifiedBy
+    @Column(name = "updated_by", nullable = false)
     private Integer updatedBy;
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
     private Set<AppUser> users = new HashSet<>();
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
     private Set<AppPermission> permissions = new HashSet<>();
 
     public Role() {

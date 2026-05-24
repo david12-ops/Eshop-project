@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>Staff Home</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+        <div class="container-fluid">
+
+            <a class="navbar-brand" th:href="@{/staffHome}">
+
+                E-Shop Staff
+
+            </a>
+
+            <div class="navbar-nav">
+
+                <a class="nav-link" th:href="@{/users}">
+
+                    Users
+
+                </a>
+
+                <a class="nav-link" th:href="@{/appPermissions}">
+
+                    Permissions
+
+                </a>
+
+            </div>
+
+            <form th:action="@{/logout}" method="post" class="d-flex ms-auto">
+
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                <button type="submit" class="btn btn-outline-light">
+
+                    Logout
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </nav>
+
+    <div class="container mt-5">
+
+        <div class="p-5 bg-light rounded-3 border">
+
+            <h1 class="display-5">
+
+                Welcome to Staff Panel
+
+            </h1>
+
+            <p class="lead">
+
+                Spring Boot + Thymeleaf + PostgreSQL
+
+            </p>
+
+            <hr>
+
+            <div class="mt-4">
+                <!-- chybí invoice a order a tady vyřešit oprávnění -->
+
+                <a th:href="@{/products}" class="btn btn-primary me-2">
+
+                    Manage Products
+
+                </a>
+
+                <a th:href="@{/categories}" class="btn btn-success me-2">
+
+                    Manage Categories
+
+                </a>
+
+                <a th:href="@{/currencies}" class="btn btn-warning me-2">
+
+                    Manage Currencies
+
+                </a>
+
+                <a th:href="@{/customers}" class="btn btn-info me-2">
+
+                    Manage Customers
+
+                </a>
+
+                <a th:href="@{/discounts}" class="btn btn-danger me-2">
+
+                    Manage Discounts
+
+                </a>
+
+                <a th:href="@{/orderStatuses}" class="btn btn-dark me-2">
+
+                    Manage Order Statuses
+
+                </a>
+
+                <a th:href="@{/paymentMethods}" class="btn btn-secondary me-2">
+
+                    Manage Payment Methods
+
+                </a>
+
+                <a th:href="@{/regions}" class="btn btn-outline-primary me-2">
+
+                    Manage Regions
+
+                </a>
+
+                <a th:href="@{/addresses}" class="btn btn-outline-success me-2">
+
+                    Manage Addresses
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

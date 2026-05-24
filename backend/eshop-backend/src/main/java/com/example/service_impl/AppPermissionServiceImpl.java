@@ -10,10 +10,10 @@ import com.example.repository.AppPermissionRepository;
 import com.example.service_interface.AppPermissionService;
 
 @Service
-public class AppPermissionImpl implements AppPermissionService {
+public class AppPermissionServiceImpl implements AppPermissionService {
     private final AppPermissionRepository appPermissionRepository;
 
-    public AppPermissionImpl(AppPermissionRepository appPermissionRepository) {
+    public AppPermissionServiceImpl(AppPermissionRepository appPermissionRepository) {
         this.appPermissionRepository = appPermissionRepository;
     }
 

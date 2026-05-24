@@ -16,12 +16,23 @@
 
             <h1>Categories</h1>
 
-            <a th:href="@{/categories/create}" class="btn btn-primary">
-                Create Category
-            </a>
+            <div class="d-flex gap-2">
+
+                <a th:href="@{/}" class="btn btn-secondary">
+
+                    Home
+
+                </a>
+
+                <a th:href="@{/categories/create}" class="btn btn-primary">
+
+                    Create Category
+
+                </a>
+
+            </div>
 
         </div>
-
         <table class="table table-bordered table-striped">
 
             <thead>

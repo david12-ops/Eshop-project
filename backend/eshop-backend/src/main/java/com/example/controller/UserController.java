@@ -43,7 +43,7 @@ public class UserController {
             @PathVariable Integer id,
             Model model) {
 
-        model.addAttribute("user", userService.getUser(id));
+        model.addAttribute("user", userService.getUserById(id));
 
         return "users/detail";
     }
@@ -75,7 +75,7 @@ public class UserController {
             @PathVariable Integer id,
             Model model) {
 
-        model.addAttribute("user", userService.getUser(id));
+        model.addAttribute("user", userService.getUserById(id));
 
         model.addAttribute("roles", roleService.findAll());
 
@@ -100,7 +100,7 @@ public class UserController {
     public String deleteUser(
             @PathVariable Integer id) {
 
-        userService.deleteUser(id);
+        userService.deleteUserById(id);
 
         return "redirect:/users";
     }

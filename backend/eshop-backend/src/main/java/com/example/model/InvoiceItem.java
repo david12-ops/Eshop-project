@@ -28,9 +28,6 @@ public class InvoiceItem {
     @Column(name = "invoice_item_id")
     private Integer invoiceItemId;
 
-    // @Column(name = "invoice_id", nullable = false)
-    // private Integer invoiceId;
-
     @Column(name = "product_id", nullable = false)
     private Integer productId;
 
@@ -40,15 +37,15 @@ public class InvoiceItem {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_id", nullable = false)
-    private Invoice invoice;
-
     @Column(name = "notes", columnDefinition = "TEXT")
     private String notes;
 
     @Column(name = "unit_price", precision = 10, scale = 2, nullable = false)
     private BigDecimal unitPrice;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "invoice_id", nullable = false)
+    private Invoice invoice;
 
     public InvoiceItem() {
     }
@@ -61,24 +58,8 @@ public class InvoiceItem {
         this.invoiceItemId = invoiceItemId;
     }
 
-    // public Integer getInvoiceId() {
-    // return invoiceId;
-    // }
-
-    // public void setInvoiceId(Integer invoiceId) {
-    // this.invoiceId = invoiceId;
-    // }
-
     public Integer getProductId() {
         return productId;
-    }
-
-    public Invoice getInvoice() {
-        return invoice;
-    }
-
-    public void setInvoice(Invoice invoice) {
-        this.invoice = invoice;
     }
 
     public void setProductId(Integer productId) {
@@ -115,5 +96,13 @@ public class InvoiceItem {
 
     public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
+    }
+
+    public Invoice getInvoice() {
+        return invoice;
+    }
+
+    public void setInvoice(Invoice invoice) {
+        this.invoice = invoice;
     }
 }

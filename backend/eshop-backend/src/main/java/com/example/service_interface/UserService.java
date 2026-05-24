@@ -6,11 +6,12 @@ import com.example.model.AppUser;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService extends UserDetailsService {
-    AppUser getUser(Integer id);
+
+    AppUser getUserById(Integer id);
 
     void saveUser(AppUser user);
 
-    void deleteUser(Integer id);
+    void deleteUserById(Integer id);
 
     List<AppUser> getAllUsers();
 }

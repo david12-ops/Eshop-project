@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
 
-    <title>Home</title>
+    <title>Admin Home</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 </head>
@@ -23,27 +23,15 @@
 
             <div class="navbar-nav">
 
-                <a class="nav-link" th:href="@{/products}">
-
-                    Products
-
-                </a>
-
-                <a class="nav-link" th:href="@{/categories}">
-
-                    Categories
-
-                </a>
-
                 <a class="nav-link" th:href="@{/users}">
 
                     Users
 
                 </a>
 
-                <a class="nav-link" th:href="@{/customers}">
+                <a class="nav-link" th:href="@{/appPermissions}">
 
-                    Customers
+                    Permissions
 
                 </a>
 
@@ -83,23 +71,23 @@
 
             <hr>
 
-            <div class="mt-4">
+            <div class="mt-4 d-flex flex-wrap gap-3">
 
-                <a th:href="@{/products}" class="btn btn-primary me-2">
+                <a th:href="@{/products}" class="btn btn-primary">
 
                     Manage Products
 
                 </a>
 
-                <a th:href="@{/categories}" class="btn btn-success me-2">
+                <a th:href="@{/categories}" class="btn btn-success">
 
                     Manage Categories
 
                 </a>
 
-                <a th:href="@{/orders}" class="btn btn-warning me-2">
+                <a th:href="@{/currencies}" class="btn btn-warning">
 
-                    Manage Orders
+                    Manage Currencies
 
                 </a>
 
@@ -109,9 +97,51 @@
 
                 </a>
 
-                <a th:href="@{/users}" class="btn btn-info">
+                <a th:href="@{/discounts}" class="btn btn-danger">
 
-                    Manage Users
+                    Manage Discounts
+
+                </a>
+
+                <a th:href="@{/orderStatuses}" class="btn btn-dark">
+
+                    Manage Order Statuses
+
+                </a>
+
+                <a th:href="@{/paymentMethods}" class="btn btn-secondary">
+
+                    Manage Payment Methods
+
+                </a>
+
+                <!-- PURPLE -->
+                <a th:href="@{/regions}" class="btn text-white" style="background-color:#6f42c1; border-color:#6f42c1;">
+
+                    Manage Regions
+
+                </a>
+
+                <!-- ORANGE -->
+                <a th:href="@{/addresses}" class="btn text-white"
+                    style="background-color:#fd7e14; border-color:#fd7e14;">
+
+                    Manage Addresses
+
+                </a>
+
+                <!-- TEAL -->
+                <a th:href="@{/orders}" class="btn text-white" style="background-color:#20c997; border-color:#20c997;">
+
+                    Manage Orders
+
+                </a>
+
+                <!-- PINK -->
+                <a th:href="@{/invoices}" class="btn text-white"
+                    style="background-color:#d63384; border-color:#d63384;">
+
+                    Manage Invoices
 
                 </a>
 

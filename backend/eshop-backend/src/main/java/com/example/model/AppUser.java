@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 
 import java.time.Instant;
 
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -18,7 +20,7 @@ public class AppUser {
     @Column(name = "user_id")
     private Integer id;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, unique = true, length = 50)
     private String username;
 
     @Column(nullable = false, unique = true, length = 50)
@@ -39,10 +41,12 @@ public class AppUser {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @Column(name = "created_by")
+    @CreatedBy
+    @Column(name = "created_by", nullable = false, updatable = false)
     private Integer createdBy;
 
-    @Column(name = "updated_by")
+    @LastModifiedBy
+    @Column(name = "updated_by", nullable = false)
     private Integer updatedBy;
 
     public AppUser() {

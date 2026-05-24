@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Create Address</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+
+    <div class="container mt-5">
+
+        <div class="card shadow">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+
+                    <h2>Create Address</h2>
+
+                    <a th:href="@{/addresses}" class="btn btn-secondary">
+
+                        Back
+
+                    </a>
+
+                </div>
+
+                <form th:action="@{/addresses/create}" th:object="${address}" method="post">
+
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Street Name
+                        </label>
+
+                        <input type="text" th:field="*{streetName}" class="form-control" required>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                City Name
+                            </label>
+
+                            <input type="text" th:field="*{cityName}" class="form-control" required>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                State Name
+                            </label>
+
+                            <input type="text" th:field="*{stateName}" class="form-control" required>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Postal Code
+                            </label>
+
+                            <input type="text" th:field="*{postalCode}" class="form-control" required>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Country Name
+                            </label>
+
+                            <input type="text" th:field="*{countryName}" class="form-control" required>
+
+                        </div>
+
+                    </div>
+
+                    <div class="mb-4">
+
+                        <label class="form-label">
+                            Region
+                        </label>
+
+                        <select th:field="*{region}" class="form-select">
+
+                            <option value="">
+                                -- No Region --
+                            </option>
+
+                            <option th:each="region : ${regions}" th:value="${region.regionId}"
+                                th:text="${region.regionName}">
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <button type="submit" class="btn btn-success">
+
+                        Create Address
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

@@ -7,10 +7,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.FetchType;
 
 import java.time.Instant;
 
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -27,12 +32,9 @@ public class Region {
     @Column(name = "region_name", length = 50, nullable = false, unique = true)
     private String regionName;
 
-    @Column(name = "currency_code", length = 3, nullable = false)
-    private String currencyCode;
-
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "currency_code", nullable = false)
-    // private Currency currency;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "currency_code", nullable = false)
+    private Currency currency;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -42,9 +44,11 @@ public class Region {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @Column(name = "created_by", nullable = false)
+    @CreatedBy
+    @Column(name = "created_by", nullable = false, updatable = false)
     private Integer createdBy;
 
+    @LastModifiedBy
     @Column(name = "updated_by", nullable = false)
     private Integer updatedBy;
 
@@ -67,12 +71,12 @@ public class Region {
         this.regionName = regionName;
     }
 
-    public String getCurrencyCode() {
-        return currencyCode;
+    public Currency getCurrency() {
+        return currency;
     }
 
-    public void setCurrencyCode(String currencyCode) {
-        this.currencyCode = currencyCode;
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 
     public Instant getCreatedAt() {

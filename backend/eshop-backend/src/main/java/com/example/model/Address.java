@@ -2,7 +2,9 @@ package com.example.model;
 
 import java.time.Instant;
 
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -41,9 +43,6 @@ public class Address {
     @Column(name = "country_name", nullable = false, length = 50)
     private String countryName;
 
-    // @Column(name = "region_id")
-    // private Integer regionId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "region_id")
     private Region region;
@@ -52,13 +51,15 @@ public class Address {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    @Column(name = "created_by", nullable = false)
-    private Integer createdBy;
-
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    @CreatedBy
+    @Column(name = "created_by", nullable = false, updatable = false)
+    private Integer createdBy;
+
+    @LastModifiedBy
     @Column(name = "updated_by", nullable = false)
     private Integer updatedBy;
 
@@ -120,14 +121,6 @@ public class Address {
     public void setCountryName(String countryName) {
         this.countryName = countryName;
     }
-
-    // public Integer getRegionId() {
-    // return regionId;
-    // }
-
-    // public void setRegionId(Integer regionId) {
-    // this.regionId = regionId;
-    // }
 
     public Instant getCreatedAt() {
         return createdAt;

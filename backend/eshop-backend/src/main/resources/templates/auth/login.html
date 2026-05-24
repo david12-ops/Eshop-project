@@ -15,38 +15,64 @@
 
             <div class="col-md-4">
 
-                <div class="card">
+                <div class="card shadow">
 
                     <div class="card-body">
 
-                        <h2 class="mb-4">
+                        <h2 class="mb-4 text-center">
                             Login
                         </h2>
 
+                        <!-- Registration Success -->
+                        <div th:if="${param.registered}" class="alert alert-success">
+
+                            Registration successful. Please login.
+
+                        </div>
+
+                        <!-- Login Error -->
+                        <div th:if="${param.error}" class="alert alert-danger">
+
+                            Invalid username or password
+
+                        </div>
+
+                        <!-- Logout Success -->
+                        <div th:if="${param.logout}" class="alert alert-success">
+
+                            Successfully logged out
+
+                        </div>
+
+                        <!-- Login Form -->
                         <form th:action="@{/login}" method="post">
 
+                            <!-- CSRF -->
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
+                            <!-- Username -->
                             <div class="mb-3">
 
                                 <label class="form-label">
                                     Username
                                 </label>
 
-                                <input type="text" name="username" class="form-control">
+                                <input type="text" name="username" class="form-control" required>
 
                             </div>
 
+                            <!-- Password -->
                             <div class="mb-3">
 
                                 <label class="form-label">
                                     Password
                                 </label>
 
-                                <input type="password" name="password" class="form-control">
+                                <input type="password" name="password" class="form-control" required>
 
                             </div>
 
+                            <!-- Submit -->
                             <button type="submit" class="btn btn-primary w-100">
 
                                 Login
@@ -55,15 +81,12 @@
 
                         </form>
 
-                        <div th:if="${param.error}" class="alert alert-danger mt-3">
+                        <!-- Register Link -->
+                        <div class="text-center mt-3">
 
-                            Invalid username or password
-
-                        </div>
-
-                        <div th:if="${param.logout}" class="alert alert-success mt-3">
-
-                            Successfully logged out
+                            <a th:href="@{/register}">
+                                Create account
+                            </a>
 
                         </div>
 

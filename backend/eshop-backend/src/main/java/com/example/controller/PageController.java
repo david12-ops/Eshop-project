@@ -18,10 +18,28 @@ public class PageController {
         return "adminHome";
     }
 
+    @GetMapping("/stuffHome")
+    public String stuffHome() {
+
+        return "stuffHome";
+    }
+
+    @GetMapping("/customerHome")
+    public String customerHome() {
+
+        return "customerHome";
+    }
+
     @GetMapping("/login")
     public String login() {
 
         return "auth/login";
+    }
+
+    @GetMapping("/register")
+    public String register() {
+
+        return "auth/register";
     }
 
     @GetMapping("/403")
