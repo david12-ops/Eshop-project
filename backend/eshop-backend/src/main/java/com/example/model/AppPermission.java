@@ -23,7 +23,7 @@ public class AppPermission {
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id", nullable = false)
+    @JoinColumn(name = "role_id", nullable = false, updatable = false)
     private Role role;
 
     @Id

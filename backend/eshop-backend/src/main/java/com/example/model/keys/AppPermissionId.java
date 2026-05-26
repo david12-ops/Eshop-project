@@ -15,6 +15,12 @@ public class AppPermissionId implements Serializable {
     public AppPermissionId() {
     }
 
+    public AppPermissionId(Integer role, ResourceType resourceType, OperationType operationType) {
+        this.role = role;
+        this.resourceType = resourceType;
+        this.operationType = operationType;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)

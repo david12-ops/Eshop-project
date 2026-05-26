@@ -20,7 +20,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class Currency {
 
     @Id
-    @Column(name = "currency_code", length = 3, nullable = false)
+    @Column(name = "currency_code", length = 3, nullable = false, updatable = false)
     private String currencyCode;
 
     @Column(name = "currency_name", length = 50, nullable = false, unique = true)

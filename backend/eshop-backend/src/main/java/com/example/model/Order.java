@@ -49,6 +49,9 @@ public class Order {
     @Column(name = "total_amount", precision = 10, scale = 2, nullable = false)
     private BigDecimal totalAmount;
 
+    @Column(name = "notes", columnDefinition = "TEXT")
+    private String notes;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderItem> orderItems = new HashSet<>();
 
@@ -71,9 +74,6 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_address_id", nullable = false)
     private Address deliveryAddress;
-
-    @Column(name = "notes", columnDefinition = "TEXT")
-    private String notes;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
