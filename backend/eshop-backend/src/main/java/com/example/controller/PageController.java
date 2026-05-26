@@ -23,7 +23,7 @@ public class PageController {
         if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
             return "redirect:/adminHome";
         } else if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_STAFF"))) {
-            return "redirect:/stuffHome";
+            return "redirect:/staffHome";
         } else if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_CUSTOMER"))) {
             return "redirect:/customerHome";
         }
@@ -37,10 +37,10 @@ public class PageController {
         return "adminHome";
     }
 
-    @GetMapping("/stuffHome")
-    public String stuffHome() {
+    @GetMapping("/staffHome")
+    public String staffHome() {
 
-        return "stuffHome";
+        return "staffHome";
     }
 
     @GetMapping("/customerHome")
