@@ -3,8 +3,8 @@ package com.example.service_impl;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import com.example.exception.ResourceNotFoundException;
 import com.example.model.Category;
 import com.example.repository.CategoryRepository;
 import com.example.service_interface.CategoryService;
@@ -39,17 +39,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Transactional
-    public Category getCategoryWithItems(Integer id) {
-
-        return categoryRepository.findByIdWithItems(id)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
-    }
-
-    @Override
     public Category getCategoryById(Integer id) {
         return categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
     }
 
     @Override
@@ -57,13 +49,13 @@ public class CategoryServiceImpl implements CategoryService {
         if (id == null || category == null)
             return;
 
-        Category existingCategory = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+        categoryRepository.findById(id).ifPresent(existingCategory -> {
 
-        existingCategory.setCategoryName(category.getCategoryName());
-        existingCategory.setCategoryDescription(category.getCategoryDescription());
-        existingCategory.setActive(category.isActive());
+            existingCategory.setCategoryName(category.getCategoryName());
+            existingCategory.setCategoryDescription(category.getCategoryDescription());
+            existingCategory.setActive(category.isActive());
 
-        categoryRepository.save(existingCategory);
+            categoryRepository.save(existingCategory);
+        });
     }
 }

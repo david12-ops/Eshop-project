@@ -12,5 +12,7 @@ public interface OrderStatusService {
 
     void saveOrderStatus(OrderStatus orderStatus);
 
+    void editOrderStatus(Integer id, OrderStatus orderStatus);
+
     void deleteOrderStatusById(Integer id);
 }

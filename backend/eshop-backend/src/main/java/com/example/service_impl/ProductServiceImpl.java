@@ -50,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
             return;
 
         Product existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         existingProduct.setProductName(product.getProductName());
         existingProduct.setProductDescription(product.getProductDescription());

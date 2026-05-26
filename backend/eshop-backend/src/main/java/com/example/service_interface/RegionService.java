@@ -12,5 +12,7 @@ public interface RegionService {
 
     void saveRegion(Region region);
 
+    void editRegion(Integer id, Region region);
+
     void deleteRegionById(Integer id);
 }

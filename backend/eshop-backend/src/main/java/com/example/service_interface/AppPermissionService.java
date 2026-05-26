@@ -1,17 +1,22 @@
 package com.example.service_interface;
 
 import com.example.model.AppPermission;
+import com.example.model.Role;
 import com.example.model.keys.AppPermissionId;
 
 import java.util.List;
 
 public interface AppPermissionService {
 
-    void savePermission(AppPermission permission);
+    void saveAppPermission(AppPermission permission);
 
-    AppPermission findById(AppPermissionId id);
+    AppPermission getAppPermissionById(AppPermissionId id);
 
     List<AppPermission> findAll();
 
-    void deleteById(AppPermissionId id);
+    List<Role> findAllRoles();
+
+    void editAppPermission(AppPermissionId id, AppPermission permission);
+
+    void deleteAppPermissionById(AppPermissionId id);
 }

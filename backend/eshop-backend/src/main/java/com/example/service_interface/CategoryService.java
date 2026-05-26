@@ -6,8 +6,6 @@ import com.example.model.Category;
 
 public interface CategoryService {
 
-    Category getCategoryWithItems(Integer id);
-
     List<Category> getAllCategories();
 
     void saveCategory(Category category);

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.exception.ResourceNotFoundException;
 import com.example.model.Discount;
 import com.example.repository.DiscountRepository;
 import com.example.service_interface.DiscountService;
@@ -18,26 +19,47 @@ public class DiscountServiceImpl implements DiscountService {
 
     @Override
     public Discount getDiscountById(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDiscountById'");
+        return discountRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Discount not found with id: " + id));
     }
 
     @Override
     public List<Discount> getAllDiscounts() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllDiscounts'");
+        return discountRepository.findAll();
     }
 
     @Override
     public void saveDiscount(Discount discount) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'saveDiscount'");
+        if (discount == null)
+            return;
+
+        discountRepository.save(discount);
     }
 
     @Override
     public void deleteDiscountById(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteDiscountById'");
+        if (id == null)
+            return;
+
+        discountRepository.findById(id).ifPresent(discount -> discountRepository.deleteById(id));
     }
 
+    @Override
+    public void editDiscount(Integer id, Discount discount) {
+        if (id == null || discount == null)
+            return;
+
+        discountRepository.findById(id).ifPresent(existingDiscount -> {
+
+            existingDiscount.setDiscountName(discount.getDiscountName());
+            existingDiscount.setDiscountCode(discount.getDiscountCode());
+            existingDiscount.setDiscountType(discount.getDiscountType());
+            existingDiscount.setDiscountValue(discount.getDiscountValue());
+            existingDiscount.setDiscountDescription(discount.getDiscountDescription());
+            existingDiscount.setValidFrom(discount.getValidFrom());
+            existingDiscount.setValidTo(discount.getValidTo());
+
+            discountRepository.save(existingDiscount);
+        });
+    }
 }

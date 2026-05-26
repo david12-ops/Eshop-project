@@ -6,12 +6,7 @@ import com.example.model.Invoice;
 
 public interface InvoiceService {
 
-    Invoice getInvoiceWithItems(Integer id);
+    Invoice getInvoiceById(Integer id);
 
     List<Invoice> getAllInvoices();
-
-    void saveInvoice(Invoice invoice);
-
-    void deleteInvoiceById(Integer id);
-
 }

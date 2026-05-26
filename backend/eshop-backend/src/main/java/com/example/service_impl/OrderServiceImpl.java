@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.exception.ResourceNotFoundException;
 import com.example.model.Order;
 import com.example.repository.OrderRepository;
 import com.example.service_interface.OrderService;
@@ -19,27 +20,46 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getAllOrders() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllOrders'");
+        return orderRepository.findAll();
     }
 
     @Override
     public void saveOrder(Order order) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'saveOrder'");
+        if (order == null)
+            return;
+
+        orderRepository.save(order);
     }
 
     @Override
     @Transactional
     public Order getOrderWithItems(Integer id) {
-
         return orderRepository.findByIdWithItems(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + id));
     }
 
     @Override
     public void deleteOrderById(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteOrderById'");
+        if (id == null)
+            return;
+
+        orderRepository.findById(id).ifPresent(order -> orderRepository.deleteById(id));
+    }
+
+    @Override
+    public void editOrder(Integer id, Order order) {
+        if (id == null || order == null)
+            return;
+
+        orderRepository.findById(id).ifPresent(existingOrder -> {
+
+            existingOrder.setOrderDate(order.getOrderDate());
+            existingOrder.setSubtotal(order.getSubtotal());
+            existingOrder.setTaxAmount(order.getTaxAmount());
+            existingOrder.setTotalAmount(order.getTotalAmount());
+            existingOrder.setNotes(order.getNotes());
+
+            orderRepository.save(existingOrder);
+        });
     }
 }

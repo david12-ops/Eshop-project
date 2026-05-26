@@ -39,7 +39,34 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void deleteById(Integer id) {
+    @Transactional
+    public Role getRoleWithUsers(Integer id) {
+        return roleRepository.findByIdWithUsers(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + id));
+    }
+
+    @Override
+    @Transactional
+    public Role getRoleWithPermissions(Integer id) {
+        return roleRepository.findByIdWithPermissions(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + id));
+    }
+
+    @Override
+    @Transactional
+    public Role getRoleWithUsersAndPermissions(Integer id) {
+        return roleRepository.findByIdWithUsersAndPermissions(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + id));
+    }
+
+    @Override
+    public Role getRoleById(Integer id) {
+        return roleRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + id));
+    }
+
+    @Override
+    public void deleteRoleById(Integer id) {
         if (id == null)
             return;
 
@@ -47,26 +74,17 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Transactional
-    public Role getRoleWithUsers(Integer id) {
+    public void editRole(Integer id, Role role) {
+        if (id == null || role == null)
+            return;
 
-        return roleRepository.findByIdWithUsers(id)
-                .orElseThrow(() -> new RuntimeException("Role not found"));
-    }
+        roleRepository.findById(id).ifPresent(existingRole -> {
 
-    @Override
-    @Transactional
-    public Role getRoleWithPermissions(Integer id) {
+            existingRole.setRoleName(role.getRoleName());
+            existingRole.setRoleType(role.getRoleType());
+            existingRole.setRoleDescription(role.getRoleDescription());
 
-        return roleRepository.findByIdWithPermissions(id)
-                .orElseThrow(() -> new RuntimeException("Role not found"));
-    }
-
-    @Override
-    @Transactional
-    public Role getRoleWithUsersAndPermissions(Integer id) {
-
-        return roleRepository.findByIdWithUsersAndPermissions(id)
-                .orElseThrow(() -> new RuntimeException("Role not found"));
+            roleRepository.save(existingRole);
+        });
     }
 }

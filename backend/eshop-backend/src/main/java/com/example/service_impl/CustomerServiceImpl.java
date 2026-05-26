@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.exception.ResourceNotFoundException;
 import com.example.model.Customer;
 import com.example.repository.CustomerRepository;
 import com.example.service_interface.CustomerService;
@@ -18,26 +19,46 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer getCustomerById(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCustomerById'");
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + id));
     }
 
     @Override
     public List<Customer> getAllCustomers() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllCustomers'");
+        return customerRepository.findAll();
     }
 
     @Override
     public void saveCustomer(Customer customer) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'saveCustomer'");
+        if (customer == null)
+            return;
+
+        customerRepository.save(customer);
     }
 
     @Override
     public void deleteCustomerById(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteCustomerById'");
+        if (id == null)
+            return;
+
+        customerRepository.findById(id).ifPresent(customer -> customerRepository.deleteById(id));
     }
 
+    @Override
+    public void editCustomer(Integer id, Customer customer) {
+        if (id == null || customer == null)
+            return;
+
+        customerRepository.findById(id).ifPresent(existingCustomer -> {
+
+            existingCustomer.setBranchName(customer.getBranchName());
+            existingCustomer.setFirstName(customer.getFirstName());
+            existingCustomer.setLastName(customer.getLastName());
+            existingCustomer.setBirthDate(customer.getBirthDate());
+            existingCustomer.setPhoneNumber(customer.getPhoneNumber());
+
+            customerRepository.save(existingCustomer);
+
+        });
+    }
 }

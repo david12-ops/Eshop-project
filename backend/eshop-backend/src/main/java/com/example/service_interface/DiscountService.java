@@ -12,5 +12,7 @@ public interface DiscountService {
 
     void saveDiscount(Discount discount);
 
+    void editDiscount(Integer id, Discount discount);
+
     void deleteDiscountById(Integer id);
 }

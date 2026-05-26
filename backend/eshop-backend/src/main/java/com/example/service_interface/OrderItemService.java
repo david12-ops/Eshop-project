@@ -12,5 +12,7 @@ public interface OrderItemService {
 
     void saveOrderItem(OrderItem orderItem);
 
+    void editOrderItem(Integer id, OrderItem orderItem);
+
     void deleteOrderItemById(Integer id);
 }

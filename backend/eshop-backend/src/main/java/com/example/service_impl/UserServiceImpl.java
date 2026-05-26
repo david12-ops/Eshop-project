@@ -93,14 +93,10 @@ public class UserServiceImpl implements UserService {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        System.out.println("Registering user without role: " + user);
-
         Role customerRole = roleRepository.findByRoleType(RoleType.CUSTOMER)
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found with name: CUSTOMER"));
 
         user.setRole(customerRole);
-
-        System.out.println("Registering user: " + user);
 
         userRepository.save(user);
     }

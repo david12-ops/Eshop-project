@@ -12,5 +12,7 @@ public interface InvoiceItemService {
 
     void saveInvoiceItem(InvoiceItem invoiceItem);
 
+    void editInvoiceItem(Integer id, InvoiceItem invoiceItem);
+
     void deleteInvoiceItemById(Integer id);
 }

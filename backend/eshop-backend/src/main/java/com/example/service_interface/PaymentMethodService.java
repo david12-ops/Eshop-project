@@ -12,5 +12,7 @@ public interface PaymentMethodService {
 
     void savePaymentMethod(PaymentMethod paymentMethod);
 
+    void editPaymentMethod(Integer id, PaymentMethod paymentMethod);
+
     void deletePaymentMethodById(Integer id);
 }

@@ -12,7 +12,11 @@ public interface RoleService {
 
     List<Role> findAll();
 
-    void deleteById(Integer id);
+    Role getRoleById(Integer id);
+
+    void deleteRoleById(Integer id);
+
+    void editRole(Integer id, Role role);
 
     Role getRoleWithUsers(Integer id);
 

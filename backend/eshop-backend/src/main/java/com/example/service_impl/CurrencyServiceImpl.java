@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.exception.ResourceNotFoundException;
 import com.example.model.Currency;
 import com.example.repository.CurrencyRepository;
 import com.example.service_interface.CurrencyService;
@@ -17,27 +18,44 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
 
     @Override
-    public Currency getCurrencyById(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCurrencyById'");
+    public Currency getCurrencyById(String code) {
+        return currencyRepository.findById(code)
+                .orElseThrow(() -> new ResourceNotFoundException("Currency not found with code: " + code));
     }
 
     @Override
     public List<Currency> getAllCurrencies() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllCurrencies'");
+        return currencyRepository.findAll();
     }
 
     @Override
     public void saveCurrency(Currency currency) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'saveCurrency'");
+        if (currency == null)
+            return;
+
+        currencyRepository.save(currency);
     }
 
     @Override
     public void deleteCurrencyById(String code) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteCurrencyById'");
+        if (code == null)
+            return;
+
+        currencyRepository.findById(code).ifPresent(currency -> currencyRepository.deleteById(code));
     }
 
+    @Override
+    public void editCurrency(String code, Currency currency) {
+        if (code == null || currency == null)
+            return;
+
+        currencyRepository.findById(code).ifPresent(existingCurrency -> {
+
+            existingCurrency.setCurrencyName(currency.getCurrencyName());
+            existingCurrency.setSymbol(currency.getSymbol());
+
+            currencyRepository.save(existingCurrency);
+
+        });
+    }
 }
