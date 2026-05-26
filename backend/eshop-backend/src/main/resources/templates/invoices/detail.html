@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice Detail</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+
+    <div class="container mt-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <h1>Invoice Detail</h1>
+
+            <div class="d-flex gap-2">
+
+                <a th:href="@{/invoices}" class="btn btn-secondary">
+
+                    Back
+
+                </a>
+
+                <a th:href="@{/invoices/edit/{id}(id=${invoice.invoiceId})}" class="btn btn-warning">
+
+                    Edit
+
+                </a>
+
+                <a th:href="@{/invoices/{id}/pdf(id=${invoice.invoiceId})}" class="btn btn-dark">
+
+                    Export PDF
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- INVOICE INFO -->
+        <div class="card mb-4">
+
+            <div class="card-header">
+
+                Invoice Information
+
+            </div>
+
+            <div class="card-body">
+
+                <table class="table table-bordered table-striped mb-0">
+
+                    <tbody>
+
+                        <tr>
+
+                            <th style="width: 30%">Invoice ID</th>
+
+                            <td th:text="${invoice.invoiceId}"></td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Invoice Code</th>
+
+                            <td th:text="${invoice.invoiceCode}"></td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Related Order</th>
+
+                            <td>
+
+                                <a th:href="@{/orders/detail/{id}(id=${invoice.order.orderId})}"
+                                    th:text="${invoice.order.orderId}" class="text-decoration-none">
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Payment Method</th>
+
+                            <td th:text="${invoice.paymentMethod.methodName}"></td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Currency</th>
+
+                            <td>
+
+                                <span th:text="${invoice.currency.currencyCode}"></span>
+                                -
+                                <span th:text="${invoice.currency.symbol}"></span>
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Issue Date</th>
+
+                            <td th:text="${invoice.issueDate}"></td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Due Date</th>
+
+                            <td th:text="${invoice.dueDate}"></td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Payment Date</th>
+
+                            <td>
+
+                                <span th:if="${invoice.paymentDate != null}" th:text="${invoice.paymentDate}">
+                                </span>
+
+                                <span th:if="${invoice.paymentDate == null}" class="badge bg-warning text-dark">
+
+                                    Unpaid
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Billing Address</th>
+
+                            <td>
+
+                                <span th:text="${invoice.billingAddress.streetName}"></span>,
+                                <span th:text="${invoice.billingAddress.cityName}"></span>,
+                                <span th:text="${invoice.billingAddress.countryName}"></span>
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Notes</th>
+
+                            <td th:text="${invoice.notes}"></td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Subtotal</th>
+
+                            <td th:text="${invoice.subtotal}"></td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Tax</th>
+
+                            <td th:text="${invoice.taxAmount}"></td>
+
+                        </tr>
+
+                        <tr>
+
+                            <th>Total</th>
+
+                            <td class="fw-bold text-success">
+
+                                <span th:text="${invoice.totalAmount}"></span>
+                                <span th:text="${invoice.currency.symbol}"></span>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <!-- INVOICE ITEMS -->
+        <div class="card mb-4">
+
+            <div class="card-header">
+
+                Invoice Items
+
+            </div>
+
+            <div class="card-body p-0">
+
+                <table class="table table-bordered table-striped mb-0">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+                            <th>Product ID</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Line Total</th>
+                            <th>Notes</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr th:each="item : ${invoice.items}">
+
+                            <td th:text="${item.invoiceItemId}"></td>
+
+                            <td th:text="${item.productId}"></td>
+
+                            <td th:text="${item.quantity}"></td>
+
+                            <td th:text="${item.unitPrice}"></td>
+
+                            <td th:text="${item.lineTotal}"></td>
+
+                            <td th:text="${item.notes}"></td>
+
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(invoice.items)}">
+
+                            <td colspan="6" class="text-center text-muted">
+
+                                No invoice items found
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <!-- DISCOUNTS -->
+        <div class="card mb-4">
+
+            <div class="card-header">
+
+                Applied Discounts
+
+            </div>
+
+            <div class="card-body p-0">
+
+                <table class="table table-bordered table-striped mb-0">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Name</th>
+                            <th>Code</th>
+                            <th>Type</th>
+                            <th>Value</th>
+                            <th>Description</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr th:each="discount : ${invoice.discounts}">
+
+                            <td th:text="${discount.discountName}"></td>
+
+                            <td th:text="${discount.discountCode}"></td>
+
+                            <td th:text="${discount.discountType}"></td>
+
+                            <td th:text="${discount.discountValue}"></td>
+
+                            <td th:text="${discount.discountDescription}"></td>
+
+                        </tr>
+
+                        <tr th:if="${#sets.isEmpty(invoice.discounts)}">
+
+                            <td colspan="5" class="text-center text-muted">
+
+                                No discounts applied
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

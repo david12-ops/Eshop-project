@@ -20,7 +20,7 @@
 
                     <h2>Create Permission</h2>
 
-                    <a th:href="@{/permissions}" class="btn btn-secondary">
+                    <a th:href="@{/app-permissions}" class="btn btn-secondary">
 
                         Back
 
@@ -28,7 +28,7 @@
 
                 </div>
 
-                <form th:action="@{/permissions/create}" th:object="${permission}" method="post">
+                <form th:action="@{/app-permissions/create}" th:object="${appPermission}" method="post">
 
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 

@@ -68,7 +68,7 @@
 
                 <label class="form-label">Address</label>
 
-                <select class="form-select" th:field="*{address}">
+                <select class="form-select" th:field="*{customerAddress}">
 
                     <option th:each="address : ${addresses}" th:value="${address.id}"
                         th:text="${address.streetName + ', ' + address.cityName}">
@@ -82,7 +82,7 @@
 
                 <label class="form-label">User</label>
 
-                <select class="form-select" th:field="*{user}">
+                <select class="form-select" th:field="*{customerUser}">
 
                     <option value="">No User</option>
 

@@ -10,162 +10,334 @@
 
 <body>
 
-    <div class="container mt-5">
+    <div class="container mt-4">
 
-        <div class="card shadow">
+        <!-- HEADER -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <h1>Order Detail</h1>
+
+            <div class="d-flex gap-2">
+
+                <a th:href="@{/}" class="btn btn-secondary">
+
+                    Home
+
+                </a>
+
+                <a th:href="@{/orders/edit/{id}(id=${order.orderId})}" class="btn btn-warning">
+
+                    Edit
+
+                </a>
+
+                <form th:action="@{/orders/delete/{id}(id=${order.orderId})}" method="post"
+                    style="display:inline-block">
+
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                    <button type="submit" class="btn btn-danger">
+
+                        Delete
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <!-- ORDER INFORMATION -->
+        <div class="card mb-4">
+
+            <div class="card-header">
+
+                Order Information
+
+            </div>
 
             <div class="card-body">
 
-                <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="row mb-2">
 
-                    <h2>Order Detail</h2>
+                    <div class="col-md-3 fw-bold">
+                        Order ID
+                    </div>
 
-                    <a th:href="@{/orders}" class="btn btn-secondary">
-
-                        Back
-
-                    </a>
+                    <div class="col-md-9" th:text="${order.orderId}">
+                    </div>
 
                 </div>
 
-                <table class="table table-bordered">
+                <div class="row mb-2">
 
-                    <tr>
-                        <th>Order ID</th>
-                        <td th:text="${order.orderId}"></td>
-                    </tr>
+                    <div class="col-md-3 fw-bold">
+                        Customer
+                    </div>
 
-                    <tr>
-                        <th>Customer</th>
-                        <td th:text="${order.customer.firstName + ' ' + order.customer.lastName}"></td>
-                    </tr>
+                    <div class="col-md-9" th:text="${order.customer.firstName + ' ' + order.customer.lastName}">
+                    </div>
 
-                    <tr>
-                        <th>Status</th>
-                        <td th:text="${order.status != null ? order.status.statusName : 'No Status'}"></td>
-                    </tr>
+                </div>
 
-                    <tr>
-                        <th>Currency</th>
-                        <td th:text="${order.currency.currencyCode}"></td>
-                    </tr>
+                <div class="row mb-2">
 
-                    <tr>
-                        <th>Delivery Address</th>
-                        <td th:text="${order.deliveryAddress.streetName + ', ' + order.deliveryAddress.cityName}"></td>
-                    </tr>
+                    <div class="col-md-3 fw-bold">
+                        Status
+                    </div>
 
-                    <tr>
-                        <th>Subtotal</th>
-                        <td th:text="${order.subtotal}"></td>
-                    </tr>
+                    <div class="col-md-9">
 
-                    <tr>
-                        <th>Tax Amount</th>
-                        <td th:text="${order.taxAmount}"></td>
-                    </tr>
+                        <span class="badge bg-info"
+                            th:text="${order.status != null ? order.status.statusName : 'No Status'}">
+                        </span>
 
-                    <tr>
-                        <th>Total Amount</th>
-                        <td th:text="${order.totalAmount}"></td>
-                    </tr>
+                    </div>
 
-                    <tr>
-                        <th>Notes</th>
-                        <td th:text="${order.notes}"></td>
-                    </tr>
+                </div>
 
-                    <tr>
-                        <th>Order Date</th>
-                        <td th:text="${order.orderDate}"></td>
-                    </tr>
+                <div class="row mb-2">
 
-                    <tr>
-                        <th>Created At</th>
-                        <td th:text="${order.createdAt}"></td>
-                    </tr>
+                    <div class="col-md-3 fw-bold">
+                        Currency
+                    </div>
 
-                    <tr>
-                        <th>Updated At</th>
-                        <td th:text="${order.updatedAt}"></td>
-                    </tr>
+                    <div class="col-md-9" th:text="${order.currency.currencyCode}">
+                    </div>
+
+                </div>
+
+                <div class="row mb-2">
+
+                    <div class="col-md-3 fw-bold">
+                        Delivery Address
+                    </div>
+
+                    <div class="col-md-9"
+                        th:text="${order.deliveryAddress.streetName + ', ' + order.deliveryAddress.cityName}">
+                    </div>
+
+                </div>
+
+                <div class="row mb-2">
+
+                    <div class="col-md-3 fw-bold">
+                        Subtotal
+                    </div>
+
+                    <div class="col-md-9" th:text="${order.subtotal}">
+                    </div>
+
+                </div>
+
+                <div class="row mb-2">
+
+                    <div class="col-md-3 fw-bold">
+                        Tax Amount
+                    </div>
+
+                    <div class="col-md-9" th:text="${order.taxAmount}">
+                    </div>
+
+                </div>
+
+                <div class="row mb-2">
+
+                    <div class="col-md-3 fw-bold">
+                        Total Amount
+                    </div>
+
+                    <div class="col-md-9 fw-bold text-success" th:text="${order.totalAmount}">
+                    </div>
+
+                </div>
+
+                <div class="row mb-2">
+
+                    <div class="col-md-3 fw-bold">
+                        Notes
+                    </div>
+
+                    <div class="col-md-9" th:text="${order.notes}">
+                    </div>
+
+                </div>
+
+                <div class="row mb-2">
+
+                    <div class="col-md-3 fw-bold">
+                        Order Date
+                    </div>
+
+                    <div class="col-md-9" th:text="${order.orderDate}">
+                    </div>
+
+                </div>
+
+                <div class="row mb-2">
+
+                    <div class="col-md-3 fw-bold">
+                        Created At
+                    </div>
+
+                    <div class="col-md-9" th:text="${order.createdAt}">
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-3 fw-bold">
+                        Updated At
+                    </div>
+
+                    <div class="col-md-9" th:text="${order.updatedAt}">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- DISCOUNTS -->
+        <div class="card mb-4">
+
+            <div class="card-header">
+
+                Discounts
+
+            </div>
+
+            <div class="card-body">
+
+                <div th:if="${#sets.isEmpty(order.discounts)}" class="text-muted">
+
+                    No discounts applied
+
+                </div>
+
+                <table th:if="${!#sets.isEmpty(order.discounts)}" class="table table-bordered table-striped mb-0">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Name</th>
+                            <th>Code</th>
+                            <th>Type</th>
+                            <th>Value</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr th:each="discount : ${order.discounts}">
+
+                            <td th:text="${discount.discountName}"></td>
+
+                            <td th:text="${discount.discountCode}"></td>
+
+                            <td th:text="${discount.discountType}"></td>
+
+                            <td th:text="${discount.discountValue}"></td>
+
+                        </tr>
+
+                    </tbody>
 
                 </table>
 
-                <!-- DISCOUNTS -->
-                <div class="mb-4">
+            </div>
 
-                    <h4>Discounts</h4>
+        </div>
 
-                    <ul class="list-group">
+        <!-- ORDER ITEMS -->
+        <div class="card">
 
-                        <li class="list-group-item" th:each="discount : ${order.discounts}"
-                            th:text="${discount.discountName}">
+            <div class="card-header d-flex justify-content-between align-items-center">
 
-                        </li>
+                <span>
+                    Order Items
+                </span>
 
-                    </ul>
+                <a th:href="@{/order-items/create/{id}(id=${order.orderId})}" class="btn btn-primary btn-sm">
 
-                </div>
+                    Add Item
 
-                <!-- ORDER ITEMS -->
-                <div class="mb-4">
+                </a>
 
-                    <h4>Order Items</h4>
+            </div>
 
-                    <table class="table table-bordered">
+            <div class="card-body p-0">
 
-                        <thead class="table-light">
+                <table class="table table-bordered table-striped mb-0">
 
-                            <tr>
+                    <thead>
 
-                                <th>Product</th>
-                                <th>Quantity</th>
-                                <th>Total Price</th>
+                        <tr>
 
-                            </tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Total Price</th>
+                            <th>Actions</th>
 
-                        </thead>
+                        </tr>
 
-                        <tbody>
+                    </thead>
 
-                            <tr th:each="item : ${order.orderItems}">
+                    <tbody>
 
-                                <td th:text="${item.product.productName}"></td>
+                        <tr th:each="item : ${order.orderItems}">
 
-                                <td th:text="${item.quantity}"></td>
+                            <td th:text="${item.product.productName}"></td>
 
-                                <td th:text="${item.totalPrice}"></td>
+                            <td th:text="${item.quantity}"></td>
 
-                            </tr>
+                            <td th:text="${item.totalPrice}"></td>
 
-                        </tbody>
+                            <td>
 
-                    </table>
+                                <a th:href="@{/order-items/edit/{id}(id=${item.orderItemId})}"
+                                    class="btn btn-warning btn-sm">
 
-                </div>
+                                    Edit
 
-                <div class="d-flex gap-2">
+                                </a>
 
-                    <a th:href="@{/orders/edit/{id}(id=${order.orderId})}" class="btn btn-warning">
+                                <form th:action="@{/order-items/delete/{id}(id=${item.orderItemId})}" method="post"
+                                    style="display:inline-block">
 
-                        Edit
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-                    </a>
+                                    <button type="submit" class="btn btn-danger btn-sm">
 
-                    <form th:action="@{/orders/delete/{id}(id=${order.orderId})}" method="post">
+                                        Delete
 
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                    </button>
 
-                        <button type="submit" class="btn btn-danger">
+                                </form>
 
-                            Delete
+                            </td>
 
-                        </button>
+                        </tr>
 
-                    </form>
+                        <tr th:if="${#lists.isEmpty(order.orderItems)}">
 
-                </div>
+                            <td colspan="4" class="text-center text-muted py-4">
+
+                                No items found
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
 
             </div>
 

@@ -8,28 +8,27 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.dto.RegisterRequest;
 import com.example.exception.ResourceNotFoundException;
 import com.example.model.AppUser;
 import com.example.model.MyUserDetail;
+import com.example.model.Role;
+import com.example.model.enums.RoleType;
+import com.example.repository.RoleRepository;
 import com.example.repository.UserRepository;
 import com.example.service_interface.UserService;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,
-            EntityManager entityManager) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
+            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
-        this.entityManager = entityManager;
     }
 
     @Override
@@ -64,5 +63,45 @@ public class UserServiceImpl implements UserService {
         Optional<AppUser> user = userRepository.findByUsername(userName);
         return new MyUserDetail(
                 user.orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + userName)));
+    }
+
+    @Override
+    public void editUser(Integer id, AppUser user) {
+        if (id == null || user == null)
+            return;
+
+        userRepository.findById(id).ifPresent(existingUser -> {
+
+            existingUser.setUsername(user.getUsername());
+            existingUser.setEmail(user.getEmail());
+            existingUser.setRole(user.getRole());
+
+            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+                existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+            }
+
+            userRepository.save(existingUser);
+        });
+    }
+
+    @Override
+    public void registerUser(RegisterRequest request) {
+
+        AppUser user = new AppUser();
+
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        System.out.println("Registering user without role: " + user);
+
+        Role customerRole = roleRepository.findByRoleType(RoleType.CUSTOMER)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found with name: CUSTOMER"));
+
+        user.setRole(customerRole);
+
+        System.out.println("Registering user: " + user);
+
+        userRepository.save(user);
     }
 }

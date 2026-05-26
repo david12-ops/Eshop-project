@@ -12,14 +12,15 @@
 
     <div class="container mt-4">
 
-        <!-- HEADER -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <h1>Discounts</h1>
 
             <div class="d-flex gap-2">
 
-                <a href="javascript:history.back()" class="btn btn-secondary">
+                <a th:href="@{/}" class="btn btn-secondary">
 
-                    Back
+                    Home
 
                 </a>
 
@@ -31,19 +32,12 @@
 
             </div>
 
-            <h1 class="mb-0">
-                Discounts
-            </h1>
-
         </div>
 
-        <!-- TABLE -->
-        <table class="table table-bordered table-striped table-hover align-middle">
+        <table class="table table-bordered table-striped">
 
-            <thead class="table-dark">
-
+            <thead>
                 <tr>
-
                     <th>ID</th>
                     <th>Name</th>
                     <th>Code</th>
@@ -53,9 +47,7 @@
                     <th>Valid To</th>
                     <th>Created At</th>
                     <th>Actions</th>
-
                 </tr>
-
             </thead>
 
             <tbody>
@@ -80,35 +72,30 @@
 
                     <td>
 
-                        <div class="d-flex gap-1">
+                        <a th:href="@{/discounts/detail/{id}(id=${discount.discountId})}" class="btn btn-info btn-sm">
 
-                            <a th:href="@{/discounts/detail/{id}(id=${discount.discountId})}"
-                                class="btn btn-info btn-sm">
+                            Detail
 
-                                Detail
+                        </a>
 
-                            </a>
+                        <a th:href="@{/discounts/edit/{id}(id=${discount.discountId})}" class="btn btn-warning btn-sm">
 
-                            <a th:href="@{/discounts/edit/{id}(id=${discount.discountId})}"
-                                class="btn btn-warning btn-sm">
+                            Edit
 
-                                Edit
+                        </a>
 
-                            </a>
+                        <form th:action="@{/discounts/delete/{id}(id=${discount.discountId})}" method="post"
+                            style="display:inline-block">
 
-                            <form th:action="@{/discounts/delete/{id}(id=${discount.discountId})}" method="post">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <button type="submit" class="btn btn-danger btn-sm">
 
-                                <button type="submit" class="btn btn-danger btn-sm">
+                                Delete
 
-                                    Delete
+                            </button>
 
-                                </button>
-
-                            </form>
-
-                        </div>
+                        </form>
 
                     </td>
 
