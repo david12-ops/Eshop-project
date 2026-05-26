@@ -5,6 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.model.Discount;
+import com.example.model.enums.DiscountType;
 import com.example.service_interface.DiscountService;
 
 @Controller
@@ -69,9 +70,10 @@ public class DiscountController {
 
         Discount discount = discountService.getDiscountById(id);
 
-        model.addAttribute(
-                "discount",
-                discount);
+        System.out.println("Editing discount: " + discount.toString());
+
+        model.addAttribute("discount", discount);
+        model.addAttribute("discountTypes", DiscountType.values());
 
         return "discounts/edit";
     }

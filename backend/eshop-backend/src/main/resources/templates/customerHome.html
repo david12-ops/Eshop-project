@@ -1,8 +1,5 @@
-# E-Shop Customer Homepage (Thymeleaf + Bootstrap)
-
-```html
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -23,9 +20,7 @@
         <div class="container">
 
             <a class="navbar-brand fw-bold" th:href="@{/}">
-
                 My E-Shop
-
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -42,9 +37,7 @@
                     <input class="form-control me-2" type="search" name="keyword" placeholder="Search products...">
 
                     <button class="btn btn-outline-light" type="submit">
-
                         Search
-
                     </button>
 
                 </form>
@@ -81,23 +74,21 @@
                     </a>
 
                     <!-- LOGIN -->
-                    <a th:if="${#authorization.expression('!isAuthenticated()')}" th:href="@{/login}"
-                        class="btn btn-outline-info">
+                    <a sec:authorize="isAnonymous()" th:href="@{/login}" class="btn btn-outline-info">
 
                         Login
 
                     </a>
 
                     <!-- REGISTER -->
-                    <a th:if="${#authorization.expression('!isAuthenticated()')}" th:href="@{/register}"
-                        class="btn btn-success">
+                    <a sec:authorize="isAnonymous()" th:href="@{/register}" class="btn btn-success">
 
                         Register
 
                     </a>
 
                     <!-- USER MENU -->
-                    <div th:if="${#authorization.expression('isAuthenticated()')}" class="dropdown">
+                    <div sec:authorize="isAuthenticated()" class="dropdown">
 
                         <button class="btn btn-outline-light dropdown-toggle" data-bs-toggle="dropdown">
 
@@ -251,13 +242,16 @@
                         <!-- BUTTONS -->
                         <div class="d-grid gap-2">
 
-                            <a th:href="@{/products/detail/{id}(id=${product.id})}" class="btn btn-outline-primary">
+                            <!-- DETAIL -->
+                            <a th:href="@{/products/detail/{id}(id=${product.productId})}"
+                                class="btn btn-outline-primary">
 
                                 Detail
 
                             </a>
 
-                            <form th:action="@{/cart/add/{id}(id=${product.id})}" method="post">
+                            <!-- ADD TO CART -->
+                            <form th:action="@{/cart/add/{id}(id=${product.productId})}" method="post">
 
                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
@@ -271,7 +265,8 @@
 
                             </form>
 
-                            <form th:action="@{/favorites/add/{id}(id=${product.id})}" method="post">
+                            <!-- ADD TO FAVORITES -->
+                            <form th:action="@{/favorites/add/{id}(id=${product.productId})}" method="post">
 
                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
@@ -319,34 +314,3 @@
 </body>
 
 </html>
-```
-
-# Controller Example
-
-```java
-@GetMapping("/")
-public String home(Model model) {
-
-model.addAttribute("products", productService.getFeaturedProducts());
-
-model.addAttribute("cartItemCount", 0);
-
-model.addAttribute("favoriteCount", 0);
-
-return "home";
-}
-```
-
-# Main Features
-
-* Responsive Bootstrap layout
-* Login/Register buttons
-* Favorites button with counter
-* Cart button with counter
-* Search bar
-* Product cards
-* Add to cart
-* Add to favorites
-* Account dropdown for authenticated users
-* Hero section
-* Footer

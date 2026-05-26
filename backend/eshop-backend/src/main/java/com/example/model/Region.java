@@ -110,4 +110,18 @@ public class Region {
     public void setUpdatedBy(Integer updatedBy) {
         this.updatedBy = updatedBy;
     }
+
+    @Override
+    public String toString() {
+        return "Region{" +
+                "regionId=" + regionId +
+                ", regionName='" + regionName + '\'' +
+                ", currency=" + (currency != null ? currency.getCurrencyCode() : "null") +
+                ", symbol=" + (currency != null ? currency.getSymbol() : "null") +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", createdBy=" + createdBy +
+                ", updatedBy=" + updatedBy +
+                '}';
+    }
 }

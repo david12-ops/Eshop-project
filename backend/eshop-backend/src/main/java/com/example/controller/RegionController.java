@@ -69,6 +69,8 @@ public class RegionController {
 
         Region region = regionService.getRegionById(id);
 
+        System.out.println("Editing region: " + region.toString());
+
         model.addAttribute(
                 "region",
                 region);

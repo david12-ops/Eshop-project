@@ -67,28 +67,6 @@
 
                 </table>
 
-                <div class="d-flex gap-2">
-
-                    <a th:href="@{/regions/edit/{id}(id=${region.regionId})}" class="btn btn-warning">
-
-                        Edit
-
-                    </a>
-
-                    <form th:action="@{/regions/delete/{id}(id=${region.regionId})}" method="post">
-
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-
-                        <button type="submit" class="btn btn-danger">
-
-                            Delete
-
-                        </button>
-
-                    </form>
-
-                </div>
-
             </div>
 
         </div>

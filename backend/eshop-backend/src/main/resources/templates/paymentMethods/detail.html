@@ -62,28 +62,6 @@
 
                 </table>
 
-                <div class="d-flex gap-2">
-
-                    <a th:href="@{/paymentMethods/edit/{id}(id=${paymentMethod.id})}" class="btn btn-warning">
-
-                        Edit
-
-                    </a>
-
-                    <form th:action="@{/paymentMethods/delete/{id}(id=${paymentMethod.id})}" method="post">
-
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-
-                        <button type="submit" class="btn btn-danger">
-
-                            Delete
-
-                        </button>
-
-                    </form>
-
-                </div>
-
             </div>
 
         </div>

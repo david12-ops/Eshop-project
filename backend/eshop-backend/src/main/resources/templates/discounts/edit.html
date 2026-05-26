@@ -61,7 +61,7 @@
 
                         <select th:field="*{discountType}" class="form-select">
 
-                            <option th:each="type : ${discountTypes}" th:value="${type}" th:text="${type}">
+                            <option th:each="type : ${discountTypes}" th:value="${type.name()}" th:text="${type}">
                             </option>
 
                         </select>
@@ -96,7 +96,8 @@
                                 Valid From
                             </label>
 
-                            <input type="date" th:field="*{validFrom}" class="form-control">
+                            <input type="date" th:value="${#temporals.format(discount.validFrom, 'yyyy-MM-dd')}"
+                                name="validFrom" class="form-control">
 
                         </div>
 
@@ -106,7 +107,8 @@
                                 Valid To
                             </label>
 
-                            <input type="date" th:field="*{validTo}" class="form-control">
+                            <input type="date" th:value="${#temporals.format(discount.validTo, 'yyyy-MM-dd')}"
+                                name="validTo" class="form-control">
 
                         </div>
 

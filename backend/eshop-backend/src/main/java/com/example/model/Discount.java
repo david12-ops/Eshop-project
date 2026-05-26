@@ -167,4 +167,22 @@ public class Discount {
     public void setUpdatedBy(Integer updatedBy) {
         this.updatedBy = updatedBy;
     }
+
+    @Override
+    public String toString() {
+        return "Discount{" +
+                "discountId=" + discountId +
+                ", discountName='" + discountName + '\'' +
+                ", discountCode='" + discountCode + '\'' +
+                ", discountType=" + discountType +
+                ", discountValue=" + discountValue +
+                ", discountDescription='" + discountDescription + '\'' +
+                ", validFrom=" + validFrom +
+                ", validTo=" + validTo +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", createdBy=" + createdBy +
+                ", updatedBy=" + updatedBy +
+                '}';
+    };
 }
