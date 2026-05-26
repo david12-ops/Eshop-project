@@ -7,9 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.example.model.Role;
+import com.example.model.enums.RoleType;
 
 public interface RoleRepository extends JpaRepository<Role, Integer> {
     Optional<Role> findByRoleName(String roleName);
+
+    Optional<Role> findByRoleType(RoleType roleType);
 
     @Query("""
                 SELECT DISTINCT r
