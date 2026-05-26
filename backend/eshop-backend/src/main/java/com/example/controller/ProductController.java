@@ -1,7 +1,6 @@
 package com.example.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +10,6 @@ import com.example.service_interface.ProductService;
 
 @Controller
 @RequestMapping("/products")
-@Transactional
 public class ProductController {
         private final ProductService productService;
 

@@ -12,11 +12,9 @@ import com.example.model.AppUser;
 import com.example.service_interface.RoleService;
 import com.example.service_interface.UserService;
 
-// @RestController
 @Controller
 @RequestMapping("/users")
 public class UserController {
-
     private final UserService userService;
     private final RoleService roleService;
 
@@ -88,9 +86,7 @@ public class UserController {
             @PathVariable Integer id,
             @ModelAttribute AppUser user) {
 
-        user.setId(id);
-
-        userService.saveUser(user);
+        userService.editUser(id, user);
 
         return "redirect:/users";
     }
