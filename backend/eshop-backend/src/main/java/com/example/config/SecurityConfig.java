@@ -44,7 +44,7 @@ public class SecurityConfig {
                                                                 "/",
                                                                 "/login",
                                                                 "/register",
-                                                                "/errors/**",
+                                                                "/error/**",
                                                                 "/css/**",
                                                                 "/js/**",
                                                                 "/images/**")
@@ -55,12 +55,24 @@ public class SecurityConfig {
                                                                 "/adminHome/**",
                                                                 "/users/**",
                                                                 "/roles/**",
-                                                                "/appPermissions/**",
-                                                                "/errors/**")
+                                                                "/app-permissions/**",
+                                                                "/error/**",
+                                                                "/products/**",
+                                                                "/addresses/**",
+                                                                "/categories/**",
+                                                                "/currencies/**",
+                                                                "/customers/**",
+                                                                "/discounts/**",
+                                                                "/invoices/**",
+                                                                "/orders/**",
+                                                                "/orderStatuses/**",
+                                                                "/paymentMethods/**",
+                                                                "/regions/**")
                                                 .hasRole("ADMIN")
 
                                                 // ADMIN + STAFF
                                                 .requestMatchers(
+                                                                "/staffHome/**",
                                                                 "/products/**",
                                                                 "/addresses/**",
                                                                 "/categories/**",
@@ -72,15 +84,15 @@ public class SecurityConfig {
                                                                 "/orderStatuses/**",
                                                                 "/paymentMethods/**",
                                                                 "/regions/**",
-                                                                "/errors/**")
-                                                .hasAnyRole("ADMIN", "STAFF")
+                                                                "/error/**")
+                                                .hasRole("STAFF")
 
                                                 // CUSTOMER
                                                 .requestMatchers(
                                                                 "/customerHome/**",
                                                                 "/cart/**",
                                                                 "/wishlist/**",
-                                                                "/errors/**")
+                                                                "/error/**")
                                                 .hasRole("CUSTOMER")
 
                                                 .anyRequest()
