@@ -50,10 +50,15 @@
                             Customer
                         </label>
 
-                        <select th:field="*{customer}" class="form-select">
+                        <select th:field="*{customer.customerId}" class="form-select">
 
-                            <option th:each="customer : ${customers}" th:value="${customer.id}"
-                                th:text="${customer.firstName + ' ' + customer.lastName}">
+                            <option th:if="${#lists.isEmpty(customers)}" value="">
+                                No Available
+                            </option>
+
+                            <option th:each="customer : ${customers}" th:value="${customer.customerId}" th:text="${!#strings.isEmpty(customer.branchName)
+                    ? customer.branchName
+                    : customer.firstName + ' ' + customer.lastName}">
                             </option>
 
                         </select>
@@ -67,10 +72,10 @@
                             Status
                         </label>
 
-                        <select th:field="*{status}" class="form-select">
+                        <select th:field="*{status.id}" class="form-select">
 
-                            <option value="">
-                                -- No Status --
+                            <option th:if="${#lists.isEmpty(statuses)}" value=""></option>
+                            No Available
                             </option>
 
                             <option th:each="status : ${statuses}" th:value="${status.id}"
@@ -88,15 +93,17 @@
                             Currency
                         </label>
 
-                        <div class="input-group">
+                        <select th:field="*{currency.currencyCode}" class="form-select">
 
-                            <span class="input-group-text" th:text="*{region.symbol}">
-                                Kč
-                            </span>
+                            <option th:if="${#lists.isEmpty(currencies)}" value="">
+                                No Available
+                            </option>
 
-                            <input type="text" th:field="*{currency}" class="form-control" readonly />
+                            <option th:each="currency : ${currencies}" th:value="${currency.currencyCode}"
+                                th:text="${currency.currencyCode + ' - ' + currency.currencyName}">
+                            </option>
 
-                        </div>
+                        </select>
 
                     </div>
 
@@ -107,7 +114,11 @@
                             Delivery Address
                         </label>
 
-                        <select th:field="*{deliveryAddress}" class="form-select">
+                        <select th:field="*{deliveryAddress.id}" class="form-select">
+
+                            <option th:if="${#lists.isEmpty(addresses)}" value=""></option>
+                            No Available
+                            </option>
 
                             <option th:each="address : ${addresses}" th:value="${address.id}"
                                 th:text="${address.streetName + ', ' + address.cityName}">

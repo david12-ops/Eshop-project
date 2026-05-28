@@ -41,6 +41,10 @@
 
                         <select th:field="*{role}" class="form-select" required>
 
+                            <option th:if="${#lists.isEmpty(roles)}" value="">
+                                No Available
+                            </option>
+
                             <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.roleName}">
                             </option>
 

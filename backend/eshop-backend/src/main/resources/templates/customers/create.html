@@ -70,6 +70,10 @@
 
                 <select class="form-select" th:field="*{customerAddress}">
 
+                    <option th:if="${#lists.isEmpty(addresses)}" value="">
+                        No Available
+                    </option>
+
                     <option th:each="address : ${addresses}" th:value="${address.id}"
                         th:text="${address.streetName + ', ' + address.cityName}">
                     </option>

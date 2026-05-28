@@ -19,9 +19,9 @@
 
             <div class="d-flex gap-2">
 
-                <a th:href="@{/}" class="btn btn-secondary">
+                <a th:href="@{/orders}" class="btn btn-secondary">
 
-                    Home
+                    Back
 
                 </a>
 
@@ -304,9 +304,8 @@
 
                                 </a>
 
-                                <form
-                                    th:action="@{/order-items/delete/{id}(id=${item.orderItemId})/{orderId}(orderId=${order.orderId})}"
-                                    method="post" style="display:inline-block">
+                                <form th:action="@{/order-items/delete/{id}(id=${item.orderItemId})}" method="post"
+                                    style="display:inline-block">
 
                                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 

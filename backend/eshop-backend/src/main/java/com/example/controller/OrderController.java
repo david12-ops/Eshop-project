@@ -5,6 +5,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.model.Order;
+import com.example.service_interface.AddressService;
+import com.example.service_interface.CurrencyService;
+import com.example.service_interface.CustomerService;
 import com.example.service_interface.OrderService;
 import com.example.service_interface.OrderStatusService;
 
@@ -13,10 +16,18 @@ import com.example.service_interface.OrderStatusService;
 public class OrderController {
     private final OrderService orderService;
     private final OrderStatusService orderStatusService;
+    private final CustomerService customerService;
+    private final CurrencyService currencyService;
+    private final AddressService addressService;
 
-    public OrderController(OrderService orderService, OrderStatusService orderStatusService) {
+    public OrderController(OrderService orderService, OrderStatusService orderStatusService,
+            CustomerService customerService,
+            CurrencyService currencyService, AddressService addressService) {
         this.orderService = orderService;
         this.orderStatusService = orderStatusService;
+        this.customerService = customerService;
+        this.currencyService = currencyService;
+        this.addressService = addressService;
     }
 
     // LIST
@@ -50,7 +61,11 @@ public class OrderController {
         model.addAttribute(
                 "order",
                 new Order());
+
         model.addAttribute("statuses", orderStatusService.getAllOrderStatuses());
+        model.addAttribute("customers", customerService.getAllCustomers());
+        model.addAttribute("currencies", currencyService.getAllCurrencies());
+        model.addAttribute("addresses", addressService.getAllAddresses());
 
         return "orders/create";
     }
@@ -76,7 +91,11 @@ public class OrderController {
         model.addAttribute(
                 "order",
                 order);
+
         model.addAttribute("statuses", orderStatusService.getAllOrderStatuses());
+        model.addAttribute("customers", customerService.getAllCustomers());
+        model.addAttribute("currencies", currencyService.getAllCurrencies());
+        model.addAttribute("addresses", addressService.getAllAddresses());
 
         return "orders/edit";
     }

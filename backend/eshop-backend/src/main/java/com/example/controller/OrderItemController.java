@@ -4,16 +4,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.model.Order;
 import com.example.model.OrderItem;
 import com.example.service_interface.OrderItemService;
+import com.example.service_interface.OrderService;
 
 @Controller
 @RequestMapping("/order-items")
 public class OrderItemController {
     private final OrderItemService orderItemService;
+    private final OrderService orderService;
 
-    public OrderItemController(OrderItemService orderItemService) {
+    public OrderItemController(OrderItemService orderItemService, OrderService orderService) {
         this.orderItemService = orderItemService;
+        this.orderService = orderService;
     }
 
     // DETAIL
@@ -39,6 +43,10 @@ public class OrderItemController {
 
         OrderItem orderItem = new OrderItem();
 
+        Order order = orderService.getOrderWithItems(orderId);
+
+        orderItem.setOrder(order);
+
         model.addAttribute(
                 "orderItem",
                 orderItem);
@@ -54,7 +62,7 @@ public class OrderItemController {
 
         orderItemService.saveOrderItem(orderItem);
 
-        return "redirect:/order-items";
+        return "redirect:/orders/detail/" + orderId;
     }
 
     // EDIT FORM
@@ -78,9 +86,11 @@ public class OrderItemController {
             @PathVariable Integer id,
             @ModelAttribute OrderItem orderItem) {
 
+        Integer orderId = orderItem.getOrder().getOrderId();
+
         orderItemService.editOrderItem(id, orderItem);
 
-        return "redirect:/order-items";
+        return "redirect:/orders/detail/" + orderId;
     }
 
     // DELETE
@@ -88,8 +98,12 @@ public class OrderItemController {
     public String deleteOrderItem(
             @PathVariable Integer id) {
 
+        OrderItem orderItem = orderItemService.getOrderItemById(id);
+
+        Integer orderId = orderItem.getOrder().getOrderId();
+
         orderItemService.deleteOrderItemById(id);
 
-        return "redirect:/order-items";
+        return "redirect:/orders/detail/" + orderId;
     }
 }

@@ -5,15 +5,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.model.Region;
+import com.example.service_interface.CurrencyService;
 import com.example.service_interface.RegionService;
 
 @Controller
 @RequestMapping("/regions")
 public class RegionController {
     private final RegionService regionService;
+    private final CurrencyService currencyService;
 
-    public RegionController(RegionService regionService) {
+    public RegionController(RegionService regionService, CurrencyService currencyService) {
         this.regionService = regionService;
+        this.currencyService = currencyService;
     }
 
     // LIST
@@ -47,6 +50,7 @@ public class RegionController {
         model.addAttribute(
                 "region",
                 new Region());
+        model.addAttribute("currencies", currencyService.getAllCurrencies());
 
         return "regions/create";
     }
@@ -74,6 +78,7 @@ public class RegionController {
         model.addAttribute(
                 "region",
                 region);
+        model.addAttribute("currencies", currencyService.getAllCurrencies());
 
         return "regions/edit";
     }
