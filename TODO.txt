@@ -38,3 +38,35 @@ order_discounts
 invoice_discounts
 invoice_items
 order_items z resource_type z app_permissions
+
+pro vsechny modely
+
+udělat registraci, staff a customer package
+u staff natahat oprávnění a proštouchat to k view
+
+pro všechny model, repo, service, controller
+
+pak dělat endpointy a tak zabranovat 
+@PreAuthorize("hasAuthority('ORDER_UPDATE')")
+public void updateOrder() {
+}
+
+nebo 
+
+.requestMatchers("/products/delete/**")
+.hasAuthority("PRODUCT_DELETE")
+
+ale spiš první varianta
+
+vyřešit mazání - zatím nezkoušet
+upravit to aby default bylo customer a tam uz by měl poznat, kam přesměrovat
+v db pak kontrola na to že user má práva s entitou pracovat
+
+přiřazování na potom product a a category, i u ostatních, vyřešit líp created_by a updated_by
+divné přihlašování u staffa, admina, customera
+
+region check, orders kvůli currency
+
+
+Detail: Key (discount_type, discount_value)=(FIXED_AMOUNT, 250.00) already exists. - muj debilni constraint na duplikaci slev - asi pryc s tím
+
