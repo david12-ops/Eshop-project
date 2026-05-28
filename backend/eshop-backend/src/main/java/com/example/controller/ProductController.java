@@ -1,10 +1,13 @@
 package com.example.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.model.Product;
+import com.example.dto.ProductCardDto;
 import com.example.service_interface.CategoryService;
 import com.example.service_interface.ProductService;
 
@@ -82,6 +85,14 @@ public class ProductController {
                 productService.editProduct(id, product);
 
                 return "redirect:/products";
+        }
+
+        @GetMapping("/api/products/featured")
+        @ResponseBody
+        public List<ProductCardDto> getFeaturedProducts() {
+
+                return productService.getFeaturedProducts();
+
         }
 
         @PostMapping("/delete/{id}")

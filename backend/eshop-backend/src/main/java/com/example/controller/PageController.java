@@ -1,12 +1,20 @@
 package com.example.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import com.example.service_interface.ProductService;
 
 import org.springframework.security.core.Authentication;
 
 @Controller
 public class PageController {
+    private final ProductService productService;
+
+    public PageController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @GetMapping("/login")
     public String login() {
@@ -44,7 +52,11 @@ public class PageController {
     }
 
     @GetMapping("/customerHome")
-    public String customerHome() {
+    public String customerHome(Model model) {
+
+        model.addAttribute(
+                "products",
+                productService.getFeaturedProducts());
 
         return "customerHome";
     }

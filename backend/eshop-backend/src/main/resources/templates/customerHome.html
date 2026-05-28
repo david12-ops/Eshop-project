@@ -161,12 +161,6 @@
                 Discover the best products at the best prices.
             </p>
 
-            <a th:href="@{/products}" class="btn btn-light btn-lg px-4">
-
-                Browse Products
-
-            </a>
-
         </div>
 
     </section>
@@ -184,95 +178,46 @@
 
         <div class="row g-4">
 
-            <!-- PRODUCT CARD -->
             <div class="col-md-6 col-lg-4 col-xl-3" th:each="product : ${products}">
 
-                <div class="card h-100 shadow-sm border-0">
+                <div class="card h-100 shadow-sm border-0 product-card">
 
                     <!-- IMAGE -->
                     <img th:src="${product.imageUrl}" class="card-img-top" alt="Product Image"
-                        style="height: 250px; object-fit: cover;">
+                        style="height:250px;object-fit:cover;">
 
                     <div class="card-body d-flex flex-column">
 
                         <!-- NAME -->
                         <h5 class="card-title fw-bold" th:text="${product.productName}">
-
-                            Product Name
-
                         </h5>
 
                         <!-- CATEGORY -->
-                        <p class="text-muted mb-2" th:text="${product.category.categoryName}">
-
-                            Category
-
+                        <p class="text-muted mb-2"
+                            th:text="${product.categoryName != null ? product.categoryName : 'No Category'}">
                         </p>
 
                         <!-- DESCRIPTION -->
                         <p class="card-text small text-muted flex-grow-1" th:text="${product.shortDescription}">
-
-                            Product Description
-
                         </p>
 
                         <!-- PRICE -->
                         <div class="mb-3">
 
                             <span class="fs-4 fw-bold text-success" th:text="${product.price}">
-
-                                0.00
-
-                            </span>
-
-                            <span class="text-muted" th:text="${product.currency.symbol}">
-
-                                $
-
                             </span>
 
                         </div>
 
-                        <!-- BUTTONS -->
+                        <!-- BUTTON -->
                         <div class="d-grid gap-2">
 
-                            <!-- DETAIL -->
                             <a th:href="@{/products/detail/{id}(id=${product.productId})}"
                                 class="btn btn-outline-primary">
 
                                 Detail
 
                             </a>
-
-                            <!-- ADD TO CART -->
-                            <form th:action="@{/cart/add/{id}(id=${product.productId})}" method="post">
-
-                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-
-                                <button type="submit" class="btn btn-warning w-100">
-
-                                    <i class="bi bi-cart-plus"></i>
-
-                                    Add to Cart
-
-                                </button>
-
-                            </form>
-
-                            <!-- ADD TO FAVORITES -->
-                            <form th:action="@{/favorites/add/{id}(id=${product.productId})}" method="post">
-
-                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-
-                                <button type="submit" class="btn btn-outline-danger w-100">
-
-                                    <i class="bi bi-heart"></i>
-
-                                    Add to Favorites
-
-                                </button>
-
-                            </form>
 
                         </div>
 
@@ -285,6 +230,17 @@
         </div>
 
     </div>
+
+    <style>
+        .product-card {
+            transition: all 0.2s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+    </style>
 
     <!-- FOOTER -->
     <footer class="bg-dark text-light py-4 mt-5">

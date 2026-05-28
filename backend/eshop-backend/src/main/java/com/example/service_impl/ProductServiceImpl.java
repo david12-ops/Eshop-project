@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.dto.ProductCardDto;
 import com.example.exception.ResourceNotFoundException;
 import com.example.model.Category;
 import com.example.model.Product;
@@ -86,5 +87,19 @@ public class ProductServiceImpl implements ProductService {
 
             productRepository.save(existingProduct);
         });
+    }
+
+    @Override
+    public List<ProductCardDto> getFeaturedProducts() {
+        return productRepository.findTop12ByOrderByCreatedAtDesc()
+                .stream().filter(pr -> !pr.getDeleted())
+                .map(product -> new ProductCardDto(
+                        product.getId(),
+                        product.getProductName(),
+                        product.getProductDescription(),
+                        product.getRecommendedPrice(),
+                        product.getCategory().getCategoryName(),
+                        product.getProductImageUrl()))
+                .toList();
     }
 }
