@@ -32,57 +32,40 @@
 
                     <tr>
                         <th>ID</th>
-                        <td th:text="${status.id}"></td>
+                        <td th:text="${orderStatus.id}"></td>
                     </tr>
 
                     <tr>
                         <th>Status Name</th>
-                        <td th:text="${status.statusName}"></td>
+                        <td th:text="${orderStatus.statusName}"></td>
                     </tr>
 
                     <tr>
                         <th>Status Type</th>
-                        <td th:text="${status.statusType}"></td>
+                        <td th:text="${orderStatus.statusType}"></td>
                     </tr>
 
                     <tr>
                         <th>Description</th>
-                        <td th:text="${status.statusDescription}"></td>
+                        <td th:text="${orderStatus.statusDescription}"></td>
                     </tr>
 
                     <tr>
                         <th>Created At</th>
-                        <td th:text="${status.createdAt}"></td>
+                        <td th:text="${orderStatus.createdAt}"></td>
                     </tr>
 
                     <tr>
                         <th>Updated At</th>
-                        <td th:text="${status.updatedAt}"></td>
+                        <td th:text="${orderStatus.updatedAt}"></td>
+                    </tr>
+
+                    <tr>
+                        <th>Deleted At</th>
+                        <td th:text="${orderStatus.deletedAt != null ? orderStatus.deletedAt : '-'}"></td>
                     </tr>
 
                 </table>
-
-                <div class="d-flex gap-2">
-
-                    <a th:href="@{/orderStatuses/edit/{id}(id=${status.id})}" class="btn btn-warning">
-
-                        Edit
-
-                    </a>
-
-                    <form th:action="@{/orderStatuses/delete/{id}(id=${status.id})}" method="post">
-
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-
-                        <button type="submit" class="btn btn-danger">
-
-                            Delete
-
-                        </button>
-
-                    </form>
-
-                </div>
 
             </div>
 

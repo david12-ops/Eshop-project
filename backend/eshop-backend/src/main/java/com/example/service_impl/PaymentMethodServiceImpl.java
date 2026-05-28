@@ -41,7 +41,13 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
         if (id == null)
             return;
 
-        paymentMethodRepository.findById(id).ifPresent(paymentMethod -> paymentMethodRepository.deleteById(id));
+        // zatím ne
+        paymentMethodRepository.findById(id).ifPresent(paymentMethod -> {
+            if (paymentMethod.getDeleted())
+                return; // tady jen soft kvůli klíčům
+
+            paymentMethodRepository.softDeleteById(id);
+        });
     }
 
     @Override

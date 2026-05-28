@@ -46,6 +46,7 @@
                     <th>Valid From</th>
                     <th>Valid To</th>
                     <th>Created At</th>
+                    <th>Deleted</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -69,6 +70,8 @@
                     <td th:text="${discount.validTo}"></td>
 
                     <td th:text="${discount.createdAt}"></td>
+
+                    <td th:text="${discount.deleted ? 'Deleted' : 'Active'}"></td>
 
                     <td>
 

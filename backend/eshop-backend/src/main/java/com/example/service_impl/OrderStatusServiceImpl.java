@@ -41,7 +41,13 @@ public class OrderStatusServiceImpl implements OrderStatusService {
         if (id == null)
             return;
 
-        orderStatusRepository.findById(id).ifPresent(orderStatus -> orderStatusRepository.deleteById(id));
+        // zatím ne
+        orderStatusRepository.findById(id).ifPresent(orderStatus -> {
+            if (orderStatus.getDeleted())
+                return; // tady jen soft kvůli klíčům
+
+            orderStatusRepository.softDeleteById(id);
+        });
     }
 
     @Override

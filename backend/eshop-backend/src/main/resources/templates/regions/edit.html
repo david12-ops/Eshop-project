@@ -50,11 +50,11 @@
 
                         <div class="input-group">
 
-                            <span class="input-group-text" th:text="${currency.symbol}">
+                            <span class="input-group-text" th:text="*{region.symbol}">
                                 Kč
                             </span>
 
-                            <input type="text" th:field="*{currency.currencyCode}" class="form-control" readonly />
+                            <input type="text" th:field="*{currency}" class="form-control" readonly />
 
                         </div>
 

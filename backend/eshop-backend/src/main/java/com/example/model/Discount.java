@@ -15,6 +15,8 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -38,6 +40,7 @@ public class Discount {
     private String discountCode;
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "discount_type", nullable = false)
     private DiscountType discountType;
 
@@ -52,6 +55,12 @@ public class Discount {
 
     @Column(name = "valid_to")
     private LocalDate validTo;
+
+    @Column(name = "deleted", nullable = false, columnDefinition = "BOOLEAN NOT NULL DEFAULT FALSE")
+    private Boolean deleted = false;
+
+    @Column(name = "deleted_at", columnDefinition = "TIMESTAMPTZ")
+    private Instant deletedAt;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -134,6 +143,22 @@ public class Discount {
 
     public void setValidTo(LocalDate validTo) {
         this.validTo = validTo;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public Instant getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Instant deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
     public Instant getCreatedAt() {

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.example.model.PaymentMethod;
+import com.example.model.enums.PaymentMethodType;
 import com.example.service_interface.PaymentMethodService;
 
 @Controller
@@ -46,6 +47,7 @@ public class PaymentMethodController {
         model.addAttribute(
                 "paymentMethod",
                 new PaymentMethod());
+        model.addAttribute("paymentMethodTypes", PaymentMethodType.values());
 
         return "paymentMethods/create";
     }
@@ -71,6 +73,7 @@ public class PaymentMethodController {
         model.addAttribute(
                 "paymentMethod",
                 paymentMethod);
+        model.addAttribute("paymentMethodTypes", PaymentMethodType.values());
 
         return "paymentMethods/edit";
     }

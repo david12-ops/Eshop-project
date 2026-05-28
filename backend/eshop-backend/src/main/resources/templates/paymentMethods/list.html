@@ -43,6 +43,7 @@
                     <th>Method Type</th>
                     <th>Description</th>
                     <th>Created At</th>
+                    <th>Deleted</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -60,6 +61,8 @@
                     <td th:text="${method.methodDescription}"></td>
 
                     <td th:text="${method.createdAt}"></td>
+
+                    <td th:text="${method.deleted ? 'Deleted' : 'Active'}"></td>
 
                     <td>
 

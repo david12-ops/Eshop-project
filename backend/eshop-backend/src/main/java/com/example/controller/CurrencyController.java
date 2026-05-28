@@ -90,9 +90,9 @@ public class CurrencyController {
     // DELETE
     @PostMapping("/delete/{id}")
     public String deleteCurrency(
-            @PathVariable String code) {
+            @PathVariable String id) {
 
-        currencyService.deleteCurrencyById(code);
+        currencyService.deleteCurrencyById(id);
 
         return "redirect:/currencies";
     }

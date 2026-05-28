@@ -43,13 +43,14 @@
                     <th>Status Type</th>
                     <th>Description</th>
                     <th>Created At</th>
+                    <th>Deleted</th>
                     <th>Actions</th>
                 </tr>
             </thead>
 
             <tbody>
 
-                <tr th:each="status : ${statuses}">
+                <tr th:each="status : ${orderStatuses}">
 
                     <td th:text="${status.id}"></td>
 
@@ -60,6 +61,8 @@
                     <td th:text="${status.statusDescription}"></td>
 
                     <td th:text="${status.createdAt}"></td>
+
+                    <td th:text="${status.deleted ? 'Deleted' : 'Active'}"></td>
 
                     <td>
 

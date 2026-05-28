@@ -2,6 +2,8 @@ package com.example.model;
 
 import java.time.Instant;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -26,11 +28,18 @@ public class OrderStatus {
     private String statusName;
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "status_type", nullable = false)
     private OrderStatusType statusType;
 
     @Column(name = "status_description", columnDefinition = "TEXT")
     private String statusDescription;
+
+    @Column(name = "deleted", nullable = false, columnDefinition = "BOOLEAN NOT NULL DEFAULT FALSE")
+    private Boolean deleted = false;
+
+    @Column(name = "deleted_at", columnDefinition = "TIMESTAMPTZ")
+    private Instant deletedAt;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -83,6 +92,22 @@ public class OrderStatus {
         this.statusDescription = statusDescription;
     }
 
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public Instant getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Instant deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
     public Instant getCreatedAt() {
         return createdAt;
     }
@@ -113,5 +138,19 @@ public class OrderStatus {
 
     public void setUpdatedBy(Integer updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderStatus{" +
+                "id=" + id +
+                ", statusName='" + statusName + '\'' +
+                ", statusType=" + statusType +
+                ", statusDescription='" + statusDescription + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", createdBy=" + createdBy +
+                ", updatedBy=" + updatedBy +
+                '}';
     }
 }

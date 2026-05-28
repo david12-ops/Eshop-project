@@ -43,7 +43,13 @@ public class OrderServiceImpl implements OrderService {
         if (id == null)
             return;
 
-        orderRepository.findById(id).ifPresent(order -> orderRepository.deleteById(id));
+        // zatím ne
+        orderRepository.findById(id).ifPresent(order -> {
+            if (order.getDeleted())
+                return; // tady jen soft kvůli klíčům
+
+            orderRepository.softDeleteById(id);
+        });
     }
 
     @Override

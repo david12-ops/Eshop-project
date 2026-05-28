@@ -46,6 +46,7 @@
                     <th>Country</th>
                     <th>Region</th>
                     <th>Created At</th>
+                    <th>Deleted</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -69,6 +70,8 @@
                     <td th:text="${address.region != null ? address.region.regionName : '-'}"></td>
 
                     <td th:text="${address.createdAt}"></td>
+
+                    <td th:text="${address.deleted ? 'Deleted' : 'Active'}"></td>
 
                     <td>
 

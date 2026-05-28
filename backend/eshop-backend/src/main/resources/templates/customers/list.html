@@ -44,6 +44,7 @@
                     <th>Last Name</th>
                     <th>Phone Number</th>
                     <th>User</th>
+                    <th>Deleted</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -52,7 +53,7 @@
 
                 <tr th:each="customer : ${customers}">
 
-                    <td th:text="${customer.id}"></td>
+                    <td th:text="${customer.customerId}"></td>
 
                     <td th:text="${customer.branchName}"></td>
 
@@ -62,20 +63,24 @@
 
                     <td th:text="${customer.phoneNumber}"></td>
 
-                    <td th:text="${customer.user != null ? customer.user.username : '-'}"></td>
+                    <td th:text="${customer.customerUser != null ? customer.customerUser.username : '-'}"></td>
+
+                    <td th:text="${customer.deleted ? 'Deleted' : 'Active'}"></td>
 
                     <td>
 
-                        <a th:href="@{/customers/detail/{id}(id=${customer.id})}" class="btn btn-info btn-sm">
+                        <a th:href="@{/customers/detail/{customerId}(customerId=${customer.customerId})}"
+                            class="btn btn-info btn-sm">
                             Detail
                         </a>
 
-                        <a th:href="@{/customers/edit/{id}(id=${customer.id})}" class="btn btn-warning btn-sm">
+                        <a th:href="@{/customers/edit/{customerId}(customerId=${customer.customerId})}"
+                            class="btn btn-warning btn-sm">
                             Edit
                         </a>
 
-                        <form th:action="@{/customers/delete/{id}(id=${customer.id})}" method="post"
-                            style="display:inline-block">
+                        <form th:action="@{/customers/delete/{customerId}(customerId=${customer.customerId})}"
+                            method="post" style="display:inline-block">
 
                             <button type="submit" class="btn btn-danger btn-sm">
                                 Delete

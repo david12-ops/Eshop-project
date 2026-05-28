@@ -65,6 +65,11 @@
                         <td th:text="${region.updatedAt}"></td>
                     </tr>
 
+                    <tr>
+                        <th>Deleted At</th>
+                        <td th:text="${region.deletedAt != null ? region.deletedAt : '-'}"></td>
+                    </tr>
+
                 </table>
 
             </div>

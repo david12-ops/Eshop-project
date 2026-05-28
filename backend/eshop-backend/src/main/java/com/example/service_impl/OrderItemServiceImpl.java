@@ -41,7 +41,13 @@ public class OrderItemServiceImpl implements OrderItemService {
         if (id == null)
             return;
 
-        orderItemRepository.findById(id).ifPresent(orderItem -> orderItemRepository.deleteById(id));
+        // zatím ne
+        orderItemRepository.findById(id).ifPresent(orderItem -> {
+            if (orderItem.getDeleted())
+                return; // tady jen soft kvůli klíčům
+
+            orderItemRepository.softDeleteById(id);
+        });
     }
 
     @Override

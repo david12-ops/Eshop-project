@@ -6,14 +6,17 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.model.Order;
 import com.example.service_interface.OrderService;
+import com.example.service_interface.OrderStatusService;
 
 @Controller
 @RequestMapping("/orders")
-public class OrdersController {
+public class OrderController {
     private final OrderService orderService;
+    private final OrderStatusService orderStatusService;
 
-    public OrdersController(OrderService orderService) {
+    public OrderController(OrderService orderService, OrderStatusService orderStatusService) {
         this.orderService = orderService;
+        this.orderStatusService = orderStatusService;
     }
 
     // LIST
@@ -47,6 +50,7 @@ public class OrdersController {
         model.addAttribute(
                 "order",
                 new Order());
+        model.addAttribute("statuses", orderStatusService.getAllOrderStatuses());
 
         return "orders/create";
     }
@@ -72,6 +76,7 @@ public class OrdersController {
         model.addAttribute(
                 "order",
                 order);
+        model.addAttribute("statuses", orderStatusService.getAllOrderStatuses());
 
         return "orders/edit";
     }

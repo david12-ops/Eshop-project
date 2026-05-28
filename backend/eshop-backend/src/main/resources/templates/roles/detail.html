@@ -56,6 +56,11 @@
                 <td th:text="${role.updatedBy}"></td>
             </tr>
 
+            <tr>
+                <th>Deleted At</th>
+                <td th:text="${role.deletedAt != null ? role.deletedAt : '-'}"></td>
+            </tr>
+
         </table>
 
         <a th:href="@{/roles}" class="btn btn-secondary">

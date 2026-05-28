@@ -39,6 +39,7 @@ public class SecurityConfig {
                 http
 
                                 .authorizeHttpRequests(requests -> requests
+
                                                 // PUBLIC
                                                 .requestMatchers(
                                                                 "/",
@@ -55,8 +56,23 @@ public class SecurityConfig {
                                                                 "/adminHome/**",
                                                                 "/users/**",
                                                                 "/roles/**",
-                                                                "/app-permissions/**",
-                                                                "/error/**",
+                                                                "/app-permissions/**")
+                                                .hasRole("ADMIN")
+
+                                                // STAFF ONLY
+                                                .requestMatchers(
+                                                                "/staffHome/**")
+                                                .hasRole("STAFF")
+
+                                                // CUSTOMER ONLY
+                                                .requestMatchers(
+                                                                "/customerHome/**",
+                                                                "/cart/**",
+                                                                "/wishlist/**")
+                                                .hasRole("CUSTOMER")
+
+                                                // SHARED ACCESS
+                                                .requestMatchers(
                                                                 "/products/**",
                                                                 "/addresses/**",
                                                                 "/categories/**",
@@ -68,32 +84,7 @@ public class SecurityConfig {
                                                                 "/orderStatuses/**",
                                                                 "/paymentMethods/**",
                                                                 "/regions/**")
-                                                .hasRole("ADMIN")
-
-                                                // ADMIN + STAFF
-                                                .requestMatchers(
-                                                                "/staffHome/**",
-                                                                "/products/**",
-                                                                "/addresses/**",
-                                                                "/categories/**",
-                                                                "/currencies/**",
-                                                                "/customers/**",
-                                                                "/discounts/**",
-                                                                "/invoices/**",
-                                                                "/orders/**",
-                                                                "/orderStatuses/**",
-                                                                "/paymentMethods/**",
-                                                                "/regions/**",
-                                                                "/error/**")
-                                                .hasRole("STAFF")
-
-                                                // CUSTOMER
-                                                .requestMatchers(
-                                                                "/customerHome/**",
-                                                                "/cart/**",
-                                                                "/wishlist/**",
-                                                                "/error/**")
-                                                .hasRole("CUSTOMER")
+                                                .hasAnyRole("ADMIN", "STAFF", "CUSTOMER")
 
                                                 .anyRequest()
                                                 .authenticated())

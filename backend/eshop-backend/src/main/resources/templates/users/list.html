@@ -43,6 +43,7 @@
                     <th>Email</th>
                     <th>Role</th>
                     <th>Created At</th>
+                    <th>Deleted</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -60,6 +61,8 @@
                     <td th:text="${user.role.roleName}"></td>
 
                     <td th:text="${user.createdAt}"></td>
+
+                    <td th:text="${user.deleted ? 'Deleted' : 'Active'}"></td>
 
                     <td>
 

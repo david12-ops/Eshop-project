@@ -3,11 +3,14 @@ package com.example.repository;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.example.model.Role;
 import com.example.model.enums.RoleType;
+
+import jakarta.transaction.Transactional;
 
 public interface RoleRepository extends JpaRepository<Role, Integer> {
     Optional<Role> findByRoleName(String roleName);
@@ -38,4 +41,14 @@ public interface RoleRepository extends JpaRepository<Role, Integer> {
                 WHERE r.id = :id
             """)
     Optional<Role> findByIdWithUsersAndPermissions(@Param("id") Integer id);
+
+    @Modifying
+    @Transactional
+    @Query("""
+                UPDATE Role r
+                SET r.deleted = true,
+                    r.deletedAt = CURRENT_TIMESTAMP
+                WHERE r.id = :id
+            """)
+    void softDeleteById(@Param("id") Integer id);
 }

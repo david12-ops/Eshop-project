@@ -5,16 +5,25 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.exception.ResourceNotFoundException;
+import com.example.model.Address;
+import com.example.model.AppUser;
 import com.example.model.Customer;
 import com.example.repository.CustomerRepository;
+import com.example.service_interface.AddressService;
 import com.example.service_interface.CustomerService;
+import com.example.service_interface.UserService;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
+    private final AddressService addressService;
+    private final UserService userService;
 
-    public CustomerServiceImpl(CustomerRepository customerRepository) {
+    public CustomerServiceImpl(CustomerRepository customerRepository, AddressService addressService,
+            UserService userService) {
         this.customerRepository = customerRepository;
+        this.addressService = addressService;
+        this.userService = userService;
     }
 
     @Override
@@ -41,7 +50,13 @@ public class CustomerServiceImpl implements CustomerService {
         if (id == null)
             return;
 
-        customerRepository.findById(id).ifPresent(customer -> customerRepository.deleteById(id));
+        // zatím ne
+        customerRepository.findById(id).ifPresent(customer -> {
+            if (customer.getDeleted())
+                return; // tady jen soft kvůli klíčům
+
+            customerRepository.softDeleteById(id);
+        });
     }
 
     @Override
@@ -50,15 +65,29 @@ public class CustomerServiceImpl implements CustomerService {
             return;
 
         customerRepository.findById(id).ifPresent(existingCustomer -> {
+            Address adddress = addressService.getAddressById(customer.getCustomerAddress().getId());
 
             existingCustomer.setBranchName(customer.getBranchName());
             existingCustomer.setFirstName(customer.getFirstName());
             existingCustomer.setLastName(customer.getLastName());
             existingCustomer.setBirthDate(customer.getBirthDate());
             existingCustomer.setPhoneNumber(customer.getPhoneNumber());
+            existingCustomer.setCustomerAddress(adddress);
+
+            if (customer.getCustomerUser() != null
+                    && customer.getCustomerUser().getId() != null) {
+
+                AppUser appUser = userService.getUserById(
+                        customer.getCustomerUser().getId());
+
+                existingCustomer.setCustomerUser(appUser);
+
+            } else {
+
+                existingCustomer.setCustomerUser(null);
+            }
 
             customerRepository.save(existingCustomer);
-
         });
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.model.Role;
+import com.example.model.enums.RoleType;
 import com.example.service_interface.RoleService;
 
 @Controller
@@ -47,7 +48,7 @@ public class RoleController {
 
         model.addAttribute("role", new Role());
 
-        model.addAttribute("roles", roleService.findAll());
+        model.addAttribute("roleTypes", RoleType.values());
 
         return "roles/create";
     }
@@ -70,7 +71,7 @@ public class RoleController {
 
         model.addAttribute("role", roleService.getRoleById(id));
 
-        model.addAttribute("roles", roleService.findAll());
+        model.addAttribute("roleTypes", RoleType.values());
 
         return "roles/edit";
     }

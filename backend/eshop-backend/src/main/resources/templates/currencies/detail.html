@@ -53,6 +53,11 @@
                         <td th:text="${currency.updatedAt}"></td>
                     </tr>
 
+                    <tr>
+                        <th>Deleted At</th>
+                        <td th:text="${currency.deletedAt != null ? currency.deletedAt : '-'}"></td>
+                    </tr>
+
                 </table>
 
             </div>

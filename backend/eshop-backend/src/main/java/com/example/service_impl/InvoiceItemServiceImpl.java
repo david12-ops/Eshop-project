@@ -41,6 +41,7 @@ public class InvoiceItemServiceImpl implements InvoiceItemService {
         if (id == null)
             return;
 
+        // check
         invoiceItemRepository.findById(id).ifPresent(invoiceItem -> invoiceItemRepository.deleteById(id));
     }
 

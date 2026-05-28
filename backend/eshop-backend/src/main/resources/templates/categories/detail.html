@@ -56,6 +56,11 @@
                 <td th:text="${category.updatedBy}"></td>
             </tr>
 
+            <tr>
+                <th>Deleted At</th>
+                <td th:text="${category.deletedAt != null ? category.deletedAt : '-'}"></td>
+            </tr>
+
         </table>
 
         <a th:href="@{/categories}" class="btn btn-secondary">

@@ -48,6 +48,7 @@ public class DiscountController {
         model.addAttribute(
                 "discount",
                 new Discount());
+        model.addAttribute("discountTypes", DiscountType.values());
 
         return "discounts/create";
     }

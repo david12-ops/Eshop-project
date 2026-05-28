@@ -28,7 +28,8 @@
 
                 </div>
 
-                <form th:action="@{/orderStatuses/edit/{id}(id=${status.id})}" th:object="${status}" method="post">
+                <form th:action="@{/orderStatuses/edit/{id}(id=${orderStatus.id})}" th:object="${orderStatus}"
+                    method="post">
 
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 

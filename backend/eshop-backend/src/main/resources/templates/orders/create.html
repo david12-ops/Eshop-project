@@ -82,19 +82,21 @@
                     </div>
 
                     <!-- CURRENCY -->
-                    <div class="mb-3">
+                    <div class="mb-4">
 
                         <label class="form-label">
                             Currency
                         </label>
 
-                        <select th:field="*{currency}" class="form-select">
+                        <div class="input-group">
 
-                            <option th:each="currency : ${currencies}" th:value="${currency.currencyCode}"
-                                th:text="${currency.currencyCode}">
-                            </option>
+                            <span class="input-group-text" th:text="*{region.symbol}">
+                                Kč
+                            </span>
 
-                        </select>
+                            <input type="text" th:field="*{currency}" class="form-control" readonly />
+
+                        </div>
 
                     </div>
 

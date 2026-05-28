@@ -41,7 +41,13 @@ public class CurrencyServiceImpl implements CurrencyService {
         if (code == null)
             return;
 
-        currencyRepository.findById(code).ifPresent(currency -> currencyRepository.deleteById(code));
+        // zatím ne
+        currencyRepository.findById(code).ifPresent(currency -> {
+            if (currency.getDeleted())
+                return; // tady jen soft kvůli klíčům
+
+            currencyRepository.softDeleteById(code);
+        });
     }
 
     @Override

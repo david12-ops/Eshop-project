@@ -60,6 +60,11 @@
                         <td th:text="${paymentMethod.updatedAt}"></td>
                     </tr>
 
+                    <tr>
+                        <th>Deleted At</th>
+                        <td th:text="${paymentMethod.deletedAt != null ? paymentMethod.deletedAt : '-'}"></td>
+                    </tr>
+
                 </table>
 
             </div>

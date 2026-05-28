@@ -43,6 +43,7 @@
                     <th>Role Type</th>
                     <th>Description</th>
                     <th>Created At</th>
+                    <th>Deleted</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -60,6 +61,8 @@
                     <td th:text="${role.roleDescription}"></td>
 
                     <td th:text="${role.createdAt}"></td>
+
+                    <td th:text="${role.deleted ? 'Deleted' : 'Active'}"></td>
 
                     <td>
 

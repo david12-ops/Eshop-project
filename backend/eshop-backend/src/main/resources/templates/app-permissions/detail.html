@@ -55,6 +55,11 @@
                         <td th:text="${appPermission.updatedAt}"></td>
                     </tr>
 
+                    <tr>
+                        <th>Deleted At</th>
+                        <td th:text="${appPermission.deletedAt != null ? appPermission.deletedAt : '-'}"></td>
+                    </tr>
+
                 </table>
 
             </div>

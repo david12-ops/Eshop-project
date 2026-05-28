@@ -5,16 +5,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.model.Product;
-
+import com.example.service_interface.CategoryService;
 import com.example.service_interface.ProductService;
 
 @Controller
 @RequestMapping("/products")
 public class ProductController {
         private final ProductService productService;
+        private final CategoryService categoryService;
 
-        public ProductController(ProductService productService) {
+        public ProductController(ProductService productService, CategoryService categoryService) {
                 this.productService = productService;
+                this.categoryService = categoryService;
         }
 
         @GetMapping
@@ -43,6 +45,7 @@ public class ProductController {
         public String createForm(Model model) {
 
                 model.addAttribute("product", new Product());
+                model.addAttribute("categories", categoryService.getAllCategories());
 
                 return "products/create";
         }
@@ -66,6 +69,7 @@ public class ProductController {
                 model.addAttribute(
                                 "product",
                                 product);
+                model.addAttribute("categories", categoryService.getAllCategories());
 
                 return "products/edit";
         }

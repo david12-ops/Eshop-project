@@ -70,7 +70,13 @@ public class RoleServiceImpl implements RoleService {
         if (id == null)
             return;
 
-        roleRepository.findById(id).ifPresent(role -> roleRepository.deleteById(id));
+        // zatím ne
+        roleRepository.findById(id).ifPresent(role -> {
+            if (role.getDeleted())
+                return; // tady jen soft kvůli klíčům
+
+            roleRepository.softDeleteById(id);
+        });
     }
 
     @Override

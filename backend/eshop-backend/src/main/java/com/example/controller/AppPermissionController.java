@@ -53,6 +53,8 @@ public class AppPermissionController {
         model.addAttribute("appPermission", new AppPermission());
 
         model.addAttribute("roles", appPermissionService.findAllRoles());
+        model.addAttribute("resourceTypes", ResourceType.values());
+        model.addAttribute("operationTypes", OperationType.values());
 
         return "app-permissions/create";
     }
@@ -104,6 +106,8 @@ public class AppPermissionController {
                 appPermissionService.getAppPermissionById(id));
 
         model.addAttribute("roles", appPermissionService.findAllRoles());
+        model.addAttribute("resourceTypes", ResourceType.values());
+        model.addAttribute("operationTypes", OperationType.values());
 
         return "app-permissions/edit";
     }

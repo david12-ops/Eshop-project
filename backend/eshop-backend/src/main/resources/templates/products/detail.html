@@ -77,6 +77,11 @@
                 <td th:text="${product.updatedAt}"></td>
             </tr>
 
+            <tr>
+                <th>Deleted At</th>
+                <td th:text="${product.deletedAt != null ? product.deletedAt : '-'}"></td>
+            </tr>
+
         </table>
 
         <a th:href="@{/products}" class="btn btn-secondary">

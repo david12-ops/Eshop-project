@@ -6,14 +6,17 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.model.Address;
 import com.example.service_interface.AddressService;
+import com.example.service_interface.RegionService;
 
 @Controller
 @RequestMapping("/addresses")
 public class AddressController {
     private final AddressService addressService;
+    private final RegionService regionService;
 
-    public AddressController(AddressService addressService) {
+    public AddressController(AddressService addressService, RegionService regionService) {
         this.addressService = addressService;
+        this.regionService = regionService;
     }
 
     // LIST
@@ -47,6 +50,7 @@ public class AddressController {
         model.addAttribute(
                 "address",
                 new Address());
+        model.addAttribute("regions", regionService.getAllRegions());
 
         return "addresses/create";
     }
@@ -72,6 +76,7 @@ public class AddressController {
         model.addAttribute(
                 "address",
                 address);
+        model.addAttribute("regions", regionService.getAllRegions());
 
         return "addresses/edit";
     }

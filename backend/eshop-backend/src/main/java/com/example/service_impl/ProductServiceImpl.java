@@ -5,16 +5,20 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.exception.ResourceNotFoundException;
+import com.example.model.Category;
 import com.example.model.Product;
 import com.example.repository.ProductRepository;
+import com.example.service_interface.CategoryService;
 import com.example.service_interface.ProductService;
 
 @Service
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
+    private final CategoryService categoryService;
 
-    public ProductServiceImpl(ProductRepository productRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryService categoryService) {
         this.productRepository = productRepository;
+        this.categoryService = categoryService;
     }
 
     @Override
@@ -33,6 +37,12 @@ public class ProductServiceImpl implements ProductService {
         if (product == null)
             return;
 
+        if (product.getCategory() != null
+                && product.getCategory().getId() == null) {
+
+            product.setCategory(null);
+        }
+
         productRepository.save(product);
     }
 
@@ -41,7 +51,13 @@ public class ProductServiceImpl implements ProductService {
         if (id == null)
             return;
 
-        productRepository.findById(id).ifPresent(product -> productRepository.deleteById(id));
+        // zatím ne
+        productRepository.findById(id).ifPresent(product -> {
+            if (product.getDeleted())
+                return; // tady jen soft kvůli klíčům
+
+            productRepository.softDeleteById(id);
+        });
     }
 
     @Override
@@ -49,14 +65,26 @@ public class ProductServiceImpl implements ProductService {
         if (id == null || product == null)
             return;
 
-        Product existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+        productRepository.findById(id).ifPresent(existingProduct -> {
+            existingProduct.setProductName(product.getProductName());
+            existingProduct.setProductDescription(product.getProductDescription());
+            existingProduct.setRecommendedPrice(product.getRecommendedPrice());
+            existingProduct.setActive(product.isActive());
 
-        existingProduct.setProductName(product.getProductName());
-        existingProduct.setProductDescription(product.getProductDescription());
-        existingProduct.setRecommendedPrice(product.getRecommendedPrice());
-        existingProduct.setActive(product.isActive());
+            if (product.getCategory() != null
+                    && product.getCategory().getId() != null) {
 
-        productRepository.save(existingProduct);
+                Category category = categoryService.getCategoryById(
+                        product.getCategory().getId());
+
+                existingProduct.setCategory(category);
+
+            } else {
+
+                existingProduct.setCategory(null);
+            }
+
+            productRepository.save(existingProduct);
+        });
     }
 }

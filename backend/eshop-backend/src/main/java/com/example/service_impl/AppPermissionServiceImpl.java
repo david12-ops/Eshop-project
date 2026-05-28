@@ -69,6 +69,12 @@ public class AppPermissionServiceImpl implements AppPermissionService {
         if (id == null)
             return;
 
-        appPermissionRepository.findById(id).ifPresent(appPermission -> appPermissionRepository.deleteById(id));
+        // zatím ne
+        appPermissionRepository.findById(id).ifPresent(appPermission -> {
+            if (appPermission.getDeleted())
+                return; // tady jen soft kvůli klíčům
+
+            appPermissionRepository.softDeleteById(id);
+        });
     }
 }

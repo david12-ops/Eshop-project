@@ -48,6 +48,7 @@
                     <th>Subtotal</th>
                     <th>Tax</th>
                     <th>Total</th>
+                    <th>Deleted</th>
                     <th>Actions</th>
 
                 </tr>
@@ -84,6 +85,8 @@
 
                     <td class="fw-bold text-success" th:text="${order.totalAmount}">
                     </td>
+
+                    <td th:text="${order.deleted ? 'Deleted' : 'Active'}"></td>
 
                     <td>
 

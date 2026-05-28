@@ -50,7 +50,13 @@ public class UserServiceImpl implements UserService {
         if (id == null)
             return;
 
-        userRepository.findById(id).ifPresent(user -> userRepository.deleteById(id));
+        // zatím ne
+        userRepository.findById(id).ifPresent(user -> {
+            if (user.getDeleted())
+                return; // tady jen soft kvůli klíčům
+
+            userRepository.softDeleteById(id);
+        });
     }
 
     @Override

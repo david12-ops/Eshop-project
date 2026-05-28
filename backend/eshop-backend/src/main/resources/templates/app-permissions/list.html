@@ -44,6 +44,7 @@
                     <th>Resource</th>
                     <th>Operation</th>
                     <th>Created At</th>
+                    <th>Deleted</th>
                     <th>Actions</th>
 
                 </tr>
@@ -61,6 +62,8 @@
                     <td th:text="${permission.operationType}"></td>
 
                     <td th:text="${permission.createdAt}"></td>
+
+                    <td th:text="${permission.deleted ? 'Deleted' : 'Active'}"></td>
 
                     <td>
 

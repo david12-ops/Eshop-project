@@ -80,6 +80,11 @@
                         <td th:text="${discount.updatedAt}"></td>
                     </tr>
 
+                    <tr>
+                        <th>Deleted At</th>
+                        <td th:text="${discount.deletedAt != null ? discount.deletedAt : '-'}"></td>
+                    </tr>
+
                 </table>
 
             </div>

@@ -75,6 +75,11 @@
                         <td th:text="${address.updatedAt}"></td>
                     </tr>
 
+                    <tr>
+                        <th>Deleted At</th>
+                        <td th:text="${address.deletedAt != null ? address.deletedAt : '-'}"></td>
+                    </tr>
+
                 </table>
 
             </div>

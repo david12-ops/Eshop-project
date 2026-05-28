@@ -43,6 +43,7 @@
                 <th>Recommended Price</th>
                 <th>Tax Rate</th>
                 <th>Active</th>
+                <th>Deleted</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -74,6 +75,8 @@
                     </span>
 
                 </td>
+
+                <td th:text="${product.deleted ? 'Deleted' : 'Active'}"></td>
 
                 <td>
 

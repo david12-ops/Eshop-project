@@ -41,7 +41,13 @@ public class DiscountServiceImpl implements DiscountService {
         if (id == null)
             return;
 
-        discountRepository.findById(id).ifPresent(discount -> discountRepository.deleteById(id));
+        // zatím ne
+        discountRepository.findById(id).ifPresent(discount -> {
+            if (discount.getDeleted())
+                return; // tady jen soft kvůli klíčům
+
+            discountRepository.softDeleteById(id);
+        });
     }
 
     @Override

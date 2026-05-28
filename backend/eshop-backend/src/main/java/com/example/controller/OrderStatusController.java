@@ -5,6 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.model.OrderStatus;
+import com.example.model.enums.OrderStatusType;
 import com.example.service_interface.OrderStatusService;
 
 @Controller
@@ -33,9 +34,12 @@ public class OrderStatusController {
 
         OrderStatus orderStatus = orderStatusService.getOrderStatusById(id);
 
+        System.out.println("OrderStatus " + orderStatus);
+
         model.addAttribute(
                 "orderStatus",
                 orderStatus);
+        model.addAttribute("statusTypes", OrderStatusType.values());
 
         return "orderStatuses/detail";
     }
@@ -47,6 +51,7 @@ public class OrderStatusController {
         model.addAttribute(
                 "orderStatus",
                 new OrderStatus());
+        model.addAttribute("statusTypes", OrderStatusType.values());
 
         return "orderStatuses/create";
     }
@@ -72,6 +77,7 @@ public class OrderStatusController {
         model.addAttribute(
                 "orderStatus",
                 orderStatus);
+        model.addAttribute("statusTypes", OrderStatusType.values());
 
         return "orderStatuses/edit";
     }

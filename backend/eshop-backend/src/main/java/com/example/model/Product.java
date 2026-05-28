@@ -49,6 +49,12 @@ public class Product {
     @Column(name = "is_active", nullable = false)
     private boolean active;
 
+    @Column(name = "deleted", nullable = false, columnDefinition = "BOOLEAN NOT NULL DEFAULT FALSE")
+    private Boolean deleted = false;
+
+    @Column(name = "deleted_at", columnDefinition = "TIMESTAMPTZ")
+    private Instant deletedAt;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
@@ -148,6 +154,22 @@ public class Product {
         this.active = active;
     }
 
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public Instant getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Instant deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
     public Instant getCreatedAt() {
         return createdAt;
     }
@@ -178,5 +200,27 @@ public class Product {
 
     public void setUpdatedBy(Integer updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", productName='" + productName + '\'' +
+                ", productCode='" + productCode + '\'' +
+                ", productDescription='" + productDescription + '\'' +
+                ", productImageUrl='" + productImageUrl + '\'' +
+                ", recommendedPrice=" + recommendedPrice +
+                ", unitPrice=" + unitPrice +
+                ", taxRate=" + taxRate +
+                ", category=" + (category != null ? category.toString() : null) +
+                ", active=" + active +
+                ", deleted=" + deleted +
+                ", deletedAt=" + deletedAt +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", createdBy=" + createdBy +
+                ", updatedBy=" + updatedBy +
+                '}';
     }
 }

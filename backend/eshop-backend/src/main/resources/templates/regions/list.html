@@ -43,6 +43,7 @@
                     <th>Currency</th>
                     <th>Symbol</th>
                     <th>Created At</th>
+                    <th>Deleted</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -60,6 +61,8 @@
                     <td th:text="${region.currency.symbol}"></td>
 
                     <td th:text="${region.createdAt}"></td>
+
+                    <td th:text="${region.deleted ? 'Deleted' : 'Active'}"></td>
 
                     <td>
 

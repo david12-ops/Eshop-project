@@ -18,7 +18,7 @@
 
             <tr>
                 <th>ID</th>
-                <td th:text="${customer.id}"></td>
+                <td th:text="${customer.customerId}"></td>
             </tr>
 
             <tr>
@@ -48,12 +48,12 @@
 
             <tr>
                 <th>Address</th>
-                <td th:text="${customer.address != null ? customer.address.streetName : '-'}"></td>
+                <td th:text="${customer.customerAddress != null ? customer.customerAddress.streetName : '-'}"></td>
             </tr>
 
             <tr>
                 <th>User</th>
-                <td th:text="${customer.user != null ? customer.user.username : '-'}"></td>
+                <td th:text="${customer.customerUser != null ? customer.customerUser.username : '-'}"></td>
             </tr>
 
             <tr>
@@ -64,6 +64,11 @@
             <tr>
                 <th>Updated At</th>
                 <td th:text="${customer.updatedAt}"></td>
+            </tr>
+
+            <tr>
+                <th>Deleted At</th>
+                <td th:text="${customer.deletedAt != null ? customer.deletedAt : '-'}"></td>
             </tr>
 
         </table>

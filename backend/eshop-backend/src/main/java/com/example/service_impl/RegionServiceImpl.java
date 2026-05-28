@@ -41,7 +41,13 @@ public class RegionServiceImpl implements RegionService {
         if (id == null)
             return;
 
-        regionRepository.findById(id).ifPresent(region -> regionRepository.deleteById(id));
+        // zatím ne
+        regionRepository.findById(id).ifPresent(region -> {
+            if (region.getDeleted())
+                return; // tady jen soft kvůli klíčům
+
+            regionRepository.softDeleteById(id);
+        });
     }
 
     @Override

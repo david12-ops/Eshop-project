@@ -6,15 +6,19 @@ import org.springframework.stereotype.Service;
 
 import com.example.exception.ResourceNotFoundException;
 import com.example.model.Address;
+import com.example.model.Region;
 import com.example.repository.AddressRepository;
 import com.example.service_interface.AddressService;
+import com.example.service_interface.RegionService;
 
 @Service
 public class AddressServiceImpl implements AddressService {
     private final AddressRepository addressRepository;
+    private final RegionService regionService;
 
-    public AddressServiceImpl(AddressRepository addressRepository) {
+    public AddressServiceImpl(AddressRepository addressRepository, RegionService regionService) {
         this.addressRepository = addressRepository;
+        this.regionService = regionService;
     }
 
     @Override
@@ -49,6 +53,19 @@ public class AddressServiceImpl implements AddressService {
             existingAddress.setPostalCode(address.getPostalCode());
             existingAddress.setCountryName(address.getCountryName());
 
+            if (address.getRegion() != null
+                    && address.getRegion().getRegionId() != null) {
+
+                Region region = regionService.getRegionById(
+                        address.getRegion().getRegionId());
+
+                existingAddress.setRegion(region);
+
+            } else {
+
+                existingAddress.setRegion(null);
+            }
+
             addressRepository.save(existingAddress);
         });
     }
@@ -58,6 +75,12 @@ public class AddressServiceImpl implements AddressService {
         if (id == null)
             return;
 
-        addressRepository.findById(id).ifPresent(address -> addressRepository.deleteById(id));
+        // zatím ne
+        addressRepository.findById(id).ifPresent(address -> {
+            if (address.getDeleted())
+                return; // tady jen soft kvůli klíčům
+
+            addressRepository.softDeleteById(id);
+        });
     }
 }

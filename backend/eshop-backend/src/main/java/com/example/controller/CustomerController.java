@@ -5,15 +5,21 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.model.Customer;
+import com.example.service_interface.AddressService;
 import com.example.service_interface.CustomerService;
+import com.example.service_interface.UserService;
 
 @Controller
 @RequestMapping("/customers")
 public class CustomerController {
     private final CustomerService customerService;
+    private final AddressService addressService;
+    private final UserService userService;
 
-    public CustomerController(CustomerService customerService) {
+    public CustomerController(CustomerService customerService, AddressService addressService, UserService userService) {
         this.customerService = customerService;
+        this.addressService = addressService;
+        this.userService = userService;
     }
 
     // LIST
@@ -47,6 +53,8 @@ public class CustomerController {
         model.addAttribute(
                 "customer",
                 new Customer());
+        model.addAttribute("addresses", addressService.getAllAddresses());
+        model.addAttribute("users", userService.getAllUsers());
 
         return "customers/create";
     }
@@ -69,9 +77,13 @@ public class CustomerController {
 
         Customer customer = customerService.getCustomerById(id);
 
+        System.out.println("Customer  " + customer.toString());
+
         model.addAttribute(
                 "customer",
                 customer);
+        model.addAttribute("addresses", addressService.getAllAddresses());
+        model.addAttribute("users", userService.getAllUsers());
 
         return "customers/edit";
     }

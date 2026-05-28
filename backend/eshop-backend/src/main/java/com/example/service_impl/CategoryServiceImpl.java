@@ -35,7 +35,13 @@ public class CategoryServiceImpl implements CategoryService {
         if (id == null)
             return;
 
-        categoryRepository.findById(id).ifPresent(category -> categoryRepository.deleteById(id));
+        // zatím ne
+        categoryRepository.findById(id).ifPresent(category -> {
+            if (category.getDeleted())
+                return; // tady jen soft kvůli klíčům
+
+            categoryRepository.softDeleteById(id);
+        });
     }
 
     @Override
