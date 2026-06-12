@@ -1,213 +1,153 @@
 // src/infra/store/selectors.js
 // předpokládáme, že selectViewState je jediné místo rozhodování o stavo-pohledu aplikace
 
-export function selectExams(state) {
-  return state.exams ?? [];
-}
+export function selectProductById(state) {
+  const productId = state.ui.selectedProductId;
 
-export function selectExamById(state) {
-  const examId = state.ui.selectedExamId;
-  if (!examId) return null;
-  return state.exams.find((e) => e.id === examId) ?? null;
-}
-
-// state.ui.mode = pojmenované navigační kontexty
-// EXAM_TERM_ADMINISTRATION .. administrační kontext - spravuji termín: edit, publish, cancel
-// EXAM_TERM_DETAIL .. : detailový kontext - prohlížím si jeden : view detail
-// EXAM_TERM_LIST .. kolekční kontext - prohlížím si seznam: view list, filter, sort
-
-/* ****************************************** */
-/*
- *  rozhodování o capabilities
- *
- */
-/* ****************************************** */
-
-export function canCreateExam(state) {
-  const { role } = state.auth;
-  return role === 'TEACHER';
-}
-
-// pokud k termínu neexistují žádné registrace, lze jej editovat
-// pokud termín není ve stavu CANCELED, lze jej editovat
-export function canUpdate(state) {
-  const { role } = state.auth;
-  if (role !== 'TEACHER') return false;
-
-  const exam = selectExamById(state);
-  if (!exam) return false;
-
-  if (exam.status === 'CANCELED') return false;
-
-  const hasAnyRegistrations = state.registrations.some((r) => r.examId === exam.id);
-  return !hasAnyRegistrations;
-}
-
-// pokud termín nebyl zrušen (CANCELED), lze měnit kapacitu
-export function canUpdateCapacity(state) {
-  const { role } = state.auth;
-  if (role !== 'TEACHER') return false;
-
-  const exam = selectExamById(state);
-  if (!exam) return false;
-
-  const notCanceled = exam.status !== 'CANCELED';
-  return notCanceled;
-}
-
-export function canCancel(state) {
-  const { role } = state.auth;
-  if (role !== 'TEACHER') return false;
-
-  const exam = selectExamById(state);
-  if (!exam) return false;
-
-  if (exam.status === 'CANCELED') return false;
-
-  const registrations = state.registrations.filter((r) => r.examId === exam.id);
-
-  const hasActiveRegistrations = registrations.some((r) => r.status === 'REGISTERED');
-  if (hasActiveRegistrations) return false;
-
-  const hasAnyRegistrations = registrations.length > 0;
-  return hasAnyRegistrations;
-}
-
-export function canDelete(state) {
-  const { role } = state.auth;
-  if (role !== 'TEACHER') return false;
-
-  const exam = selectExamById(state);
-  if (!exam) return false;
-
-  const hasAnyRegistrations = state.registrations.some((r) => r.examId === exam.id);
-  return !hasAnyRegistrations;
-}
-
-export function canEnterAdministration(state) {
-  const { role } = state.auth;
-  return role === 'TEACHER';
-}
-
-export function canPublish(state) {
-  const { role } = state.auth;
-  if (role !== 'TEACHER') return false;
-
-  const exam = selectExamById(state);
-  if (!exam) return false;
-
-  return exam.status === 'DRAFT';
-}
-
-export function canUnpublish(state) {
-  const { role } = state.auth;
-  if (role !== 'TEACHER') return false;
-
-  const exam = selectExamById(state);
-  if (!exam) return false;
-
-  const hasActiveRegistrations = state.registrations.some((r) => r.examId === exam.id && r.status === 'REGISTERED');
-  if (hasActiveRegistrations) return false;
-
-  return exam.status === 'PUBLISHED';
-}
-
-export function canRegister(state) {
-  const { role, userId } = state.auth;
-  if (role !== 'STUDENT') return false;
-  if (!userId) return false;
-
-  const exam = selectExamById(state);
-  if (!exam) return false;
-
-  if (exam.status !== 'PUBLISHED') return false;
-
-  const activeRegistrations = state.registrations.filter((r) => r.examId === exam.id && r.status === 'REGISTERED');
-  if (activeRegistrations.length >= exam.capacity) return false;
-
-  const hasRegistered = activeRegistrations.some((r) => r.userId === userId);
-  return !hasRegistered;
-}
-
-export function canUnregister(state) {
-  const { role, userId } = state.auth;
-  if (role !== 'STUDENT') return false;
-  if (!userId) return false;
-
-  const exam = selectExamById(state);
-  if (!exam) return false;
-
-  if (exam.status !== 'PUBLISHED') return false;
-
-  const hasRegistered = state.registrations.some(
-    (r) => r.userId === userId && r.status === 'REGISTERED' && r.examId === exam.id,
-  );
-  return hasRegistered;
-}
-
-/* ****************************************** */
-/*
- * vybírání pohledů
- */
-/* ****************************************** */
-
-export function selectExamTermListView(state) {
-  const exams = selectExams(state);
-  return {
-    type: 'EXAM_TERM_LIST',
-    exams,
-    capabilities: {
-      // navigační možnosti
-      canEnterDetail: true,
-      canEnterAdministration: canEnterAdministration(state),
-      // doménové možnosti
-      canCreateExam: canCreateExam(state),
-    },
-  };
-}
-
-export function selectExamTermDetailView(state) {
-  const exam = selectExamById(state);
-  return {
-    type: 'EXAM_TERM_DETAIL',
-    exam,
-    capabilities: {
-      // navigační možnosti
-      canBackToList: true,
-      canEnterAdministration: canEnterAdministration(state),
-      // doménové možnosti
-      canRegister: canRegister(state),
-      canUnregister: canUnregister(state),
-      canPublish: canPublish(state),
-      canUnpublish: canUnpublish(state),
-      canCancel: canCancel(state),
-      canDelete: canDelete(state),
-    },
-  };
-}
-
-export function selectExamTermAdministrationView(state) {
-  const { role } = state.auth;
-  const exam = selectExamById(state);
-
-  if (role !== 'TEACHER') {
-    return {
-      type: 'ERROR',
-      message: `Not authorized`,
-    };
+  if (!productId) {
+    return null;
   }
 
+  return state.products.find(
+    (p) => p.id === productId
+  ) ?? null;
+}
+
+export function canCreateProduct(state) {
+  return state.auth.role === "ADMIN";
+}
+
+export function canUpdateProduct(state) {
+  return state.auth.role === "ADMIN";
+}
+
+export function canDeleteProduct(state) {
+  return state.auth.role === "ADMIN";
+}
+
+export function canAddToCart(state) {
+  return state.auth.role === "CUSTOMER";
+}
+
+export function canCreateOrder(state) {
+  const cart =
+    state.cart.find(
+      c => c.userId === state.auth.userId
+    ) ?? { items: [] };
+
+  return (
+    state.auth.role === "CUSTOMER" &&
+    cart.items.length > 0
+  );
+}
+
+export function selectProductListView(state) {
   return {
-    type: 'EXAM_TERM_ADMINISTRATION',
-    exam,
+    type: "PRODUCT_LIST",
+    products: state.products,
+
     capabilities: {
-      // navigační možnosti
+      canEnterDetail: true,
+      canCreateProduct: canCreateProduct(state),
+    },
+  };
+}
+
+export function selectProductDetailView(state) {
+  const product = selectProductById(state);
+
+  return {
+    type: "PRODUCT_DETAIL",
+    product,
+
+    capabilities: {
       canBackToList: true,
-      // doménové možnosti
-      canDelete: canDelete(state),
-      canCancel: canCancel(state),
-      canUpdateCapacity: canUpdateCapacity(state),
-      canUpdate: canUpdate(state), // nastavení parametrů termínu - kapacita, název, čas
+      canAddToCart: canAddToCart(state),
+      canUpdateProduct: canUpdateProduct(state),
+      canDeleteProduct: canDeleteProduct(state),
+    },
+  };
+}
+
+export function selectCartView(state) {
+  const cart =
+    state.cart.find(
+      c => c.userId === state.auth.userId
+    ) ?? { items: [] };
+
+  const products = cart.items.map(item => {
+    const product = state.products.find(
+      p => p.id === item.productId
+    );
+
+    return {
+      ...product,
+      quantity: item.quantity,
+    };
+  });
+
+  return {
+    type: "CART",
+    cart: products,
+
+    capabilities: {
+      canRemoveFromCart:
+        products.length > 0,
+      canCreateOrder:
+        canCreateOrder(state),
+    },
+  };
+}
+
+export function selectOrderHistoryView(state) {
+  return {
+    type: "ORDER_HISTORY",
+    orders: state.orders.filter(
+      o => o.customerId === state.auth.userId
+    ),
+
+    capabilities: {
+      canBackToDashboard: true,
+    },
+  };
+}
+
+export function selectDashboardView(state) {
+  const { role } = state.auth;
+
+  return {
+    type: "DASHBOARD",
+    role,
+
+    capabilities: {
+      canLogout: role !== "ANONYMOUS",
+      canEnterProductList: true,
+      canEnterCart: role === "CUSTOMER",
+      canEnterOrderHistory: role === "CUSTOMER",
+      canEnterAuthentication: role === "ANONYMOUS",
+      canEnterCategoryList: role === "ADMIN",
+      canEnterOrderList: role === "ADMIN",
+    },
+  };
+}
+
+export function selectAuthenticationView(state) {
+  const { role, userId } = state.auth;
+
+  const isLoggedIn =
+    role !== "ANONYMOUS" &&
+    role != null &&
+    userId != null;
+
+  return {
+    type: "AUTHENTICATION",
+    isLoggedIn,
+    role,
+
+    capabilities: {
+      canLogin: !isLoggedIn,
+      canRegister: !isLoggedIn,
+      canLogout: isLoggedIn,
     },
   };
 }
@@ -236,31 +176,46 @@ export function selectExamTermAdministrationView(state) {
  ** }
  */
 export function selectViewState(state) {
-  const { status, errorMessage, mode } = state.ui;
+  const { status, message, mode } = state.ui;
 
-  // první aspekt: technický stav
-  if (status === 'LOADING') {
-    return { type: 'LOADING' };
+  if (status === "LOADING") {
+    return { type: "LOADING" };
   }
 
-  if (status === 'ERROR') {
-    return { type: 'ERROR', message: errorMessage };
+  if (status === "ERROR") {
+    return { type: "ERROR", message };
   }
 
-  if (status !== 'READY') {
-    return { type: 'ERROR', message: `Unknown ui status: ${status}` };
+  if (status !== "READY") {
+    return {
+      type: "ERROR",
+      message: `Unknown ui status: ${status}`,
+    };
   }
-
-  // druhý aspekt: mode
 
   switch (mode) {
-    case 'EXAM_TERM_LIST':
-      return selectExamTermListView(state);
-    case 'EXAM_TERM_DETAIL':
-      return selectExamTermDetailView(state);
-    case 'EXAM_TERM_ADMINISTRATION':
-      return selectExamTermAdministrationView(state);
+    case "AUTHENTICATION":
+      return selectAuthenticationView(state);
+
+    case "DASHBOARD":
+      return selectDashboardView(state);
+
+    case "PRODUCT_LIST":
+      return selectProductListView(state);
+
+    case "PRODUCT_DETAIL":
+      return selectProductDetailView(state);
+
+    case "CART":
+      return selectCartView(state);
+
+    case "ORDER_HISTORY":
+      return selectOrderHistoryView(state);
+
     default:
-      return { type: 'ERROR', message: `Unknown ui mode: ${mode}` };
+      return {
+        type: "ERROR",
+        message: `Unknown ui mode: ${mode}`,
+      };
   }
 }

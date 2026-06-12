@@ -1,65 +1,122 @@
-/*
- ** viewState má tvar
- ** {
- **   type: 'LOADING' | 'ERROR' | 'EXAM_TERM_LIST' | 'EXAM_TERM_DETAIL' | 'EXAM_TERM_ADMINISTRATION',
- **   message?: string ,
- **   exam?: ExamTerm,
- **   exams?: ExamTerm[],
- **   capabilities?: {
- **     canEnterDetail: boolean,
- **     canEnterAdministration: boolean,
- **     canBackToList: boolean,
- **     canCreateExam: boolean,
- **     canRegister: boolean,
- **     canUnregister: boolean,
- **     canPublish: boolean,
- **     canUnpublish: boolean,
- **     canCancel: boolean,
- **     canDelete: boolean,
- **     canUpdateCapacity: boolean,
- **     canUpdate: boolean
- **   },
- ** }
- */
+// src/ui/render.js
 
-// zatím jako příklad
+import { selectViewState } from "../infra/store/selectors.js";
+import { createHandlers } from "../app/actionHandlers/createHandlers.js";
+import { navigationPanelHandlers } from "../app/actionHandlers/navigationPanelHandlers.js";
+
+import { LoadingView } from "./views/LoadingView.js";
+import { ErrorView } from "./views/ErrorView.js";
+
+import { DashboardView } from "./views/DashboardView.js";
+import { AuthenticationView } from "./views/AuthenticationView.js";
+
+import { ProductListView } from "./views/ProductListView.js";
+import { ProductDetailView } from "./views/ProductDetailView.js";
+import { CartView } from "./views/CartView.js";
+import { OrderHistoryView } from "./views/OrderHistoryView.js";
+
+import { NavigationPanelComponent } from "./components/NavigationPanelComponent.js";
 
 export function render(root, state, dispatch) {
-    root.replaceChildren();
+  root.replaceChildren();
 
-    const viewState = selectViewState(state);
+  const viewState = selectViewState(state);
+  const handlers = createHandlers(dispatch, viewState);
 
-    // továrna ovladačů
-    const handlers = createHandlers(dispatch, viewState);
+  let view;
 
-    let view;
+  if (viewState.capabilities) {
+    const navHandlers =
+      navigationPanelHandlers(dispatch, viewState);
 
-    switch (viewState.type) {
-        case 'LOADING':
-            view = LoadingView();
-            break;
+    const navigationPanel =
+      NavigationPanelComponent({
+        handlers: navHandlers,
+      });
 
-        // kazdy view má props - viewState a handlers, který se pak využívají pro zobrazení a pro obsluhu událostí
-        case 'EXAM_TERM_DETAIL':
-            if (!viewState.exam) {
-                view = ErrorView({ message: 'Zkouškový termín nebyl nalezen.' });
-            } else {
-                view = ExamTermDetailView({ viewState, handlers });
-            }
-            break;
-        default:
-            view = document.createTextNode(`Unknown view type: ${viewState.type}`);
-    }
+    root.appendChild(navigationPanel);
+  }
 
-    root.appendChild(view);
+  switch (viewState.type) {
+    case "LOADING":
+      view = LoadingView();
+      break;
 
-    // notifikace (toast)
-    const { notification } = state.ui;
+    case "ERROR":
+      view = ErrorView({
+        message: viewState.message,
+        handlers,
+      });
+      break;
 
-    if (notification) {
-        const notificationElement = document.createElement('div');
-        notificationElement.textContent = notification.message;
-        notificationElement.classList.add('notification');
-        root.appendChild(notificationElement);
-    }
+    case "DASHBOARD":
+      view = DashboardView({
+        viewState,
+        handlers,
+      });
+      break;
+
+    case "AUTHENTICATION":
+      view = AuthenticationView({
+        viewState,
+        handlers,
+      });
+      break;
+
+    case "PRODUCT_LIST":
+      view = ProductListView({
+        viewState,
+        handlers,
+      });
+      break;
+
+    case "PRODUCT_DETAIL":
+      if (!viewState.product) {
+        view = ErrorView({
+          message: "Produkt nebyl nalezen.",
+          handlers,
+        });
+      } else {
+        view = ProductDetailView({
+          viewState,
+          handlers,
+        });
+      }
+      break;
+
+    case "CART":
+      view = CartView({
+        viewState,
+        handlers,
+      });
+      break;
+
+    case "ORDER_HISTORY":
+      view = OrderHistoryView({
+        viewState,
+        handlers,
+      });
+      break;
+
+    default:
+      view = document.createTextNode(
+        `Unknown view type: ${viewState.type}`
+      );
+  }
+
+  root.appendChild(view);
+
+  const { notification } = state.ui;
+
+  if (notification) {
+    const notificationElement =
+      document.createElement("div");
+
+    notificationElement.textContent =
+      notification.message;
+
+    notificationElement.classList.add("notification");
+
+    root.appendChild(notificationElement);
+  }
 }

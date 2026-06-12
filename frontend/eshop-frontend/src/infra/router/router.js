@@ -1,69 +1,94 @@
 // src/infra/router/router.js
 
-// --------------------------------------------------
-// Router pracuje s LOGICKOU CESTOU aplikace,
-// nikoli s celou URL (protokol, host, port ho nezajímají).
-//
-// Navigační kontexty jsou:
-//
-//   #/exam-terms           ... seznam termínů
-//   #/exam-terms/:id       ... detail termínu
-//   #/exam-terms/:id/edit  ... administrace termínu
-// --------------------------------------------------
-
-// URL -> route
-// odstraníme # a technické části
 export function urlToRoute(url) {
   const hashIndex = url.indexOf("#");
   const path = hashIndex >= 0 ? url.slice(hashIndex + 1) : "";
   return parseUrl(path);
 }
 
-// parsování - syntaktická analýza cesty
 export function parseUrl(path) {
   const parts = path.split("/").filter(Boolean);
 
-  // #/exam-terms
-  if (parts.length === 1 && parts[0] === "exam-terms") {
-    return { context: "EXAM_TERM_LIST" };
+  // #/
+  if (parts.length === 0) {
+    return { context: "DASHBOARD" };
   }
 
-  // #/exam-terms/:id
-  if (parts.length === 2 && parts[0] === "exam-terms") {
+  // #/products
+  if (parts.length === 1 && parts[0] === "products") {
+    return { context: "PRODUCT_LIST" };
+  }
+
+  // #/products/:id
+  if (parts.length === 2 && parts[0] === "products") {
     return {
-      context: "EXAM_TERM_DETAIL",
-      examId: parts[1],
+      context: "PRODUCT_DETAIL",
+      productId: parts[1],
     };
   }
 
-  // #/exam-terms/:id/edit
-  if (parts.length === 3 && parts[0] === "exam-terms" && parts[2] === "edit") {
-    return {
-      context: "EXAM_TERM_ADMINISTRATION",
-      examId: parts[1],
-    };
+  // #/categories
+  if (parts.length === 1 && parts[0] === "categories") {
+    return { context: "CATEGORY_LIST" };
+  }
+
+  // #/cart
+  if (parts.length === 1 && parts[0] === "cart") {
+    return { context: "CART" };
+  }
+
+  // #/orders
+  if (parts.length === 1 && parts[0] === "orders") {
+    return { context: "ORDER_LIST" };
+  }
+
+  // #/auth
+  if (parts.length === 1 && parts[0] === "auth") {
+    return { context: "AUTHENTICATION" };
+  }
+
+  // #/order-history
+  if (parts.length === 1 && parts[0] === "order-history") {
+    return { context: "ORDER_HISTORY" };
   }
 
   return { context: "UNKNOWN" };
 }
 
-// route -> navigační akce
 export function routeToAction(route) {
   switch (route.context) {
-    case "EXAM_TERM_LIST":
-      return { type: "ENTER_EXAM_TERM_LIST" };
-    case "EXAM_TERM_DETAIL":
+    case "DASHBOARD":
+      return { type: "ENTER_DASHBOARD" };
+
+    case "ORDER_HISTORY":
+      return { type: "ENTER_ORDER_HISTORY" };
+
+    case "PRODUCT_LIST":
+      return { type: "ENTER_PRODUCT_LIST" };
+
+    case "PRODUCT_DETAIL":
       return {
-        type: "ENTER_EXAM_TERM_DETAIL",
-        payload: { examId: route.examId },
+        type: "ENTER_PRODUCT_DETAIL",
+        payload: {
+          productId: route.productId,
+        },
       };
-    case "EXAM_TERM_ADMINISTRATION":
-      return {
-        type: "ENTER_EXAM_TERM_ADMINISTRATION",
-        payload: { examId: route.examId },
-      };
+
+    case "CATEGORY_LIST":
+      return { type: "ENTER_CATEGORY_LIST" };
+
+    case "CART":
+      return { type: "ENTER_CART" };
+
+    case "ORDER_LIST":
+      return { type: "ENTER_ORDER_LIST" };
+
+    case "AUTHENTICATION":
+      return { type: "ENTER_AUTHENTICATION" };
+
     case "UNKNOWN":
-      return { type: "ENTER_EXAM_TERM_LIST" };
+    default:
+      return { type: "ENTER_DASHBOARD" };
   }
 }
 

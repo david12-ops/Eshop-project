@@ -4,12 +4,21 @@ import { createInitialState } from './state.js';
 import { createStore } from '../infra/store/createStore.js';
 import { createDispatcher } from './dispatch.js';
 import { render } from '../ui/render.js';
-import * as examTermsApi from '../api/examTermsApi.js';
+
+import { createApi } from '../api/mockApi.js'; // NEW
+// import { createHttpApi } from '../api/httpApi.js'; // NEW
+
+// import * as examTermsApi from "../api/examTermsApi.js";   // OLD
 import { urlToAction } from '../infra/router/router.js';
+
+const api = createApi(); // NEW
+// const api = createHttpApi();   NEW
 
 // 1. inicializace infrastruktury aplikace
 const store = createStore(createInitialState());
-const dispatch = createDispatcher(store, examTermsApi);
+
+const dispatch = createDispatcher(store, api); // NEW
+//const dispatch = createDispatcher(store, examTermsApi);   // OLD
 
 // 2. napojení výstupu aplikace
 const root = document.getElementById('app');

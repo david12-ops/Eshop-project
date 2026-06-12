@@ -1,22 +1,33 @@
 // src/app/dispatch.js
 // Předpoklady v chování: uživatel nekliká zběsile rychle, nevolá REGISTER_FOR_EXAM5x za sebou - skutečné aplikace by to řešily
 
-import { appInit } from './appInit.js';
+import { appInit } from "./appInit.js";
 
-import { enterExamTermList } from './actions/enterExamTermList.js';
-import { enterExamTermDetail } from './actions/enterExamTermDetail.js';
-import { enterExamTermAdministration } from './actions/enterExamTermAdministration.js';
+// autentizace
+import { loginUser } from "./actions/loginUser.js";
+import { registerUser } from "./actions/registerUser.js";
+import { logoutUser } from "./actions/logoutUser.js";
 
-import { createExamTerm } from './actions/createExamTerm.js';
-import { publishExamTerm } from './actions/publishExamTerm.js';
-import { unpublishExamTerm } from './actions/unpublishExamTerm.js';
-import { updateExamCapacity } from './actions/updateExamCapacity.js';
-import { updateExamTerm } from './actions/updateExamTerm.js';
-import { cancelExamTerm } from './actions/cancelExamTerm.js';
-import { deleteExamTerm } from './actions/deleteExamTerm.js';
+// navigace
+import { enterDashboard } from "./actions/enterDashboard.js";
+import { enterAuthentication } from "./actions/enterAuthentication.js";
 
-import { registerForExam } from './actions/registerForExam.js';
-import { unregisterFromExam } from './actions/unregisterFromExam.js';
+import { enterProductList } from "./actions/enterProductList.js";
+import { enterProductDetail } from "./actions/enterProductDetail.js";
+import { enterCart } from "./actions/enterCart.js";
+import { enterOrderHistory } from "./actions/enterOrderHistory.js";
+
+// produkty
+import { createProduct } from "./actions/createProduct.js";
+import { updateProduct } from "./actions/updateProduct.js";
+import { deleteProduct } from "./actions/deleteProduct.js";
+
+// košík
+import { addToCart } from "./actions/addToCart.js";
+import { removeFromCart } from "./actions/removeFromCart.js";
+
+// objednávky
+import { createOrder } from "./actions/createOrder.js";
 
 /**
  * Vytvoří funkci dispatch, která podle typu akce vrací výsledek výkonného kódu akce.
@@ -34,49 +45,56 @@ export function createDispatcher(store, api) {
 
     switch (type) {
       // inicializace
-      case 'APP_INIT':
+      case "APP_INIT":
         return appInit({ store, api, dispatch });
 
+      // autentizační akce
+      case "LOGIN":
+        return loginUser({ store, api, payload });
+
+      case "REGISTER":
+        return registerUser({ store, api, payload });
+
+      case "LOGOUT":
+        return logoutUser({ store, api });
+
       // navigační akce
-      case 'ENTER_EXAM_TERM_LIST':
-        return enterExamTermList({ store });
+      case "ENTER_DASHBOARD":
+        return enterDashboard({ store });
 
-      case 'ENTER_EXAM_TERM_DETAIL':
-        return enterExamTermDetail({ store, payload });
+      case "ENTER_AUTHENTICATION":
+        return enterAuthentication({ store });
 
-      case 'ENTER_EXAM_TERM_ADMINISTRATION':
-        return enterExamTermAdministration({ store, payload });
+      case "ENTER_PRODUCT_LIST":
+        return enterProductList({ store });
+
+      case "ENTER_PRODUCT_DETAIL":
+        return enterProductDetail({ store, payload });
+
+      case "ENTER_CART":
+        return enterCart({ store });
+
+      case "ENTER_ORDER_HISTORY":
+        return enterOrderHistory({ store });
 
       // doménové akce
+      case "CREATE_PRODUCT":
+        return createProduct({ store, api, payload });
 
-      case 'CREATE_EXAM_TERM':
-        return createExamTerm({ store, api, payload });
+      case "UPDATE_PRODUCT":
+        return updateProduct({ store, api, payload });
 
-      case 'PUBLISH_EXAM_TERM':
-        return publishExamTerm({ store, api, payload });
+      case "DELETE_PRODUCT":
+        return deleteProduct({ store, api, payload });
 
-      case 'UNPUBLISH_EXAM_TERM':
-        return unpublishExamTerm({ store, api, payload });
+      case "ADD_TO_CART":
+        return addToCart({ store, api, payload });
 
-      case 'UPDATE_EXAM_CAPACITY':
-        // předáváme payload: { examId, capacity }
-        return updateExamCapacity({ store, api, payload });
+      case "REMOVE_FROM_CART":
+        return removeFromCart({ store, api, payload });
 
-      case 'UPDATE_EXAM_TERM':
-        // předáváme payload: { examId, data }
-        return updateExamTerm({ store, api, payload });
-
-      case 'CANCEL_EXAM_TERM':
-        return cancelExamTerm({ store, api, payload });
-
-      case 'DELETE_EXAM_TERM':
-        return deleteExamTerm({ store, api, payload });
-
-      case 'REGISTER_FOR_EXAM_TERM':
-        return registerForExam({ store, api, payload });
-
-      case 'UNREGISTER_FROM_EXAM':
-        return unregisterFromExam({ store, api, payload });
+      case "CREATE_ORDER":
+        return createOrder({ store, api, payload });
 
       default:
         console.warn(`Unknown action type: ${type}`);

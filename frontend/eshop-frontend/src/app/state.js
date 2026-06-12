@@ -4,7 +4,7 @@ UI state contract
 =================
 state.ui = {
   status: 'READY' | 'LOADING' | 'ERROR',
-  errorMessage: null | string,
+  message: null | string,
 };
 READY -> LOADING -> READY
 READY -> ERROR
@@ -16,19 +16,27 @@ READY -> ERROR
 export function createInitialState() {
   return {
     // ====== domain data =======
-    exams: [],
-    registrations: [],
-    evaluations: [],
+    products: [],
+    categories: [],
+    cart: [],
+    orders: [],
 
-    // ====== identity  ======
-    auth: { role: 'ANONYMOUS', userId: null, token: null },
+    // ====== identity ======
+    auth: {
+      role: "ANONYMOUS",
+      userId: null,
+      token: null,
+    },
 
-    // ====== UI state =========
+    // ====== UI state ======
     ui: {
-      mode: 'EXAM_TERM_LIST',
-      selectedExamId: null,
-      status: 'LOADING',
-      errorMessage: null,
+      mode: "DASHBOARD",
+
+      selectedProductId: null,
+      selectedOrderId: null,
+
+      status: "LOADING",
+      message: null,
       notification: null,
     },
   };

@@ -1,55 +1,93 @@
-import { urlToAction } from '../infra/router/router.js';
+import { urlToAction } from "../infra/router/router.js";
 
 // první akce aplikace
 export async function appInit({ store, api, dispatch }) {
-  //const token = 'student-1_12345678';
-  const token = 'teacher-1_25893255';
+
+  const token = localStorage.getItem("token");
 
   store.setState((state) => ({
     ...state,
-    ui: { ...state.ui, status: 'LOADING', errorMessage: null },
+    ui: {
+      ...state.ui,
+      status: "LOADING",
+      message: null,
+    },
   }));
 
-  const whoResult = await api.whoAmI(token);
-
+  // autentizace
   let auth = {
-    role: 'ANONYMOUS',
+    role: "ANONYMOUS",
     userId: null,
     token: null,
   };
 
-  if (whoResult.status === 'SUCCESS') {
-    auth = {
-      role: whoResult.role,
-      userId: whoResult.userId,
-      token,
-    };
+  if (token) {
+    const whoResult = await api.auth.whoAmI(token);
+
+    if (whoResult.status === "SUCCESS") {
+      auth = {
+        role: whoResult.role,
+        userId: whoResult.userId,
+        token,
+      };
+    }
   }
 
-  // načtení doménových dat
-  const dataResult = await api.getExams(token);
+  // načtení dat e-shopu
+  const [productsResult, categoriesResult, ordersResult, cartResult] = await Promise.all([
+    api.products.getProducts(),
+    api.categories.getCategories(),
+    api.orders.getOrders(),
+    api.carts.getCarts(),
+  ]);
 
-  if (dataResult.status !== 'SUCCESS') {
+  if (
+    productsResult.status !== "SUCCESS" ||
+    categoriesResult.status !== "SUCCESS" ||
+    ordersResult.status !== "SUCCESS" ||
+    cartResult.status !== "SUCCESS"
+  ) {
     store.setState((state) => ({
       ...state,
       auth,
-      ui: { ...state.ui, status: 'ERROR', errorMessage: 'Nepodařilo se načíst data' },
+      ui: {
+        ...state.ui,
+        status: "ERROR",
+        message: "Nepodařilo se načíst data",
+      },
     }));
+
     return;
   }
 
-  const { exams, registrations } = dataResult;
+  const { products } = productsResult;
+  const { categories } = categoriesResult;
+  const { orders } = ordersResult;
+  const { carts } = cartResult;
 
-  // přepnutí do READY stavu
   store.setState((state) => ({
     ...state,
+
     auth,
-    exams,
-    registrations,
-    ui: { ...state.ui, status: 'READY', errorMessage: null },
+
+    products: [...products],
+    categories: [...categories],
+    orders: [...orders],
+    cart: [...carts],
+
+    ui: {
+      ...state.ui,
+      status: "READY",
+      message: null,
+    },
   }));
 
   // první navigace
   const initialAction = urlToAction(window.location.href);
-  dispatch(initialAction);
+
+  if (initialAction) {
+    dispatch(initialAction);
+  } else {
+    dispatch({ type: "ENTER_DASHBOARD" });
+  }
 }
