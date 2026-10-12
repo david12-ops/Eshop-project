@@ -6,13 +6,13 @@ import com.example.model.Address;
 
 public interface AddressService {
 
-    List<Address> getAllAddresses();
+    List<Address> getAddresses();
 
     Address getAddressById(Integer id);
 
-    void saveAddress(Address address);
+    Address saveAddress(Address address);
 
-    void editAddress(Integer id, Address address);
+    Address editAddress(Integer id, Address address);
 
     void deleteAddressById(Integer id);
 }

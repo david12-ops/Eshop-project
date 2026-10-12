@@ -8,11 +8,11 @@ public interface DiscountService {
 
     Discount getDiscountById(Integer id);
 
-    List<Discount> getAllDiscounts();
+    List<Discount> getDiscounts();
 
-    void saveDiscount(Discount discount);
+    Discount saveDiscount(Discount discount);
 
-    void editDiscount(Integer id, Discount discount);
+    Discount editDiscount(Integer id, Discount discount);
 
     void deleteDiscountById(Integer id);
 }

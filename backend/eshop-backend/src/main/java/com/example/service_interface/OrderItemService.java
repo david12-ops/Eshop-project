@@ -10,9 +10,9 @@ public interface OrderItemService {
 
     List<OrderItem> getAllOrderItems();
 
-    void saveOrderItem(OrderItem orderItem);
+    OrderItem saveOrderItem(OrderItem orderItem);
 
-    void editOrderItem(Integer id, OrderItem orderItem);
+    OrderItem editOrderItem(Integer id, OrderItem orderItem);
 
     void deleteOrderItemById(Integer id);
 }

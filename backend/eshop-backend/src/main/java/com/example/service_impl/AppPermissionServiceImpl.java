@@ -5,74 +5,71 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.exception.ResourceNotFoundException;
+import com.example.exception.BadRequestException;
 import com.example.model.AppPermission;
-import com.example.model.Role;
 import com.example.model.keys.AppPermissionId;
 import com.example.repository.AppPermissionRepository;
-import com.example.repository.RoleRepository;
 import com.example.service_interface.AppPermissionService;
 
 @Service
 public class AppPermissionServiceImpl implements AppPermissionService {
     private final AppPermissionRepository appPermissionRepository;
-    private final RoleRepository roleRepository;
 
     public AppPermissionServiceImpl(
-            AppPermissionRepository appPermissionRepository,
-            RoleRepository roleRepository) {
-
+            AppPermissionRepository appPermissionRepository) {
         this.appPermissionRepository = appPermissionRepository;
-        this.roleRepository = roleRepository;
     }
 
     @Override
-    public void saveAppPermission(AppPermission permission) {
-        if (permission == null)
-            return;
+    public AppPermission saveAppPermission(AppPermission permission) {
+        if (permission == null) {
+            throw new BadRequestException("Permission must not be null");
+        }
 
-        appPermissionRepository.save(permission);
+        return appPermissionRepository.save(permission);
     }
 
     @Override
     public AppPermission getAppPermissionById(AppPermissionId id) {
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
+
         return appPermissionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Permission not found with id: " + id));
     }
 
     @Override
-    public List<AppPermission> findAll() {
+    public List<AppPermission> getAllAppPermissions() {
         return appPermissionRepository.findAll();
     }
 
     @Override
-    public List<Role> findAllRoles() {
-        return roleRepository.findAll();
+    public AppPermission editAppPermission(AppPermissionId id, AppPermission permission) {
+        if (id == null || permission == null) {
+            throw new BadRequestException("ID or permission to edit must not be null");
+        }
+
+        return appPermissionRepository.findById(id)
+                .map(existingPAppPermission -> {
+                    existingPAppPermission.setResourceType(permission.getResourceType());
+                    existingPAppPermission.setOperationType(permission.getOperationType());
+
+                    return appPermissionRepository.save(existingPAppPermission);
+                })
+                .orElse(null);
     }
 
-    @Override
-    public void editAppPermission(AppPermissionId id, AppPermission permission) {
-        if (id == null || permission == null)
-            return;
-
-        appPermissionRepository.findById(id).ifPresent(existingPAppPermission -> {
-
-            existingPAppPermission.setResourceType(permission.getResourceType());
-            existingPAppPermission.setOperationType(permission.getOperationType());
-
-            appPermissionRepository.save(existingPAppPermission);
-
-        });
-    }
-
+    // Soft deletion
     @Override
     public void deleteAppPermissionById(AppPermissionId id) {
-        if (id == null)
-            return;
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
 
-        // zatím ne
         appPermissionRepository.findById(id).ifPresent(appPermission -> {
             if (appPermission.getDeleted())
-                return; // tady jen soft kvůli klíčům
+                return;
 
             appPermissionRepository.softDeleteById(id);
         });

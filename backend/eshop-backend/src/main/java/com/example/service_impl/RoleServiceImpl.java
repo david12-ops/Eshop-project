@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.exception.BadRequestException;
 import com.example.exception.ResourceNotFoundException;
 import com.example.model.Role;
 import com.example.repository.RoleRepository;
@@ -20,11 +21,12 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void saveRole(Role role) {
-        if (role == null)
-            return;
+    public Role saveRole(Role role) {
+        if (role == null) {
+            throw new BadRequestException("Role must not be null");
+        }
 
-        roleRepository.save(role);
+        return roleRepository.save(role);
     }
 
     @Override
@@ -34,7 +36,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<Role> findAll() {
+    public List<Role> getAllRoles() {
         return roleRepository.findAll();
     }
 
@@ -61,36 +63,42 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role getRoleById(Integer id) {
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
+
         return roleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + id));
     }
 
+    // Soft deletion
     @Override
     public void deleteRoleById(Integer id) {
-        if (id == null)
-            return;
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
 
-        // zatím ne
         roleRepository.findById(id).ifPresent(role -> {
             if (role.getDeleted())
-                return; // tady jen soft kvůli klíčům
+                return;
 
             roleRepository.softDeleteById(id);
         });
     }
 
     @Override
-    public void editRole(Integer id, Role role) {
-        if (id == null || role == null)
-            return;
+    public Role editRole(Integer id, Role role) {
+        if (id == null || role == null) {
+            throw new BadRequestException("ID or role to edit must not be null");
+        }
 
-        roleRepository.findById(id).ifPresent(existingRole -> {
-
+        // ZDE
+        return roleRepository.findById(id).map(existingRole -> {
             existingRole.setRoleName(role.getRoleName());
             existingRole.setRoleType(role.getRoleType());
             existingRole.setRoleDescription(role.getRoleDescription());
 
-            roleRepository.save(existingRole);
-        });
+            return roleRepository.save(existingRole);
+        }).orElse(null);
     }
 }

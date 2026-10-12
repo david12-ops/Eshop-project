@@ -11,25 +11,25 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
-import com.example.service_interface.UserService;
+import com.example.service_interface.AppUserService;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
-        private final UserService userService;
+        private final AppUserService appUserService;
         private final PasswordEncoder passwordEncoder;
 
         @Autowired
-        public SecurityConfig(UserService userService, PasswordEncoder passwordEncoder) {
-                this.userService = userService;
+        public SecurityConfig(AppUserService appUserService, PasswordEncoder passwordEncoder) {
+                this.appUserService = appUserService;
                 this.passwordEncoder = passwordEncoder;
         }
 
         @Autowired
         public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-                auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
+                auth.userDetailsService(appUserService).passwordEncoder(passwordEncoder);
         }
 
         @Bean

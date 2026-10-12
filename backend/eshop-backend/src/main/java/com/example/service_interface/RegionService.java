@@ -8,11 +8,11 @@ public interface RegionService {
 
     Region getRegionById(Integer id);
 
-    List<Region> getAllRegions();
+    List<Region> getRegions();
 
-    void saveRegion(Region region);
+    Region saveRegion(Region region);
 
-    void editRegion(Integer id, Region region);
+    Region editRegion(Integer id, Region region);
 
     void deleteRegionById(Integer id);
 }

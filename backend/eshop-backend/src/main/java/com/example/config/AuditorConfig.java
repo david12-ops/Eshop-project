@@ -21,7 +21,7 @@ public class AuditorConfig {
 
             if (authentication == null || !authentication.isAuthenticated()
                     || authentication instanceof AnonymousAuthenticationToken) {
-                return Optional.of(1); // naivní, možný update
+                return Optional.of(1);
             }
 
             MyUserDetail userDetail = (MyUserDetail) authentication.getPrincipal();

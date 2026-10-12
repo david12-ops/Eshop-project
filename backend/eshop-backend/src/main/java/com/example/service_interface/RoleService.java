@@ -6,17 +6,17 @@ import java.util.List;
 
 public interface RoleService {
 
-    void saveRole(Role role);
+    Role saveRole(Role role);
 
     Role findByRoleName(String roleName);
 
-    List<Role> findAll();
+    List<Role> getAllRoles();
 
     Role getRoleById(Integer id);
 
     void deleteRoleById(Integer id);
 
-    void editRole(Integer id, Role role);
+    Role editRole(Integer id, Role role);
 
     Role getRoleWithUsers(Integer id);
 

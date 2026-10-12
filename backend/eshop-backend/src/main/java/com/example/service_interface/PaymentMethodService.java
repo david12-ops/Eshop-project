@@ -8,11 +8,11 @@ public interface PaymentMethodService {
 
     PaymentMethod getPaymentMethodById(Integer id);
 
-    List<PaymentMethod> getAllPaymentMethods();
+    List<PaymentMethod> getPaymentMethods();
 
-    void savePaymentMethod(PaymentMethod paymentMethod);
+    PaymentMethod savePaymentMethod(PaymentMethod paymentMethod);
 
-    void editPaymentMethod(Integer id, PaymentMethod paymentMethod);
+    PaymentMethod editPaymentMethod(Integer id, PaymentMethod paymentMethod);
 
     void deletePaymentMethodById(Integer id);
 }

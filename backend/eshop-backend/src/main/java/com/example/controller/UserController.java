@@ -1,102 +1,50 @@
 package com.example.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.ui.Model;
+import java.util.List;
+
+import org.springframework.web.bind.annotation.*;
 
 import com.example.model.AppUser;
-import com.example.service_interface.RoleService;
-import com.example.service_interface.UserService;
+import com.example.service_interface.AppUserService;
 
-@Controller
+@RestController 
 @RequestMapping("/users")
 public class UserController {
-    private final UserService userService;
-    private final RoleService roleService;
+    private final AppUserService appUserService;
 
-    public UserController(
-            UserService userService,
-            RoleService roleService) {
-        this.userService = userService;
-        this.roleService = roleService;
+    public UserController(AppUserService appUserService) {
+        this.appUserService = appUserService;
     }
 
     // LIST
     @GetMapping
-    public String listUsers(Model model) {
-
-        model.addAttribute("users", userService.getAllUsers());
-
-        return "users/list";
+    public List<AppUser> listUsers() {
+        return appUserService.getAppUsers();
     }
 
     // DETAIL
-    @GetMapping("/detail/{id}")
-    public String userDetail(
-            @PathVariable Integer id,
-            Model model) {
-
-        model.addAttribute("user", userService.getUserById(id));
-
-        return "users/detail";
+    @GetMapping("/{id}")
+    public AppUser userDetail(@PathVariable Integer id) {
+        return appUserService.getAppUserById(id);
     }
 
-    // CREATE FORM
-    @GetMapping("/create")
-    public String createForm(Model model) {
-
-        model.addAttribute("user", new AppUser());
-
-        model.addAttribute("roles", roleService.findAll());
-
-        return "users/create";
-    }
-
-    // CREATE SAVE
+    // CREATE 
     @PostMapping("/create")
-    public String createUser(
-            @ModelAttribute AppUser user) {
-
-        userService.saveUser(user);
-
-        return "redirect:/users";
+    public AppUser createUser(@RequestBody  AppUser user) {
+        return appUserService.saveAppUser(user);
     }
 
-    // EDIT FORM
-    @GetMapping("/edit/{id}")
-    public String editForm(
+    // EDIT 
+    @PutMapping("/{id}")
+    public AppUser editUser(
             @PathVariable Integer id,
-            Model model) {
-
-        model.addAttribute("user", userService.getUserById(id));
-
-        model.addAttribute("roles", roleService.findAll());
-
-        return "users/edit";
-    }
-
-    // EDIT SAVE
-    @PostMapping("/edit/{id}")
-    public String editUser(
-            @PathVariable Integer id,
-            @ModelAttribute AppUser user) {
-
-        userService.editUser(id, user);
-
-        return "redirect:/users";
+            @RequestBody  AppUser user) {
+        return appUserService.editAppUser(id, user);
     }
 
     // DELETE
-    @PostMapping("/delete/{id}")
-    public String deleteUser(
-            @PathVariable Integer id) {
-
-        userService.deleteUserById(id);
-
-        return "redirect:/users";
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable Integer id) {
+        appUserService.deleteAppUserById(id);
     }
 }

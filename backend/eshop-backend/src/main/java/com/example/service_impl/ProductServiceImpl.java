@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.dto.ProductCardDto;
+import com.example.exception.BadRequestException;
 import com.example.exception.ResourceNotFoundException;
 import com.example.model.Category;
 import com.example.model.Product;
@@ -24,19 +24,24 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProductById(Integer id) {
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
+
         return productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
     }
 
     @Override
-    public List<Product> getAllProducts() {
+    public List<Product> getProducts() {
         return productRepository.findAll();
     }
 
     @Override
-    public void saveProduct(Product product) {
-        if (product == null)
-            return;
+    public Product saveProduct(Product product) {
+        if (product == null) {
+            throw new BadRequestException("Product must not be null");
+        }
 
         if (product.getCategory() != null
                 && product.getCategory().getId() == null) {
@@ -44,29 +49,32 @@ public class ProductServiceImpl implements ProductService {
             product.setCategory(null);
         }
 
-        productRepository.save(product);
+        return productRepository.save(product);
     }
 
+    // Soft deletion
     @Override
     public void deleteProductById(Integer id) {
-        if (id == null)
-            return;
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
 
-        // zatím ne
         productRepository.findById(id).ifPresent(product -> {
             if (product.getDeleted())
-                return; // tady jen soft kvůli klíčům
+                return;
 
             productRepository.softDeleteById(id);
         });
     }
 
     @Override
-    public void editProduct(Integer id, Product product) {
-        if (id == null || product == null)
-            return;
+    public Product editProduct(Integer id, Product product) {
+        if (id == null || product == null) {
+            throw new BadRequestException("ID or product to edit must not be null");
+        }
 
-        productRepository.findById(id).ifPresent(existingProduct -> {
+        // ZDE
+        return productRepository.findById(id).map(existingProduct -> {
             existingProduct.setProductName(product.getProductName());
             existingProduct.setProductDescription(product.getProductDescription());
             existingProduct.setRecommendedPrice(product.getRecommendedPrice());
@@ -85,21 +93,7 @@ public class ProductServiceImpl implements ProductService {
                 existingProduct.setCategory(null);
             }
 
-            productRepository.save(existingProduct);
-        });
-    }
-
-    @Override
-    public List<ProductCardDto> getFeaturedProducts() {
-        return productRepository.findTop12ByOrderByCreatedAtDesc()
-                .stream().filter(pr -> !pr.getDeleted())
-                .map(product -> new ProductCardDto(
-                        product.getId(),
-                        product.getProductName(),
-                        product.getProductDescription(),
-                        product.getRecommendedPrice(),
-                        product.getCategory().getCategoryName(),
-                        product.getProductImageUrl()))
-                .toList();
+            return productRepository.save(existingProduct);
+        }).orElse(null);
     }
 }

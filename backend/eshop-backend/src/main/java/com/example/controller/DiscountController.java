@@ -1,14 +1,13 @@
 package com.example.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.*;
 
 import com.example.model.Discount;
-import com.example.model.enums.DiscountType;
 import com.example.service_interface.DiscountService;
 
-@Controller
+@RestController 
 @RequestMapping("/discounts")
 public class DiscountController {
     private final DiscountService discountService;
@@ -19,84 +18,34 @@ public class DiscountController {
 
     // LIST
     @GetMapping
-    public String listDiscounts(Model model) {
-
-        model.addAttribute("discounts", discountService.getAllDiscounts());
-
-        return "discounts/list";
+    public List<Discount> listDiscounts() {
+        return discountService.getDiscounts();
     }
 
     // DETAIL
-    @GetMapping("/detail/{id}")
-    public String discountDetail(
-            @PathVariable Integer id,
-            Model model) {
-
-        Discount discount = discountService.getDiscountById(id);
-
-        model.addAttribute(
-                "discount",
-                discount);
-
-        return "discounts/detail";
+    @GetMapping("/{id}")
+    public Discount discountDetail(@PathVariable Integer id) {
+        return discountService.getDiscountById(id);
     }
 
-    // CREATE FORM
-    @GetMapping("/create")
-    public String createForm(Model model) {
-
-        model.addAttribute(
-                "discount",
-                new Discount());
-        model.addAttribute("discountTypes", DiscountType.values());
-
-        return "discounts/create";
-    }
-
-    // CREATE SAVE
+    // CREATE
     @PostMapping("/create")
-    public String createDiscount(
-            @ModelAttribute Discount discount) {
-
-        discountService.saveDiscount(discount);
-
-        return "redirect:/discounts";
+    public Discount createDiscount(
+            @RequestBody Discount discount) {
+       return discountService.saveDiscount(discount);
     }
 
-    // EDIT FORM
-    @GetMapping("/edit/{id}")
-    public String editForm(
+    // EDIT
+    @PutMapping("/{id}")
+    public Discount editDiscount(
             @PathVariable Integer id,
-            Model model) {
-
-        Discount discount = discountService.getDiscountById(id);
-
-        System.out.println("Editing discount: " + discount.toString());
-
-        model.addAttribute("discount", discount);
-        model.addAttribute("discountTypes", DiscountType.values());
-
-        return "discounts/edit";
-    }
-
-    // EDIT SAVE
-    @PostMapping("/edit/{id}")
-    public String editDiscount(
-            @PathVariable Integer id,
-            @ModelAttribute Discount discount) {
-
-        discountService.editDiscount(id, discount);
-
-        return "redirect:/discounts";
+            @RequestBody  Discount discount) {
+        return discountService.editDiscount(id, discount);
     }
 
     // DELETE
-    @PostMapping("/delete/{id}")
-    public String deleteDiscount(
-            @PathVariable Integer id) {
-
+    @DeleteMapping("/{id}")
+    public void deleteDiscount(@PathVariable Integer id) {
         discountService.deleteDiscountById(id);
-
-        return "redirect:/discounts";
     }
 }

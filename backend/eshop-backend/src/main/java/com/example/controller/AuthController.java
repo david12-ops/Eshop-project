@@ -7,14 +7,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.dto.RegisterRequest;
-import com.example.service_interface.UserService;
+import com.example.service_interface.AppUserService;
 
 @Controller
 public class AuthController {
-    private final UserService userService;
+    private final AppUserService appUserService;
 
-    public AuthController(UserService userService) {
-        this.userService = userService;
+    public AuthController(AppUserService appUserService) {
+        this.appUserService = appUserService;
     }
 
     @GetMapping("/register")
@@ -31,7 +31,7 @@ public class AuthController {
 
         System.out.println("Received registration data: " + user);
 
-        userService.registerUser(user);
+        appUserService.registerUser(user);
 
         return "redirect:/login?registered=true";
     }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.exception.ResourceNotFoundException;
+import com.example.exception.BadRequestException;
 import com.example.model.Address;
 import com.example.model.Region;
 import com.example.repository.AddressRepository;
@@ -22,31 +23,36 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public List<Address> getAllAddresses() {
+    public List<Address> getAddresses() {
         return addressRepository.findAll();
     }
 
     @Override
     public Address getAddressById(Integer id) {
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
+
         return addressRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Address not found with id: " + id));
     }
 
     @Override
-    public void saveAddress(Address address) {
-        if (address == null)
-            return;
+    public Address saveAddress(Address address) {
+        if (address == null) {
+            throw new BadRequestException("Address must not be null");
+        }
 
-        addressRepository.save(address);
+        return addressRepository.save(address);
     }
 
     @Override
-    public void editAddress(Integer id, Address address) {
-        if (id == null || address == null)
-            return;
+    public Address editAddress(Integer id, Address address) {
+        if (id == null || address == null) {
+            throw new BadRequestException("ID or address to edit must not be null");
+        }
 
-        addressRepository.findById(id).ifPresent(existingAddress -> {
-
+        return addressRepository.findById(id).map(existingAddress -> {
             existingAddress.setStreetName(address.getStreetName());
             existingAddress.setCityName(address.getCityName());
             existingAddress.setStateName(address.getStateName());
@@ -66,19 +72,20 @@ public class AddressServiceImpl implements AddressService {
                 existingAddress.setRegion(null);
             }
 
-            addressRepository.save(existingAddress);
-        });
+            return addressRepository.save(existingAddress);
+        }).orElse(null);
     }
 
+    // Soft deletion
     @Override
     public void deleteAddressById(Integer id) {
-        if (id == null)
-            return;
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
 
-        // zatím ne
         addressRepository.findById(id).ifPresent(address -> {
             if (address.getDeleted())
-                return; // tady jen soft kvůli klíčům
+                return;
 
             addressRepository.softDeleteById(id);
         });

@@ -2,105 +2,49 @@ package com.example.controller;
 
 import java.util.List;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.model.Product;
-import com.example.dto.ProductCardDto;
-import com.example.service_interface.CategoryService;
 import com.example.service_interface.ProductService;
 
-@Controller
+@RestController 
 @RequestMapping("/products")
 public class ProductController {
         private final ProductService productService;
-        private final CategoryService categoryService;
 
-        public ProductController(ProductService productService, CategoryService categoryService) {
+        public ProductController(ProductService productService) {
                 this.productService = productService;
-                this.categoryService = categoryService;
         }
 
+        // LIST
         @GetMapping
-        public String listProducts(Model model) {
-
-                model.addAttribute("products", productService.getAllProducts());
-
-                return "products/list";
+        public List<Product> listProducts() {
+                return productService.getProducts();
         }
 
-        @GetMapping("/detail/{id}")
-        public String productDetail(
-                        @PathVariable Integer id,
-                        Model model) {
-
-                Product product = productService.getProductById(id);
-
-                model.addAttribute(
-                                "product",
-                                product);
-
-                return "products/detail";
+        // DETAIL
+        @GetMapping("/{id}")
+        public Product productDetail(@PathVariable Integer id) {
+                return productService.getProductById(id);
         }
 
-        @GetMapping("/create")
-        public String createForm(Model model) {
-
-                model.addAttribute("product", new Product());
-                model.addAttribute("categories", categoryService.getAllCategories());
-
-                return "products/create";
-        }
-
+        // CREATE
         @PostMapping("/create")
-        public String createProduct(
-                        @ModelAttribute Product product) {
-
-                productService.saveProduct(product);
-
-                return "redirect:/products";
+        public Product createProduct(@RequestBody Product product) {
+                return productService.saveProduct(product);
         }
 
-        @GetMapping("/edit/{id}")
-        public String editForm(
+        // EDIT
+        @PutMapping("/{id}")
+        public Product editProduct(
                         @PathVariable Integer id,
-                        Model model) {
-
-                Product product = productService.getProductById(id);
-
-                model.addAttribute(
-                                "product",
-                                product);
-                model.addAttribute("categories", categoryService.getAllCategories());
-
-                return "products/edit";
+                        @RequestBody Product product) {
+                return productService.editProduct(id, product);
         }
 
-        @PostMapping("/edit/{id}")
-        public String editProduct(
-                        @PathVariable Integer id,
-                        @ModelAttribute Product product) {
-
-                productService.editProduct(id, product);
-
-                return "redirect:/products";
-        }
-
-        @GetMapping("/api/products/featured")
-        @ResponseBody
-        public List<ProductCardDto> getFeaturedProducts() {
-
-                return productService.getFeaturedProducts();
-
-        }
-
-        @PostMapping("/delete/{id}")
-        public String deleteProduct(
-                        @PathVariable Integer id) {
-
+        // DELETE
+        @DeleteMapping ("/{id}")
+        public void deleteProduct(@PathVariable Integer id) {
                 productService.deleteProductById(id);
-
-                return "redirect:/products";
         }
 }

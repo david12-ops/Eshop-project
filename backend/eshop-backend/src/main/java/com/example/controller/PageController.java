@@ -56,7 +56,7 @@ public class PageController {
 
         model.addAttribute(
                 "products",
-                productService.getFeaturedProducts());
+                productService.getProducts());
 
         return "customerHome";
     }

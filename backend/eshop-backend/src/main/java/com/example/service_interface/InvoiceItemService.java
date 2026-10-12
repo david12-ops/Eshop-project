@@ -10,9 +10,9 @@ public interface InvoiceItemService {
 
     List<InvoiceItem> getAllInvoiceItems();
 
-    void saveInvoiceItem(InvoiceItem invoiceItem);
+    InvoiceItem saveInvoiceItem(InvoiceItem invoiceItem);
 
-    void editInvoiceItem(Integer id, InvoiceItem invoiceItem);
+    InvoiceItem editInvoiceItem(Integer id, InvoiceItem invoiceItem);
 
     void deleteInvoiceItemById(Integer id);
 }

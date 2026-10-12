@@ -8,11 +8,11 @@ public interface OrderStatusService {
 
     OrderStatus getOrderStatusById(Integer id);
 
-    List<OrderStatus> getAllOrderStatuses();
+    List<OrderStatus> getOrderStatuses();
 
-    void saveOrderStatus(OrderStatus orderStatus);
+    OrderStatus saveOrderStatus(OrderStatus orderStatus);
 
-    void editOrderStatus(Integer id, OrderStatus orderStatus);
+    OrderStatus editOrderStatus(Integer id, OrderStatus orderStatus);
 
     void deleteOrderStatusById(Integer id);
 }

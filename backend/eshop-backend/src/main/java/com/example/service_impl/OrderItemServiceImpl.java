@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.exception.ResourceNotFoundException;
+import com.example.exception.BadRequestException;
 import com.example.model.OrderItem;
 import com.example.repository.OrderItemRepository;
 import com.example.service_interface.OrderItemService;
@@ -19,6 +20,10 @@ public class OrderItemServiceImpl implements OrderItemService {
 
     @Override
     public OrderItem getOrderItemById(Integer id) {
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
+
         return orderItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order item not found with id: " + id));
     }
@@ -29,40 +34,42 @@ public class OrderItemServiceImpl implements OrderItemService {
     }
 
     @Override
-    public void saveOrderItem(OrderItem orderItem) {
-        if (orderItem == null)
-            return;
+    public OrderItem saveOrderItem(OrderItem orderItem) {
+        if (orderItem == null) {
+            throw new BadRequestException("Order item must not be null");
+        }
 
-        orderItemRepository.save(orderItem);
+        return orderItemRepository.save(orderItem);
     }
 
+    // Soft deletion
     @Override
     public void deleteOrderItemById(Integer id) {
-        if (id == null)
-            return;
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
 
-        // zatím ne
         orderItemRepository.findById(id).ifPresent(orderItem -> {
             if (orderItem.getDeleted())
-                return; // tady jen soft kvůli klíčům
+                return;
 
             orderItemRepository.softDeleteById(id);
         });
     }
 
     @Override
-    public void editOrderItem(Integer id, OrderItem orderItem) {
-        if (id == null || orderItem == null)
-            return;
+    public OrderItem editOrderItem(Integer id, OrderItem orderItem) {
+        if (id == null || orderItem == null) {
+            throw new BadRequestException("ID or order item to edit must not be null");
+        }
 
-        orderItemRepository.findById(id).ifPresent(existingOrderItem -> {
-
+        return orderItemRepository.findById(id).map(existingOrderItem -> {
             existingOrderItem.setLineTotal(orderItem.getLineTotal());
             existingOrderItem.setQuantity(orderItem.getQuantity());
             existingOrderItem.setNotes(orderItem.getNotes());
             existingOrderItem.setUnitPrice(orderItem.getUnitPrice());
 
-            orderItemRepository.save(existingOrderItem);
-        });
+            return orderItemRepository.save(existingOrderItem);
+        }).orElse(null);
     }
 }

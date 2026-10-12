@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.exception.BadRequestException;
 import com.example.exception.ResourceNotFoundException;
 import com.example.model.Region;
 import com.example.repository.RegionRepository;
@@ -19,48 +20,55 @@ public class RegionServiceImpl implements RegionService {
 
     @Override
     public Region getRegionById(Integer id) {
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
+
         return regionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Region not found with id: " + id));
     }
 
     @Override
-    public List<Region> getAllRegions() {
+    public List<Region> getRegions() {
         return regionRepository.findAll();
     }
 
     @Override
-    public void saveRegion(Region region) {
-        if (region == null)
-            return;
+    public Region saveRegion(Region region) {
+        if (region == null) {
+            throw new BadRequestException("Region must not be null");
+        }
 
-        regionRepository.save(region);
+        return regionRepository.save(region);
     }
 
+    // Soft deletion
     @Override
     public void deleteRegionById(Integer id) {
-        if (id == null)
-            return;
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
 
-        // zatím ne
         regionRepository.findById(id).ifPresent(region -> {
             if (region.getDeleted())
-                return; // tady jen soft kvůli klíčům
+                return;
 
             regionRepository.softDeleteById(id);
         });
     }
 
     @Override
-    public void editRegion(Integer id, Region region) {
-        if (id == null || region == null)
-            return;
+    public Region editRegion(Integer id, Region region) {
+        if (id == null || region == null) {
+            throw new BadRequestException("ID or region to edit must not be null");
+        }
 
-        regionRepository.findById(id).ifPresent(existingRegion -> {
-
+        // ZDE
+        return regionRepository.findById(id).map(existingRegion -> {
             existingRegion.setRegionName(region.getRegionName());
             // existingRegion.setCurrency(new Currency());
 
-            regionRepository.save(existingRegion);
-        });
+            return regionRepository.save(existingRegion);
+        }).orElse(null);
     }
 }

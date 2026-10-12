@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.dto.RegisterRequest;
+import com.example.exception.BadRequestException;
 import com.example.exception.ResourceNotFoundException;
 import com.example.model.AppUser;
 import com.example.model.MyUserDetail;
@@ -16,10 +17,10 @@ import com.example.model.Role;
 import com.example.model.enums.RoleType;
 import com.example.repository.RoleRepository;
 import com.example.repository.UserRepository;
-import com.example.service_interface.UserService;
+import com.example.service_interface.AppUserService;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements AppUserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
@@ -32,35 +33,41 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AppUser getUserById(Integer id) {
+    public AppUser getAppUserById(Integer id) {
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
+
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 
     @Override
-    public void saveUser(AppUser user) {
-        if (user == null)
-            return;
+    public AppUser saveAppUser(AppUser user) {
+        if (user == null) {
+            throw new BadRequestException("User must not be null");
+        }
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
+    // Soft deletion
     @Override
-    public void deleteUserById(Integer id) {
-        if (id == null)
-            return;
+    public void deleteAppUserById(Integer id) {
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
 
-        // zatím ne
         userRepository.findById(id).ifPresent(user -> {
             if (user.getDeleted())
-                return; // tady jen soft kvůli klíčům
+                return;
 
             userRepository.softDeleteById(id);
         });
     }
 
     @Override
-    public List<AppUser> getAllUsers() {
+    public List<AppUser> getAppUsers() {
         return userRepository.findAll();
     }
 
@@ -72,12 +79,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void editUser(Integer id, AppUser user) {
-        if (id == null || user == null)
-            return;
+    public AppUser editAppUser(Integer id, AppUser user) {
+        if (id == null || user == null) {
+            throw new BadRequestException("ID or user to edit must not be null");
+        }
 
-        userRepository.findById(id).ifPresent(existingUser -> {
-
+        // Zde
+        return userRepository.findById(id).map(existingUser -> {
             existingUser.setUsername(user.getUsername());
             existingUser.setEmail(user.getEmail());
             existingUser.setRole(user.getRole());
@@ -86,13 +94,12 @@ public class UserServiceImpl implements UserService {
                 existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
             }
 
-            userRepository.save(existingUser);
-        });
+            return userRepository.save(existingUser);
+        }).orElse(null);
     }
 
     @Override
     public void registerUser(RegisterRequest request) {
-
         AppUser user = new AppUser();
 
         user.setUsername(request.getUsername());

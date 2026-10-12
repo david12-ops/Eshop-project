@@ -1,13 +1,13 @@
 package com.example.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.*;
 
 import com.example.model.Invoice;
 import com.example.service_interface.InvoiceService;
 
-@Controller
+@RestController 
 @RequestMapping("/invoices")
 public class InvoiceController {
     private final InvoiceService invoiceService;
@@ -18,25 +18,13 @@ public class InvoiceController {
 
     // LIST
     @GetMapping
-    public String listInvoices(Model model) {
-
-        model.addAttribute("invoices", invoiceService.getAllInvoices());
-
-        return "invoices/list";
+    public List<Invoice> listInvoices() {
+        return invoiceService.getInvoices();
     }
 
     // DETAIL
-    @GetMapping("/detail/{id}")
-    public String orderDetail(
-            @PathVariable Integer id,
-            Model model) {
-
-        Invoice invoice = invoiceService.getInvoiceById(id);
-
-        model.addAttribute(
-                "invoice",
-                invoice);
-
-        return "invoices/detail";
+    @GetMapping("/{id}")
+    public Invoice orderDetail(@PathVariable Integer id) {
+        return invoiceService.getInvoiceById(id);
     }
 }

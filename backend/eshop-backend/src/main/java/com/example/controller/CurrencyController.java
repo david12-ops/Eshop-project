@@ -1,13 +1,13 @@
 package com.example.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.*;
 
 import com.example.model.Currency;
 import com.example.service_interface.CurrencyService;
 
-@Controller
+@RestController 
 @RequestMapping("/currencies")
 public class CurrencyController {
     private final CurrencyService currencyService;
@@ -18,82 +18,34 @@ public class CurrencyController {
 
     // LIST
     @GetMapping
-    public String listCurrencies(Model model) {
-
-        model.addAttribute("currencies", currencyService.getAllCurrencies());
-
-        return "currencies/list";
+    public List<Currency> listCurrencies() {
+        return currencyService.getCurrencies();
     }
 
     // DETAIL
-    @GetMapping("/detail/{id}")
-    public String currencyDetail(
-            @PathVariable String id,
-            Model model) {
-
-        Currency currency = currencyService.getCurrencyById(id);
-
-        model.addAttribute(
-                "currency",
-                currency);
-
-        return "currencies/detail";
+    @GetMapping("/{id}")
+    public Currency currencyDetail(@PathVariable String id) {
+        return currencyService.getCurrencyById(id);
     }
 
-    // CREATE FORM
-    @GetMapping("/create")
-    public String createForm(Model model) {
-
-        model.addAttribute(
-                "currency",
-                new Currency());
-
-        return "currencies/create";
-    }
-
-    // CREATE SAVE
+    // CREATE
     @PostMapping("/create")
-    public String createCurrency(
-            @ModelAttribute Currency currency) {
-
-        currencyService.saveCurrency(currency);
-
-        return "redirect:/currencies";
+    public Currency createCurrency(@RequestBody Currency currency) {
+        return currencyService.saveCurrency(currency);
     }
 
-    // EDIT FORM
-    @GetMapping("/edit/{id}")
-    public String editForm(
+    // EDIT
+    @PutMapping("/{id}")
+    public Currency editCurrency(
             @PathVariable String id,
-            Model model) {
-
-        Currency currency = currencyService.getCurrencyById(id);
-
-        model.addAttribute(
-                "currency",
-                currency);
-
-        return "currencies/edit";
-    }
-
-    // EDIT SAVE
-    @PostMapping("/edit/{id}")
-    public String editCurrency(
-            @PathVariable String id,
-            @ModelAttribute Currency currency) {
-
-        currencyService.editCurrency(id, currency);
-
-        return "redirect:/currencies";
+            @RequestBody Currency currency) {
+        return currencyService.editCurrency(id, currency);
     }
 
     // DELETE
-    @PostMapping("/delete/{id}")
-    public String deleteCurrency(
+    @DeleteMapping("/{id}")
+    public void deleteCurrency(
             @PathVariable String id) {
-
         currencyService.deleteCurrencyById(id);
-
-        return "redirect:/currencies";
     }
 }

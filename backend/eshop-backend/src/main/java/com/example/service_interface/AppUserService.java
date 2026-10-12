@@ -6,17 +6,17 @@ import com.example.dto.RegisterRequest;
 import com.example.model.AppUser;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface UserService extends UserDetailsService {
+public interface AppUserService extends UserDetailsService {
 
-    AppUser getUserById(Integer id);
+    AppUser getAppUserById(Integer id);
 
-    void saveUser(AppUser user);
+    AppUser saveAppUser(AppUser user);
 
-    void editUser(Integer id, AppUser user);
+    AppUser editAppUser(Integer id, AppUser user);
 
-    void deleteUserById(Integer id);
+    void deleteAppUserById(Integer id);
 
-    List<AppUser> getAllUsers();
+    List<AppUser> getAppUsers();
 
     void registerUser(RegisterRequest request);
 }

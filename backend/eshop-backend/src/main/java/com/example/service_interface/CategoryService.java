@@ -6,13 +6,13 @@ import com.example.model.Category;
 
 public interface CategoryService {
 
-    List<Category> getAllCategories();
+    List<Category> getCategories();
 
-    void saveCategory(Category category);
+    Category saveCategory(Category category);
 
     void deleteCategoryById(Integer id);
 
-    void editCategory(Integer id, Category category);
+    Category editCategory(Integer id, Category category);
 
     Category getCategoryById(Integer id);
 }

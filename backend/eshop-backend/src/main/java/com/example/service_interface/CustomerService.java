@@ -8,11 +8,11 @@ public interface CustomerService {
 
     Customer getCustomerById(Integer id);
 
-    List<Customer> getAllCustomers();
+    List<Customer> getCustomers();
 
-    void saveCustomer(Customer customer);
+    Customer saveCustomer(Customer customer);
 
-    void editCustomer(Integer id, Customer customer);
+    Customer editCustomer(Integer id, Customer customer);
 
     void deleteCustomerById(Integer id);
 }

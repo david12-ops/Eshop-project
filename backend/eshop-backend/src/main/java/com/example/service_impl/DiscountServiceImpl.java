@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.exception.ResourceNotFoundException;
+import com.example.exception.BadRequestException;
 import com.example.model.Discount;
 import com.example.repository.DiscountRepository;
 import com.example.service_interface.DiscountService;
@@ -19,44 +20,50 @@ public class DiscountServiceImpl implements DiscountService {
 
     @Override
     public Discount getDiscountById(Integer id) {
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
+
         return discountRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Discount not found with id: " + id));
     }
 
     @Override
-    public List<Discount> getAllDiscounts() {
+    public List<Discount> getDiscounts() {
         return discountRepository.findAll();
     }
 
     @Override
-    public void saveDiscount(Discount discount) {
-        if (discount == null)
-            return;
+    public Discount saveDiscount(Discount discount) {
+        if (discount == null) {
+            throw new BadRequestException("Discount must not be null");
+        }
 
-        discountRepository.save(discount);
+        return discountRepository.save(discount);
     }
 
+    // Soft deletion
     @Override
     public void deleteDiscountById(Integer id) {
-        if (id == null)
-            return;
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
 
-        // zatím ne
         discountRepository.findById(id).ifPresent(discount -> {
             if (discount.getDeleted())
-                return; // tady jen soft kvůli klíčům
+                return;
 
             discountRepository.softDeleteById(id);
         });
     }
 
     @Override
-    public void editDiscount(Integer id, Discount discount) {
-        if (id == null || discount == null)
-            return;
+    public Discount editDiscount(Integer id, Discount discount) {
+        if (id == null || discount == null) {
+            throw new BadRequestException("ID or discount to edit must not be null");
+        }
 
-        discountRepository.findById(id).ifPresent(existingDiscount -> {
-
+        return discountRepository.findById(id).map(existingDiscount -> {
             existingDiscount.setDiscountName(discount.getDiscountName());
             existingDiscount.setDiscountCode(discount.getDiscountCode());
             existingDiscount.setDiscountType(discount.getDiscountType());
@@ -65,7 +72,7 @@ public class DiscountServiceImpl implements DiscountService {
             existingDiscount.setValidFrom(discount.getValidFrom());
             existingDiscount.setValidTo(discount.getValidTo());
 
-            discountRepository.save(existingDiscount);
-        });
+            return discountRepository.save(existingDiscount);
+        }).orElse(null);
     }
 }

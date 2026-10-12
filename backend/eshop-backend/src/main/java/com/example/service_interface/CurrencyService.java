@@ -8,11 +8,11 @@ public interface CurrencyService {
 
     Currency getCurrencyById(String code);
 
-    List<Currency> getAllCurrencies();
+    List<Currency> getCurrencies();
 
-    void saveCurrency(Currency currency);
+    Currency saveCurrency(Currency currency);
 
-    void editCurrency(String code, Currency currency);
+    Currency editCurrency(String code, Currency currency);
 
     void deleteCurrencyById(String code);
 }

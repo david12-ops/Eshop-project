@@ -1,106 +1,50 @@
 package com.example.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.*;
 
 import com.example.model.Region;
-import com.example.service_interface.CurrencyService;
 import com.example.service_interface.RegionService;
 
-@Controller
+@RestController 
 @RequestMapping("/regions")
 public class RegionController {
     private final RegionService regionService;
-    private final CurrencyService currencyService;
 
-    public RegionController(RegionService regionService, CurrencyService currencyService) {
+    public RegionController(RegionService regionService) {
         this.regionService = regionService;
-        this.currencyService = currencyService;
     }
 
     // LIST
     @GetMapping
-    public String listRegions(Model model) {
-
-        model.addAttribute("regions", regionService.getAllRegions());
-
-        return "regions/list";
+    public List<Region> listRegions() {
+        return regionService.getRegions();
     }
 
     // DETAIL
-    @GetMapping("/detail/{id}")
-    public String regionDetail(
-            @PathVariable Integer id,
-            Model model) {
-
-        Region region = regionService.getRegionById(id);
-
-        model.addAttribute(
-                "region",
-                region);
-
-        return "regions/detail";
+    @GetMapping("/{id}")
+    public Region regionDetail(@PathVariable Integer id) {
+        return regionService.getRegionById(id);
     }
 
-    // CREATE FORM
-    @GetMapping("/create")
-    public String createForm(Model model) {
-
-        model.addAttribute(
-                "region",
-                new Region());
-        model.addAttribute("currencies", currencyService.getAllCurrencies());
-
-        return "regions/create";
-    }
-
-    // CREATE SAVE
+    // CREATE 
     @PostMapping("/create")
-    public String createRegion(
-            @ModelAttribute Region region) {
-
-        regionService.saveRegion(region);
-
-        return "redirect:/regions";
+    public Region createRegion(@RequestBody  Region region) {
+        return regionService.saveRegion(region);
     }
 
-    // EDIT FORM
-    @GetMapping("/edit/{id}")
-    public String editForm(
+    // EDIT
+    @PutMapping("/{id}")
+    public Region editRegion(
             @PathVariable Integer id,
-            Model model) {
-
-        Region region = regionService.getRegionById(id);
-
-        System.out.println("Editing region: " + region.toString());
-
-        model.addAttribute(
-                "region",
-                region);
-        model.addAttribute("currencies", currencyService.getAllCurrencies());
-
-        return "regions/edit";
-    }
-
-    // EDIT SAVE
-    @PostMapping("/edit/{id}")
-    public String editRegion(
-            @PathVariable Integer id,
-            @ModelAttribute Region region) {
-
-        regionService.editRegion(id, region);
-
-        return "redirect:/regions";
+            @RequestBody Region region) {
+        return  regionService.editRegion(id, region);
     }
 
     // DELETE
-    @PostMapping("/delete/{id}")
-    public String deleteRegion(
-            @PathVariable Integer id) {
-
+    @DeleteMapping("/{id}")
+    public void deleteRegion(@PathVariable Integer id) {
         regionService.deleteRegionById(id);
-
-        return "redirect:/regions";
     }
 }

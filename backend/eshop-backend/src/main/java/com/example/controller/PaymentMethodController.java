@@ -1,13 +1,12 @@
 package com.example.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.*;
 import com.example.model.PaymentMethod;
-import com.example.model.enums.PaymentMethodType;
 import com.example.service_interface.PaymentMethodService;
 
-@Controller
+@RestController 
 @RequestMapping("/paymentMethods")
 public class PaymentMethodController {
     private final PaymentMethodService paymentMethodService;
@@ -18,84 +17,33 @@ public class PaymentMethodController {
 
     // LIST
     @GetMapping
-    public String listPaymentMethods(Model model) {
-
-        model.addAttribute("paymentMethods", paymentMethodService.getAllPaymentMethods());
-
-        return "paymentMethods/list";
+    public List<PaymentMethod> listPaymentMethods() {
+        return paymentMethodService.getPaymentMethods();
     }
 
     // DETAIL
-    @GetMapping("/detail/{id}")
-    public String paymentMethodDetail(
-            @PathVariable Integer id,
-            Model model) {
-
-        PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(id);
-
-        model.addAttribute(
-                "paymentMethod",
-                paymentMethod);
-
-        return "paymentMethods/detail";
+    @GetMapping("/{id}")
+    public PaymentMethod paymentMethodDetail(@PathVariable Integer id) {
+        return paymentMethodService.getPaymentMethodById(id);
     }
 
-    // CREATE FORM
-    @GetMapping("/create")
-    public String createForm(Model model) {
-
-        model.addAttribute(
-                "paymentMethod",
-                new PaymentMethod());
-        model.addAttribute("paymentMethodTypes", PaymentMethodType.values());
-
-        return "paymentMethods/create";
-    }
-
-    // CREATE SAVE
+    // CREATE 
     @PostMapping("/create")
-    public String createPaymentMethod(
-            @ModelAttribute PaymentMethod paymentMethod) {
-
-        paymentMethodService.savePaymentMethod(paymentMethod);
-
-        return "redirect:/paymentMethods";
+    public PaymentMethod createPaymentMethod(@RequestBody PaymentMethod paymentMethod) {
+        return paymentMethodService.savePaymentMethod(paymentMethod);
     }
 
-    // EDIT FORM
-    @GetMapping("/edit/{id}")
-    public String editForm(
+    // EDIT 
+    @PutMapping ("/{id}")
+    public PaymentMethod editPaymentMethod(
             @PathVariable Integer id,
-            Model model) {
-
-        PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(id);
-
-        model.addAttribute(
-                "paymentMethod",
-                paymentMethod);
-        model.addAttribute("paymentMethodTypes", PaymentMethodType.values());
-
-        return "paymentMethods/edit";
-    }
-
-    // EDIT SAVE
-    @PostMapping("/edit/{id}")
-    public String editPaymentMethod(
-            @PathVariable Integer id,
-            @ModelAttribute PaymentMethod paymentMethod) {
-
-        paymentMethodService.editPaymentMethod(id, paymentMethod);
-
-        return "redirect:/paymentMethods";
+            @RequestBody PaymentMethod paymentMethod) {
+        return paymentMethodService.editPaymentMethod(id, paymentMethod);
     }
 
     // DELETE
-    @PostMapping("/delete/{id}")
-    public String deletePaymentMethod(
-            @PathVariable Integer id) {
-
+    @DeleteMapping("/{id}")
+    public void deletePaymentMethod(@PathVariable Integer id) {
         paymentMethodService.deletePaymentMethodById(id);
-
-        return "redirect:/paymentMethods";
     }
 }

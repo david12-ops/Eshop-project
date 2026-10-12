@@ -1,14 +1,13 @@
 package com.example.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.*;
 
 import com.example.model.OrderStatus;
-import com.example.model.enums.OrderStatusType;
 import com.example.service_interface.OrderStatusService;
 
-@Controller
+@RestController 
 @RequestMapping("/orderStatuses")
 public class OrderStatusController {
     private final OrderStatusService orderStatusService;
@@ -19,87 +18,33 @@ public class OrderStatusController {
 
     // LIST
     @GetMapping
-    public String listOrderStatuses(Model model) {
-
-        model.addAttribute("orderStatuses", orderStatusService.getAllOrderStatuses());
-
-        return "orderStatuses/list";
+    public List<OrderStatus> listOrderStatuses() {
+        return orderStatusService.getOrderStatuses();
     }
 
     // DETAIL
-    @GetMapping("/detail/{id}")
-    public String orderStatusDetail(
-            @PathVariable Integer id,
-            Model model) {
-
-        OrderStatus orderStatus = orderStatusService.getOrderStatusById(id);
-
-        System.out.println("OrderStatus " + orderStatus);
-
-        model.addAttribute(
-                "orderStatus",
-                orderStatus);
-        model.addAttribute("statusTypes", OrderStatusType.values());
-
-        return "orderStatuses/detail";
+    @GetMapping("/{id}")
+    public OrderStatus orderStatusDetail(@PathVariable Integer id) {
+        return orderStatusService.getOrderStatusById(id);
     }
 
-    // CREATE FORM
-    @GetMapping("/create")
-    public String createForm(Model model) {
-
-        model.addAttribute(
-                "orderStatus",
-                new OrderStatus());
-        model.addAttribute("statusTypes", OrderStatusType.values());
-
-        return "orderStatuses/create";
-    }
-
-    // CREATE SAVE
+    // CREATE
     @PostMapping("/create")
-    public String createOrderStatus(
-            @ModelAttribute OrderStatus orderStatus) {
-
-        orderStatusService.saveOrderStatus(orderStatus);
-
-        return "redirect:/orderStatuses";
+    public OrderStatus createOrderStatus(@RequestBody OrderStatus orderStatus) {
+        return orderStatusService.saveOrderStatus(orderStatus);
     }
 
-    // EDIT FORM
-    @GetMapping("/edit/{id}")
-    public String editForm(
-            @PathVariable Integer id,
-            Model model) {
-
-        OrderStatus orderStatus = orderStatusService.getOrderStatusById(id);
-
-        model.addAttribute(
-                "orderStatus",
-                orderStatus);
-        model.addAttribute("statusTypes", OrderStatusType.values());
-
-        return "orderStatuses/edit";
-    }
-
-    // EDIT SAVE
-    @PostMapping("/edit/{id}")
-    public String editOrderStatus(
+    // EDIT 
+    @PutMapping ("/{id}")
+    public OrderStatus editOrderStatus(
             @PathVariable Integer id,
             @ModelAttribute OrderStatus orderStatus) {
-
-        orderStatusService.editOrderStatus(id, orderStatus);
-
-        return "redirect:/orderStatuses";
+        return  orderStatusService.editOrderStatus(id, orderStatus);
     }
 
     // DELETE
-    @PostMapping("/delete/{id}")
-    public String deleteOrderStatus(
-            @PathVariable Integer id) {
-
+    @DeleteMapping ("/{id}")
+    public void deleteOrderStatus(@PathVariable Integer id) {
         orderStatusService.deleteOrderStatusById(id);
-
-        return "redirect:/orderStatuses";
     }
 }

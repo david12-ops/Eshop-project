@@ -1,123 +1,50 @@
 package com.example.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.*;
 
 import com.example.model.Order;
-import com.example.service_interface.AddressService;
-import com.example.service_interface.CurrencyService;
-import com.example.service_interface.CustomerService;
 import com.example.service_interface.OrderService;
-import com.example.service_interface.OrderStatusService;
 
-@Controller
+@RestController 
 @RequestMapping("/orders")
 public class OrderController {
     private final OrderService orderService;
-    private final OrderStatusService orderStatusService;
-    private final CustomerService customerService;
-    private final CurrencyService currencyService;
-    private final AddressService addressService;
 
-    public OrderController(OrderService orderService, OrderStatusService orderStatusService,
-            CustomerService customerService,
-            CurrencyService currencyService, AddressService addressService) {
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
-        this.orderStatusService = orderStatusService;
-        this.customerService = customerService;
-        this.currencyService = currencyService;
-        this.addressService = addressService;
     }
 
     // LIST
     @GetMapping
-    public String listOrders(Model model) {
-
-        model.addAttribute("orders", orderService.getAllOrders());
-
-        return "orders/list";
+    public List<Order> listOrders() {
+        return orderService.getOrders();
     }
 
     // DETAIL
-    @GetMapping("/detail/{id}")
-    public String orderDetail(
-            @PathVariable Integer id,
-            Model model) {
-
-        Order order = orderService.getOrderWithItems(id);
-
-        model.addAttribute(
-                "order",
-                order);
-
-        return "orders/detail";
+    @GetMapping("/{id}")
+    public Order orderDetail(@PathVariable Integer id) {
+        return orderService.getOrderWithItems(id);
     }
 
-    // CREATE FORM
-    @GetMapping("/create")
-    public String createForm(Model model) {
-
-        model.addAttribute(
-                "order",
-                new Order());
-
-        model.addAttribute("statuses", orderStatusService.getAllOrderStatuses());
-        model.addAttribute("customers", customerService.getAllCustomers());
-        model.addAttribute("currencies", currencyService.getAllCurrencies());
-        model.addAttribute("addresses", addressService.getAllAddresses());
-
-        return "orders/create";
-    }
-
-    // CREATE SAVE
+    // CREATE
     @PostMapping("/create")
-    public String createOrder(
-            @ModelAttribute Order order) {
-
-        orderService.saveOrder(order);
-
-        return "redirect:/orders";
+    public Order createOrder(@RequestBody Order order) {
+        return orderService.saveOrder(order);
     }
 
-    // EDIT FORM
-    @GetMapping("/edit/{id}")
-    public String editForm(
+    // EDIT 
+    @PutMapping ("/{id}")
+    public Order editOrder(
             @PathVariable Integer id,
-            Model model) {
-
-        Order order = orderService.getOrderWithItems(id);
-
-        model.addAttribute(
-                "order",
-                order);
-
-        model.addAttribute("statuses", orderStatusService.getAllOrderStatuses());
-        model.addAttribute("customers", customerService.getAllCustomers());
-        model.addAttribute("currencies", currencyService.getAllCurrencies());
-        model.addAttribute("addresses", addressService.getAllAddresses());
-
-        return "orders/edit";
-    }
-
-    // EDIT SAVE
-    @PostMapping("/edit/{id}")
-    public String editOrder(
-            @PathVariable Integer id,
-            @ModelAttribute Order order) {
-
-        orderService.editOrder(id, order);
-
-        return "redirect:/orders";
+            @RequestBody Order order) {
+        return orderService.editOrder(id, order);
     }
 
     // DELETE
-    @PostMapping("/delete/{id}")
-    public String deleteOrder(
-            @PathVariable Integer id) {
-
+    @DeleteMapping("/{id}")
+    public void deleteOrder(@PathVariable Integer id) {
         orderService.deleteOrderById(id);
-
-        return "redirect:/orders";
     }
 }

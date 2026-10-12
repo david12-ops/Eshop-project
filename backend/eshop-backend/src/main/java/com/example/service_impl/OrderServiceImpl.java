@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.exception.ResourceNotFoundException;
+import com.example.exception.BadRequestException;
 import com.example.model.Address;
 import com.example.model.Currency;
 import com.example.model.Customer;
@@ -37,51 +38,57 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getAllOrders() {
+    public List<Order> getOrders() {
         return orderRepository.findAll();
     }
 
     @Override
-    public void saveOrder(Order order) {
-        if (order == null)
-            return;
+    public Order saveOrder(Order order) {
+        if (order == null) {
+            throw new BadRequestException("Order must not be null");
+        }
 
-        orderRepository.save(order);
+        return orderRepository.save(order);
     }
 
     @Override
     @Transactional
     public Order getOrderWithItems(Integer id) {
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
+
         return orderRepository.findByIdWithItems(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + id));
     }
 
+    // Soft deletion
     @Override
     public void deleteOrderById(Integer id) {
-        if (id == null)
-            return;
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
 
-        // zatím ne
         orderRepository.findById(id).ifPresent(order -> {
             if (order.getDeleted())
-                return; // tady jen soft kvůli klíčům
+                return;
 
             orderRepository.softDeleteById(id);
         });
     }
 
     @Override
-    public void editOrder(Integer id, Order order) {
-        if (id == null || order == null)
-            return;
+    public Order editOrder(Integer id, Order order) {
+        if (id == null || order == null) {
+            throw new BadRequestException("ID or order to edit must not be null");
+        }
 
-        orderRepository.findById(id).ifPresent(existingOrder -> {
-
+        return orderRepository.findById(id).map(existingOrder -> {
             Customer customer = null;
             OrderStatus orderStatus = null;
             Currency currency = null;
             Address address = null;
-            // Set<Discount> discounts = order.getDiscounts(); pro tohlr neni ui
+            // Set<Discount> discounts = order.getDiscounts(); Missing gui
 
             if (order.getCustomer() != null
                     && order.getCustomer().getCustomerId() != null) {
@@ -122,7 +129,7 @@ public class OrderServiceImpl implements OrderService {
             existingOrder.setTotalAmount(order.getTotalAmount());
             existingOrder.setNotes(order.getNotes());
 
-            orderRepository.save(existingOrder);
-        });
+            return orderRepository.save(existingOrder);
+        }).orElse(null);
     }
 }

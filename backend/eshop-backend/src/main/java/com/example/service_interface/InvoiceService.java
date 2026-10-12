@@ -8,5 +8,5 @@ public interface InvoiceService {
 
     Invoice getInvoiceById(Integer id);
 
-    List<Invoice> getAllInvoices();
+    List<Invoice> getInvoices();
 }
