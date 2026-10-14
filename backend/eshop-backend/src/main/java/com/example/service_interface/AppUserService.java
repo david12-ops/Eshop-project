@@ -2,7 +2,7 @@ package com.example.service_interface;
 
 import java.util.List;
 
-import com.example.dto.RegisterRequest;
+import com.example.dto.RegisterRequestDTO;
 import com.example.model.AppUser;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -18,5 +18,5 @@ public interface AppUserService extends UserDetailsService {
 
     List<AppUser> getAppUsers();
 
-    void registerUser(RegisterRequest request);
+    void registerUser(RegisterRequestDTO request);
 }

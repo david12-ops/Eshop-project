@@ -45,31 +45,27 @@ public class OrderItemServiceImpl implements OrderItemService {
     // Soft deletion
     @Override
     public void deleteOrderItemById(Integer id) {
-        if (id == null) {
-            throw new BadRequestException("ID must not be null");
-        }
+        OrderItem existingOrderItem = getOrderItemById(id);
 
-        orderItemRepository.findById(id).ifPresent(orderItem -> {
-            if (orderItem.getDeleted())
-                return;
+        if (existingOrderItem.getDeleted())
+            return;
 
-            orderItemRepository.softDeleteById(id);
-        });
+        orderItemRepository.softDeleteById(existingOrderItem.getOrderItemId());
     }
 
     @Override
     public OrderItem editOrderItem(Integer id, OrderItem orderItem) {
-        if (id == null || orderItem == null) {
-            throw new BadRequestException("ID or order item to edit must not be null");
+        if (orderItem == null) {
+            throw new BadRequestException("Order item to edit must not be null");
         }
 
-        return orderItemRepository.findById(id).map(existingOrderItem -> {
-            existingOrderItem.setLineTotal(orderItem.getLineTotal());
-            existingOrderItem.setQuantity(orderItem.getQuantity());
-            existingOrderItem.setNotes(orderItem.getNotes());
-            existingOrderItem.setUnitPrice(orderItem.getUnitPrice());
+        OrderItem existingOrderItem = getOrderItemById(id);
 
-            return orderItemRepository.save(existingOrderItem);
-        }).orElse(null);
+        existingOrderItem.setLineTotal(orderItem.getLineTotal());
+        existingOrderItem.setQuantity(orderItem.getQuantity());
+        existingOrderItem.setNotes(orderItem.getNotes());
+        existingOrderItem.setUnitPrice(orderItem.getUnitPrice());
+
+        return orderItemRepository.save(existingOrderItem);
     }
 }

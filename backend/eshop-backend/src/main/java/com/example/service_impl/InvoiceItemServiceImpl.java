@@ -44,26 +44,24 @@ public class InvoiceItemServiceImpl implements InvoiceItemService {
 
     @Override
     public void deleteInvoiceItemById(Integer id) {
-        if (id == null) {
-            throw new BadRequestException("ID must not be null");
-        }
+        InvoiceItem existingInvoiceItem = getInvoiceItemById(id);
 
-        invoiceItemRepository.findById(id).ifPresent(invoiceItem -> invoiceItemRepository.deleteById(id));
+        invoiceItemRepository.softDeleteById(existingInvoiceItem.getInvoiceItemId());
     }
 
     @Override
     public InvoiceItem editInvoiceItem(Integer id, InvoiceItem invoiceItem) {
-        if (id == null || invoiceItem == null) {
-            throw new BadRequestException("ID or invoice item to edit must not be null");
+        if (invoiceItem == null) {
+            throw new BadRequestException("Invoice item to edit must not be null");
         }
 
-        return invoiceItemRepository.findById(id).map(existingInvoiceItem -> {
-            existingInvoiceItem.setLineTotal(invoiceItem.getLineTotal());
-            existingInvoiceItem.setQuantity(invoiceItem.getQuantity());
-            existingInvoiceItem.setNotes(invoiceItem.getNotes());
-            existingInvoiceItem.setUnitPrice(invoiceItem.getUnitPrice());
+        InvoiceItem existingInvoiceItem = getInvoiceItemById(id);
 
-            return invoiceItemRepository.save(existingInvoiceItem);
-        }).orElse(null);
+        existingInvoiceItem.setLineTotal(invoiceItem.getLineTotal());
+        existingInvoiceItem.setQuantity(invoiceItem.getQuantity());
+        existingInvoiceItem.setNotes(invoiceItem.getNotes());
+        existingInvoiceItem.setUnitPrice(invoiceItem.getUnitPrice());
+
+        return invoiceItemRepository.save(existingInvoiceItem);
     }
 }

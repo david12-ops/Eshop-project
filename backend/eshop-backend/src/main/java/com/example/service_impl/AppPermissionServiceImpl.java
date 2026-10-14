@@ -46,32 +46,30 @@ public class AppPermissionServiceImpl implements AppPermissionService {
 
     @Override
     public AppPermission editAppPermission(AppPermissionId id, AppPermission permission) {
-        if (id == null || permission == null) {
-            throw new BadRequestException("ID or permission to edit must not be null");
+        if (permission == null) {
+            throw new BadRequestException("Permission to edit must not be null");
         }
 
-        return appPermissionRepository.findById(id)
-                .map(existingPAppPermission -> {
-                    existingPAppPermission.setResourceType(permission.getResourceType());
-                    existingPAppPermission.setOperationType(permission.getOperationType());
+        AppPermission existingPAppPermission = getAppPermissionById(id);
 
-                    return appPermissionRepository.save(existingPAppPermission);
-                })
-                .orElse(null);
+        existingPAppPermission.setResourceType(permission.getResourceType());
+        existingPAppPermission.setOperationType(permission.getOperationType());
+
+        return appPermissionRepository.save(existingPAppPermission);
     }
 
     // Soft deletion
     @Override
     public void deleteAppPermissionById(AppPermissionId id) {
-        if (id == null) {
-            throw new BadRequestException("ID must not be null");
-        }
+        AppPermission existingPAppPermission = getAppPermissionById(id);
 
-        appPermissionRepository.findById(id).ifPresent(appPermission -> {
-            if (appPermission.getDeleted())
-                return;
+        if (existingPAppPermission.getDeleted())
+            return;
 
-            appPermissionRepository.softDeleteById(id);
-        });
+        AppPermissionId appPermissionId = new AppPermissionId(
+                existingPAppPermission.getRole().getRoleId(),
+                existingPAppPermission.getResourceType(),
+                existingPAppPermission.getOperationType());
+        appPermissionRepository.softDeleteById(appPermissionId);
     }
 }

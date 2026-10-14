@@ -74,31 +74,26 @@ public class RoleServiceImpl implements RoleService {
     // Soft deletion
     @Override
     public void deleteRoleById(Integer id) {
-        if (id == null) {
-            throw new BadRequestException("ID must not be null");
-        }
+        Role existingRole = getRoleById(id);
 
-        roleRepository.findById(id).ifPresent(role -> {
-            if (role.getDeleted())
-                return;
+        if (existingRole.getDeleted())
+            return;
 
-            roleRepository.softDeleteById(id);
-        });
+        roleRepository.softDeleteById(existingRole.getRoleId());
     }
 
     @Override
     public Role editRole(Integer id, Role role) {
-        if (id == null || role == null) {
-            throw new BadRequestException("ID or role to edit must not be null");
+        if (role == null) {
+            throw new BadRequestException("Role to edit must not be null");
         }
 
-        // ZDE
-        return roleRepository.findById(id).map(existingRole -> {
-            existingRole.setRoleName(role.getRoleName());
-            existingRole.setRoleType(role.getRoleType());
-            existingRole.setRoleDescription(role.getRoleDescription());
+        Role existingRole = getRoleById(id);
 
-            return roleRepository.save(existingRole);
-        }).orElse(null);
+        existingRole.setRoleName(role.getRoleName());
+        existingRole.setRoleType(role.getRoleType());
+        existingRole.setRoleDescription(role.getRoleDescription());
+
+        return roleRepository.save(existingRole);
     }
 }

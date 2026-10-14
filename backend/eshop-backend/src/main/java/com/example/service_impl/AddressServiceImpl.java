@@ -48,46 +48,42 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public Address editAddress(Integer id, Address address) {
-        if (id == null || address == null) {
-            throw new BadRequestException("ID or address to edit must not be null");
+        if (address == null) {
+            throw new BadRequestException("Address to edit must not be null");
         }
 
-        return addressRepository.findById(id).map(existingAddress -> {
-            existingAddress.setStreetName(address.getStreetName());
-            existingAddress.setCityName(address.getCityName());
-            existingAddress.setStateName(address.getStateName());
-            existingAddress.setPostalCode(address.getPostalCode());
-            existingAddress.setCountryName(address.getCountryName());
+        Address existingAddress = getAddressById(id);
 
-            if (address.getRegion() != null
-                    && address.getRegion().getRegionId() != null) {
+        existingAddress.setStreetName(address.getStreetName());
+        existingAddress.setCityName(address.getCityName());
+        existingAddress.setStateName(address.getStateName());
+        existingAddress.setPostalCode(address.getPostalCode());
+        existingAddress.setCountryName(address.getCountryName());
 
-                Region region = regionService.getRegionById(
-                        address.getRegion().getRegionId());
+        if (address.getRegion() != null
+                && address.getRegion().getRegionId() != null) {
 
-                existingAddress.setRegion(region);
+            Region region = regionService.getRegionById(
+                    address.getRegion().getRegionId());
 
-            } else {
+            existingAddress.setRegion(region);
 
-                existingAddress.setRegion(null);
-            }
+        } else {
 
-            return addressRepository.save(existingAddress);
-        }).orElse(null);
+            existingAddress.setRegion(null);
+        }
+
+        return addressRepository.save(existingAddress);
     }
 
     // Soft deletion
     @Override
     public void deleteAddressById(Integer id) {
-        if (id == null) {
-            throw new BadRequestException("ID must not be null");
-        }
+        Address existingAddress = getAddressById(id);
 
-        addressRepository.findById(id).ifPresent(address -> {
-            if (address.getDeleted())
-                return;
+        if (existingAddress.getDeleted())
+            return;
 
-            addressRepository.softDeleteById(id);
-        });
+        addressRepository.softDeleteById(existingAddress.getAddressId());
     }
 }

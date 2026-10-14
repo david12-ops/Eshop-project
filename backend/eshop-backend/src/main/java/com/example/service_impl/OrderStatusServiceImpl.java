@@ -45,30 +45,26 @@ public class OrderStatusServiceImpl implements OrderStatusService {
     // Soft deletion
     @Override
     public void deleteOrderStatusById(Integer id) {
-        if (id == null) {
-            throw new BadRequestException("ID must not be null");
-        }
+        OrderStatus existingOrderStatus = getOrderStatusById(id);
 
-        orderStatusRepository.findById(id).ifPresent(orderStatus -> {
-            if (orderStatus.getDeleted())
-                return;
+        if (existingOrderStatus.getDeleted())
+            return;
 
-            orderStatusRepository.softDeleteById(id);
-        });
+        orderStatusRepository.softDeleteById(existingOrderStatus.getOrderStatusId());
     }
 
     @Override
     public OrderStatus editOrderStatus(Integer id, OrderStatus orderStatus) {
-        if (id == null || orderStatus == null) {
-            throw new BadRequestException("ID or order status to edit must not be null");
+        if (orderStatus == null) {
+            throw new BadRequestException("Order status to edit must not be null");
         }
 
-        return orderStatusRepository.findById(id).map(existingOrderStatus -> {
-            existingOrderStatus.setStatusName(orderStatus.getStatusName());
-            existingOrderStatus.setStatusType(orderStatus.getStatusType());
-            existingOrderStatus.setStatusDescription(orderStatus.getStatusDescription());
+        OrderStatus existingOrderStatus = getOrderStatusById(id);
 
-            return orderStatusRepository.save(existingOrderStatus);
-        }).orElse(null);
+        existingOrderStatus.setStatusName(orderStatus.getStatusName());
+        existingOrderStatus.setStatusType(orderStatus.getStatusType());
+        existingOrderStatus.setStatusDescription(orderStatus.getStatusDescription());
+
+        return orderStatusRepository.save(existingOrderStatus);
     }
 }

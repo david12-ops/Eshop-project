@@ -44,7 +44,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         if (product.getCategory() != null
-                && product.getCategory().getId() == null) {
+                && product.getCategory().getCategoryId() == null) {
 
             product.setCategory(null);
         }
@@ -55,45 +55,36 @@ public class ProductServiceImpl implements ProductService {
     // Soft deletion
     @Override
     public void deleteProductById(Integer id) {
-        if (id == null) {
-            throw new BadRequestException("ID must not be null");
-        }
+        Product existingProduct = getProductById(id);
 
-        productRepository.findById(id).ifPresent(product -> {
-            if (product.getDeleted())
-                return;
+        // ?
+        if (existingProduct.getDeleted())
+            return;
 
-            productRepository.softDeleteById(id);
-        });
+        productRepository.softDeleteById(existingProduct.getProductId());
     }
 
     @Override
     public Product editProduct(Integer id, Product product) {
-        if (id == null || product == null) {
-            throw new BadRequestException("ID or product to edit must not be null");
+        if (product == null) {
+            throw new BadRequestException("Product to edit must not be null");
         }
 
-        // ZDE
-        return productRepository.findById(id).map(existingProduct -> {
-            existingProduct.setProductName(product.getProductName());
-            existingProduct.setProductDescription(product.getProductDescription());
-            existingProduct.setRecommendedPrice(product.getRecommendedPrice());
-            existingProduct.setActive(product.isActive());
+        Product existingProduct = getProductById(id);
 
-            if (product.getCategory() != null
-                    && product.getCategory().getId() != null) {
+        existingProduct.setProductName(product.getProductName());
+        existingProduct.setProductDescription(product.getProductDescription());
+        existingProduct.setRecommendedPrice(product.getRecommendedPrice());
+        existingProduct.setActive(product.isActive());
 
-                Category category = categoryService.getCategoryById(
-                        product.getCategory().getId());
+        if (product.getCategory() != null && product.getCategory().getCategoryId() != null) {
+            Category category = categoryService.getCategoryById(product.getCategory().getCategoryId());
+            existingProduct.setCategory(category);
+        } else {
 
-                existingProduct.setCategory(category);
+            existingProduct.setCategory(null);
+        }
 
-            } else {
-
-                existingProduct.setCategory(null);
-            }
-
-            return productRepository.save(existingProduct);
-        }).orElse(null);
+        return productRepository.save(existingProduct);
     }
 }

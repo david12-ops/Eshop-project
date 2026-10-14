@@ -19,6 +19,16 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public Category getCategoryById(Integer id) {
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
+
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
+    }
+
+    @Override
     public List<Category> getCategories() {
         return categoryRepository.findAll();
     }
@@ -35,40 +45,26 @@ public class CategoryServiceImpl implements CategoryService {
     // Soft deletion
     @Override
     public void deleteCategoryById(Integer id) {
-        if (id == null) {
-            throw new BadRequestException("ID must not be null");
-        }
+        Category existingCategory = getCategoryById(id);
 
-        categoryRepository.findById(id).ifPresent(category -> {
-            if (category.getDeleted())
-                return;
+        if (existingCategory.getDeleted())
+            return;
 
-            categoryRepository.softDeleteById(id);
-        });
-    }
-
-    @Override
-    public Category getCategoryById(Integer id) {
-        if (id == null) {
-            throw new BadRequestException("ID must not be null");
-        }
-
-        return categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
+        categoryRepository.softDeleteById(existingCategory.getCategoryId());
     }
 
     @Override
     public Category editCategory(Integer id, Category category) {
-        if (id == null || category == null) {
-            throw new BadRequestException("ID or category to edit must not be null");
+        if (category == null) {
+            throw new BadRequestException("Category to edit must not be null");
         }
 
-        return categoryRepository.findById(id).map(existingCategory -> {
-            existingCategory.setCategoryName(category.getCategoryName());
-            existingCategory.setCategoryDescription(category.getCategoryDescription());
-            existingCategory.setActive(category.isActive());
+        Category existingCategory = getCategoryById(id);
 
-            return categoryRepository.save(existingCategory);
-        }).orElse(null);
+        existingCategory.setCategoryName(category.getCategoryName());
+        existingCategory.setCategoryDescription(category.getCategoryDescription());
+        existingCategory.setActive(category.isActive());
+
+        return categoryRepository.save(existingCategory);
     }
 }

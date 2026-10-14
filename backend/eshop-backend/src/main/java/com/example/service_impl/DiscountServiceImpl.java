@@ -45,34 +45,30 @@ public class DiscountServiceImpl implements DiscountService {
     // Soft deletion
     @Override
     public void deleteDiscountById(Integer id) {
-        if (id == null) {
-            throw new BadRequestException("ID must not be null");
-        }
+        Discount existingDiscount = getDiscountById(id);
 
-        discountRepository.findById(id).ifPresent(discount -> {
-            if (discount.getDeleted())
-                return;
+        // if (existingDiscount.getDeleted())
+        // return;
 
-            discountRepository.softDeleteById(id);
-        });
+        discountRepository.softDeleteById(existingDiscount.getDiscountId());
     }
 
     @Override
     public Discount editDiscount(Integer id, Discount discount) {
-        if (id == null || discount == null) {
-            throw new BadRequestException("ID or discount to edit must not be null");
+        if (discount == null) {
+            throw new BadRequestException("Discount to edit must not be null");
         }
 
-        return discountRepository.findById(id).map(existingDiscount -> {
-            existingDiscount.setDiscountName(discount.getDiscountName());
-            existingDiscount.setDiscountCode(discount.getDiscountCode());
-            existingDiscount.setDiscountType(discount.getDiscountType());
-            existingDiscount.setDiscountValue(discount.getDiscountValue());
-            existingDiscount.setDiscountDescription(discount.getDiscountDescription());
-            existingDiscount.setValidFrom(discount.getValidFrom());
-            existingDiscount.setValidTo(discount.getValidTo());
+        Discount existingDiscount = getDiscountById(id);
 
-            return discountRepository.save(existingDiscount);
-        }).orElse(null);
+        existingDiscount.setDiscountName(discount.getDiscountName());
+        existingDiscount.setDiscountCode(discount.getDiscountCode());
+        existingDiscount.setDiscountType(discount.getDiscountType());
+        existingDiscount.setDiscountValue(discount.getDiscountValue());
+        existingDiscount.setDiscountDescription(discount.getDiscountDescription());
+        existingDiscount.setValidFrom(discount.getValidFrom());
+        existingDiscount.setValidTo(discount.getValidTo());
+
+        return discountRepository.save(existingDiscount);
     }
 }

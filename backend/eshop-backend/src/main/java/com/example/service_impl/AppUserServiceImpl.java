@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.dto.RegisterRequest;
+import com.example.dto.RegisterRequestDTO;
 import com.example.exception.BadRequestException;
 import com.example.exception.ResourceNotFoundException;
 import com.example.model.AppUser;
@@ -20,12 +20,12 @@ import com.example.repository.UserRepository;
 import com.example.service_interface.AppUserService;
 
 @Service
-public class UserServiceImpl implements AppUserService {
+public class AppUserServiceImpl implements AppUserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
+    public AppUserServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
             PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -54,16 +54,12 @@ public class UserServiceImpl implements AppUserService {
     // Soft deletion
     @Override
     public void deleteAppUserById(Integer id) {
-        if (id == null) {
-            throw new BadRequestException("ID must not be null");
-        }
+        AppUser existingUser = getAppUserById(id);
 
-        userRepository.findById(id).ifPresent(user -> {
-            if (user.getDeleted())
-                return;
+        if (existingUser.getDeleted())
+            return;
 
-            userRepository.softDeleteById(id);
-        });
+        userRepository.softDeleteById(existingUser.getAppUserId());
     }
 
     @Override
@@ -72,7 +68,7 @@ public class UserServiceImpl implements AppUserService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String userName) {
         Optional<AppUser> user = userRepository.findByUsername(userName);
         return new MyUserDetail(
                 user.orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + userName)));
@@ -80,26 +76,25 @@ public class UserServiceImpl implements AppUserService {
 
     @Override
     public AppUser editAppUser(Integer id, AppUser user) {
-        if (id == null || user == null) {
-            throw new BadRequestException("ID or user to edit must not be null");
+        if (user == null) {
+            throw new BadRequestException("User to edit must not be null");
         }
 
-        // Zde
-        return userRepository.findById(id).map(existingUser -> {
-            existingUser.setUsername(user.getUsername());
-            existingUser.setEmail(user.getEmail());
-            existingUser.setRole(user.getRole());
+        AppUser existingUser = getAppUserById(id);
 
-            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-                existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
-            }
+        existingUser.setUsername(user.getUsername());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setRole(user.getRole());
 
-            return userRepository.save(existingUser);
-        }).orElse(null);
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+
+        return userRepository.save(existingUser);
     }
 
     @Override
-    public void registerUser(RegisterRequest request) {
+    public void registerUser(RegisterRequestDTO request) {
         AppUser user = new AppUser();
 
         user.setUsername(request.getUsername());

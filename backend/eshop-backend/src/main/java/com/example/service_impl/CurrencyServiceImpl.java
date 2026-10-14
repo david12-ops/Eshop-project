@@ -19,7 +19,7 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
 
     @Override
-    public Currency getCurrencyById(String code) {
+    public Currency getCurrencyByCode(String code) {
         if (code == null) {
             throw new BadRequestException("Code must not be null");
         }
@@ -45,29 +45,25 @@ public class CurrencyServiceImpl implements CurrencyService {
     // Soft deletion
     @Override
     public void deleteCurrencyById(String code) {
-        if (code == null) {
-            throw new BadRequestException("Code must not be null");
-        }
+        Currency existingCurrency = getCurrencyByCode(code);
 
-        currencyRepository.findById(code).ifPresent(currency -> {
-            if (currency.getDeleted())
-                return;
+        if (existingCurrency.getDeleted())
+            return;
 
-            currencyRepository.softDeleteById(code);
-        });
+        currencyRepository.softDeleteById(existingCurrency.getCurrencyCode());
     }
 
     @Override
     public Currency editCurrency(String code, Currency currency) {
-        if (code == null || currency == null) {
-            throw new BadRequestException("Code or currency to edit must not be null");
+        if (currency == null) {
+            throw new BadRequestException("Currency to edit must not be null");
         }
 
-        return currencyRepository.findById(code).map(existingCurrency -> {
-            existingCurrency.setCurrencyName(currency.getCurrencyName());
-            existingCurrency.setSymbol(currency.getSymbol());
+        Currency existingCurrency = getCurrencyByCode(code);
 
-            return currencyRepository.save(existingCurrency);
-        }).orElse(null);
+        existingCurrency.setCurrencyName(currency.getCurrencyName());
+        existingCurrency.setSymbol(currency.getSymbol());
+
+        return currencyRepository.save(existingCurrency);
     }
 }

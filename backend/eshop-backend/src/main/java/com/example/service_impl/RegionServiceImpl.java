@@ -45,30 +45,25 @@ public class RegionServiceImpl implements RegionService {
     // Soft deletion
     @Override
     public void deleteRegionById(Integer id) {
-        if (id == null) {
-            throw new BadRequestException("ID must not be null");
-        }
+        Region existingRegion = getRegionById(id);
 
-        regionRepository.findById(id).ifPresent(region -> {
-            if (region.getDeleted())
-                return;
+        if (existingRegion.getDeleted())
+            return;
 
-            regionRepository.softDeleteById(id);
-        });
+        regionRepository.softDeleteById(existingRegion.getRegionId());
     }
 
     @Override
     public Region editRegion(Integer id, Region region) {
-        if (id == null || region == null) {
-            throw new BadRequestException("ID or region to edit must not be null");
+        if (region == null) {
+            throw new BadRequestException("Region to edit must not be null");
         }
 
-        // ZDE
-        return regionRepository.findById(id).map(existingRegion -> {
-            existingRegion.setRegionName(region.getRegionName());
-            // existingRegion.setCurrency(new Currency());
+        Region existingRegion = getRegionById(id);
 
-            return regionRepository.save(existingRegion);
-        }).orElse(null);
+        existingRegion.setRegionName(region.getRegionName());
+        // existingRegion.setCurrency(new Currency());
+
+        return regionRepository.save(existingRegion);
     }
 }

@@ -45,30 +45,26 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
     // Soft deletion
     @Override
     public void deletePaymentMethodById(Integer id) {
-        if (id == null) {
-            throw new BadRequestException("ID must not be null");
-        }
+        PaymentMethod existingPaymentMethod = getPaymentMethodById(id);
 
-        paymentMethodRepository.findById(id).ifPresent(paymentMethod -> {
-            if (paymentMethod.getDeleted())
-                return;
+        if (existingPaymentMethod.getDeleted())
+            return;
 
-            paymentMethodRepository.softDeleteById(id);
-        });
+        paymentMethodRepository.softDeleteById(existingPaymentMethod.getPaymentMethodId());
     }
 
     @Override
     public PaymentMethod editPaymentMethod(Integer id, PaymentMethod paymentMethod) {
-        if (id == null || paymentMethod == null) {
-            throw new BadRequestException("ID or payment method to edit must not be null");
+        if (paymentMethod == null) {
+            throw new BadRequestException("Payment method to edit must not be null");
         }
 
-        return paymentMethodRepository.findById(id).map(existingPaymentMethod -> {
-            existingPaymentMethod.setMethodName(paymentMethod.getMethodName());
-            existingPaymentMethod.setMethodType(paymentMethod.getMethodType());
-            existingPaymentMethod.setMethodDescription(paymentMethod.getMethodDescription());
+        PaymentMethod existingPaymentMethod = getPaymentMethodById(id);
 
-            return paymentMethodRepository.save(existingPaymentMethod);
-        }).orElse(null);
+        existingPaymentMethod.setMethodName(paymentMethod.getMethodName());
+        existingPaymentMethod.setMethodType(paymentMethod.getMethodType());
+        existingPaymentMethod.setMethodDescription(paymentMethod.getMethodDescription());
+
+        return paymentMethodRepository.save(existingPaymentMethod);
     }
 }

@@ -6,7 +6,7 @@ import com.example.model.Currency;
 
 public interface CurrencyService {
 
-    Currency getCurrencyById(String code);
+    Currency getCurrencyByCode(String code);
 
     List<Currency> getCurrencies();
 

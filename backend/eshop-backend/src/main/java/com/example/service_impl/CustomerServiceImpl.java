@@ -54,48 +54,43 @@ public class CustomerServiceImpl implements CustomerService {
     // Soft deletion
     @Override
     public void deleteCustomerById(Integer id) {
-        if (id == null) {
-            throw new BadRequestException("ID must not be null");
-        }
+        Customer existingCustomer = getCustomerById(id);
 
-        customerRepository.findById(id).ifPresent(customer -> {
-            if (customer.getDeleted())
-                return;
+        if (existingCustomer.getDeleted())
+            return;
 
-            customerRepository.softDeleteById(id);
-        });
+        customerRepository.softDeleteById(existingCustomer.getCustomerId());
     }
 
     @Override
     public Customer editCustomer(Integer id, Customer customer) {
-        if (id == null || customer == null) {
-            throw new BadRequestException("ID or customer to edit must not be null");
+        if (customer == null) {
+            throw new BadRequestException("Customer to edit must not be null");
         }
 
-        return customerRepository.findById(id).map(existingCustomer -> {
-            Address adddress = addressService.getAddressById(customer.getCustomerAddress().getId());
+        Customer existingCustomer = getCustomerById(id);
+        Address adddress = addressService.getAddressById(customer.getCustomerAddress().getAddressId());
 
-            existingCustomer.setBranchName(customer.getBranchName());
-            existingCustomer.setFirstName(customer.getFirstName());
-            existingCustomer.setLastName(customer.getLastName());
-            existingCustomer.setBirthDate(customer.getBirthDate());
-            existingCustomer.setPhoneNumber(customer.getPhoneNumber());
-            existingCustomer.setCustomerAddress(adddress);
+        existingCustomer.setBranchName(customer.getBranchName());
+        existingCustomer.setFirstName(customer.getFirstName());
+        existingCustomer.setLastName(customer.getLastName());
+        existingCustomer.setBirthDate(customer.getBirthDate());
+        existingCustomer.setPhoneNumber(customer.getPhoneNumber());
+        existingCustomer.setCustomerAddress(adddress);
 
-            if (customer.getCustomerUser() != null
-                    && customer.getCustomerUser().getId() != null) {
+        if (customer.getCustomerUser() != null
+                && customer.getCustomerUser().getAppUserId() != null) {
 
-                AppUser appUser = appUserService.getAppUserById(
-                        customer.getCustomerUser().getId());
+            AppUser appUser = appUserService.getAppUserById(
+                    customer.getCustomerUser().getAppUserId());
 
-                existingCustomer.setCustomerUser(appUser);
+            existingCustomer.setCustomerUser(appUser);
 
-            } else {
+        } else {
 
-                existingCustomer.setCustomerUser(null);
-            }
+            existingCustomer.setCustomerUser(null);
+        }
 
-            return customerRepository.save(existingCustomer);
-        }).orElse(null);
+        return customerRepository.save(existingCustomer);
     }
 }

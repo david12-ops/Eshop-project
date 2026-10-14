@@ -65,71 +65,55 @@ public class OrderServiceImpl implements OrderService {
     // Soft deletion
     @Override
     public void deleteOrderById(Integer id) {
-        if (id == null) {
-            throw new BadRequestException("ID must not be null");
-        }
+        Order existingOrder = getOrderWithItems(id);
 
-        orderRepository.findById(id).ifPresent(order -> {
-            if (order.getDeleted())
-                return;
+        if (existingOrder.getDeleted())
+            return;
 
-            orderRepository.softDeleteById(id);
-        });
+        orderRepository.softDeleteById(existingOrder.getOrderId());
     }
 
     @Override
     public Order editOrder(Integer id, Order order) {
-        if (id == null || order == null) {
-            throw new BadRequestException("ID or order to edit must not be null");
+        if (order == null) {
+            throw new BadRequestException("Order to edit must not be null");
         }
 
-        return orderRepository.findById(id).map(existingOrder -> {
-            Customer customer = null;
-            OrderStatus orderStatus = null;
-            Currency currency = null;
-            Address address = null;
-            // Set<Discount> discounts = order.getDiscounts(); Missing gui
+        Order existingOrder = getOrderWithItems(id);
 
-            if (order.getCustomer() != null
-                    && order.getCustomer().getCustomerId() != null) {
+        Customer customer = null;
+        OrderStatus orderStatus = null;
+        Currency currency = null;
+        Address address = null;
+        // Set<Discount> discounts = order.getDiscounts(); Missing gui
 
-                customer = customerService.getCustomerById(
-                        order.getCustomer().getCustomerId());
-            }
+        if (order.getCustomer() != null && order.getCustomer().getCustomerId() != null) {
+            customer = customerService.getCustomerById(order.getCustomer().getCustomerId());
+        }
 
-            if (order.getStatus() != null
-                    && order.getStatus().getId() != null) {
+        if (order.getStatus() != null && order.getStatus().getOrderStatusId() != null) {
+            orderStatus = orderStatusService.getOrderStatusById(order.getStatus().getOrderStatusId());
+        }
 
-                orderStatus = orderStatusService.getOrderStatusById(
-                        order.getStatus().getId());
-            }
+        if (order.getCurrency() != null && order.getCurrency().getCurrencyCode() != null) {
+            currency = currencyService.getCurrencyByCode(order.getCurrency().getCurrencyCode());
+        }
 
-            if (order.getCurrency() != null
-                    && order.getCurrency().getCurrencyCode() != null) {
+        if (order.getDeliveryAddress() != null && order.getDeliveryAddress().getAddressId() != null) {
+            address = addressService.getAddressById(order.getDeliveryAddress().getAddressId());
+        }
 
-                currency = currencyService.getCurrencyById(
-                        order.getCurrency().getCurrencyCode());
-            }
+        existingOrder.setCustomer(customer);
+        existingOrder.setStatus(orderStatus);
+        existingOrder.setCurrency(currency);
+        existingOrder.setDeliveryAddress(address);
 
-            if (order.getDeliveryAddress() != null
-                    && order.getDeliveryAddress().getId() != null) {
+        existingOrder.setOrderDate(order.getOrderDate());
+        existingOrder.setSubtotal(order.getSubtotal());
+        existingOrder.setTaxAmount(order.getTaxAmount());
+        existingOrder.setTotalAmount(order.getTotalAmount());
+        existingOrder.setNotes(order.getNotes());
 
-                address = addressService.getAddressById(
-                        order.getDeliveryAddress().getId());
-            }
-
-            existingOrder.setCustomer(customer);
-            existingOrder.setStatus(orderStatus);
-            existingOrder.setCurrency(currency);
-            existingOrder.setDeliveryAddress(address);
-
-            existingOrder.setOrderDate(order.getOrderDate());
-            existingOrder.setSubtotal(order.getSubtotal());
-            existingOrder.setTaxAmount(order.getTaxAmount());
-            existingOrder.setTotalAmount(order.getTotalAmount());
-            existingOrder.setNotes(order.getNotes());
-
-            return orderRepository.save(existingOrder);
-        }).orElse(null);
+        return orderRepository.save(existingOrder);
     }
 }
