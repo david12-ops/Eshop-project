@@ -22,7 +22,7 @@ public class PaymentMethod {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "payment_method_id")
-    private Integer id;
+    private Integer paymentMethodId;
 
     @Column(name = "method_name", nullable = false, unique = true, length = 50)
     private String methodName;
@@ -60,12 +60,8 @@ public class PaymentMethod {
     public PaymentMethod() {
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+    public Integer getPaymentMethodId() {
+        return paymentMethodId;
     }
 
     public String getMethodName() {
@@ -139,4 +135,5 @@ public class PaymentMethod {
     public void setUpdatedBy(Integer updatedBy) {
         this.updatedBy = updatedBy;
     }
+    // chybi to string
 }

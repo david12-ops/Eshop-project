@@ -99,10 +99,6 @@ public class Invoice {
         return invoiceId;
     }
 
-    public void setInvoiceId(Integer invoiceId) {
-        this.invoiceId = invoiceId;
-    }
-
     public String getInvoiceCode() {
         return invoiceCode;
     }
@@ -230,4 +226,6 @@ public class Invoice {
     public void setDiscounts(Set<Discount> discounts) {
         this.discounts = discounts;
     }
+
+    // chybi to string
 }

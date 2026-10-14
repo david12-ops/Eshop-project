@@ -54,10 +54,6 @@ public class InvoiceItem {
         return invoiceItemId;
     }
 
-    public void setInvoiceItemId(Integer invoiceItemId) {
-        this.invoiceItemId = invoiceItemId;
-    }
-
     public Integer getProductId() {
         return productId;
     }
@@ -105,4 +101,6 @@ public class InvoiceItem {
     public void setInvoice(Invoice invoice) {
         this.invoice = invoice;
     }
+
+    // chybi to string
 }

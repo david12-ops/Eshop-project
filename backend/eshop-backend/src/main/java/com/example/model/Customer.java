@@ -87,10 +87,6 @@ public class Customer {
         return customerId;
     }
 
-    public void setCustomerId(Integer customerId) {
-        this.customerId = customerId;
-    }
-
     public String getBranchName() {
         return branchName;
     }

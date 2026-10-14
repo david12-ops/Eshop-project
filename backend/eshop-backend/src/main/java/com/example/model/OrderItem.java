@@ -61,10 +61,6 @@ public class OrderItem {
         return orderItemId;
     }
 
-    public void setOrderItemId(Integer orderItemId) {
-        this.orderItemId = orderItemId;
-    }
-
     public Integer getProductId() {
         return productId;
     }
@@ -129,3 +125,4 @@ public class OrderItem {
         this.order = order;
     }
 }
+// chybi to string

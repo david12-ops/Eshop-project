@@ -20,7 +20,7 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_id")
-    private Integer id;
+    private Integer categoryId;
 
     @Column(name = "category_name", nullable = false, unique = true, length = 50)
     private String categoryName;
@@ -59,12 +59,8 @@ public class Category {
     public Category() {
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+    public Integer getCategoryId() {
+        return categoryId;
     }
 
     public String getCategoryName() {
@@ -146,4 +142,6 @@ public class Category {
     public void setItems(List<Product> items) {
         this.items = items;
     }
+
+    // chybi to string
 }

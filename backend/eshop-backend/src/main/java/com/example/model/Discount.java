@@ -85,10 +85,6 @@ public class Discount {
         return discountId;
     }
 
-    public void setDiscountId(Integer discountId) {
-        this.discountId = discountId;
-    }
-
     public String getDiscountName() {
         return discountName;
     }

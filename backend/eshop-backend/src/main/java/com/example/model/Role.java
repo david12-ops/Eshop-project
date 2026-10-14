@@ -23,7 +23,7 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
-    private Integer id;
+    private Integer roleId;
 
     @Column(name = "role_name", nullable = false, unique = true)
     private String roleName;
@@ -67,12 +67,8 @@ public class Role {
     public Role() {
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+    public Integer getRoleId() {
+        return roleId;
     }
 
     public String getRoleName() {
@@ -162,4 +158,6 @@ public class Role {
     public void setPermissions(Set<AppPermission> permissions) {
         this.permissions = permissions;
     }
+
+    // chybi to string
 }

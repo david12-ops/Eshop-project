@@ -106,10 +106,6 @@ public class Order {
         return orderId;
     }
 
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
-    }
-
     public LocalDate getOrderDate() {
         return orderDate;
     }
@@ -245,4 +241,6 @@ public class Order {
     public void setDiscounts(Set<Discount> discounts) {
         this.discounts = discounts;
     }
+
+    // chybi to string
 }

@@ -26,7 +26,7 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "address_id")
-    private Integer id;
+    private Integer addressId;
 
     @Column(name = "street_name", nullable = false, length = 50)
     private String streetName;
@@ -72,12 +72,8 @@ public class Address {
     public Address() {
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+    public Integer getAddressId() {
+        return addressId;
     }
 
     public String getStreetName() {
@@ -179,7 +175,7 @@ public class Address {
     @Override
     public String toString() {
         return "Address{" +
-                "id=" + id +
+                "addressId=" + addressId +
                 ", streetName='" + streetName + '\'' +
                 ", cityName='" + cityName + '\'' +
                 ", stateName='" + stateName + '\'' +

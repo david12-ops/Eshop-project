@@ -22,7 +22,7 @@ public class OrderStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "status_id")
-    private Integer id;
+    private Integer orderStatusId;
 
     @Column(name = "status_name", nullable = false, unique = true, length = 50)
     private String statusName;
@@ -60,12 +60,8 @@ public class OrderStatus {
     public OrderStatus() {
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+    public Integer getOrderStatusId() {
+        return orderStatusId;
     }
 
     public String getStatusName() {
@@ -143,7 +139,7 @@ public class OrderStatus {
     @Override
     public String toString() {
         return "OrderStatus{" +
-                "id=" + id +
+                "orderStatusId=" + orderStatusId +
                 ", statusName='" + statusName + '\'' +
                 ", statusType=" + statusType +
                 ", statusDescription='" + statusDescription + '\'' +

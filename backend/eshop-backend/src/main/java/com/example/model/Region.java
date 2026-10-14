@@ -65,10 +65,6 @@ public class Region {
         return regionId;
     }
 
-    public void setRegionId(Integer regionId) {
-        this.regionId = regionId;
-    }
-
     public String getRegionName() {
         return regionName;
     }

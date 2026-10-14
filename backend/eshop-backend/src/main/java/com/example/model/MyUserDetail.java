@@ -51,6 +51,6 @@ public class MyUserDetail implements UserDetails {
     }
 
     public Integer getUserId() {
-        return user.getId();
+        return user.getAppUserId();
     }
 }
