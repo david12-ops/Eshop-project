@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.example.dto.RegisterRequest;
+import com.example.dto.RegisterRequestDTO;
 import com.example.service_interface.AppUserService;
 
 @Controller
@@ -20,14 +20,14 @@ public class AuthController {
     @GetMapping("/register")
     public String register(Model model) {
 
-        model.addAttribute("user", new RegisterRequest());
+        model.addAttribute("user", new RegisterRequestDTO());
 
         return "auth/register";
     }
 
     @PostMapping("/register")
     public String register(
-            @ModelAttribute("user") RegisterRequest user) {
+            @ModelAttribute("user") RegisterRequestDTO user) {
 
         System.out.println("Received registration data: " + user);
 

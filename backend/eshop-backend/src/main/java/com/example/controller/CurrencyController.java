@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.model.Currency;
 import com.example.service_interface.CurrencyService;
 
-@RestController 
+@RestController
 @RequestMapping("/currencies")
 public class CurrencyController {
     private final CurrencyService currencyService;
@@ -24,8 +24,8 @@ public class CurrencyController {
 
     // DETAIL
     @GetMapping("/{id}")
-    public Currency currencyDetail(@PathVariable String id) {
-        return currencyService.getCurrencyById(id);
+    public Currency currencyDetail(@PathVariable String code) {
+        return currencyService.getCurrencyByCode(code);
     }
 
     // CREATE
