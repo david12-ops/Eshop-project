@@ -1,12 +1,12 @@
 package com.example.dto;
 
-public class RegisterRequest {
+public class RegisterRequestDTO {
 
     private String username;
     private String email;
     private String password;
 
-    public RegisterRequest() {
+    public RegisterRequestDTO() {
     }
 
     public String getUsername() {
