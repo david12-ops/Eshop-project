@@ -102,5 +102,15 @@ public class InvoiceItem {
         this.invoice = invoice;
     }
 
-    // chybi to string
+    @Override
+    public String toString() {
+        return "InvoiceItem{" +
+                "invoiceItemId=" + invoiceItemId +
+                ", productId=" + productId +
+                ", lineTotal=" + lineTotal +
+                ", quantity=" + quantity +
+                ", notes='" + notes + '\'' +
+                ", unitPrice=" + unitPrice +
+                '}';
+    }
 }

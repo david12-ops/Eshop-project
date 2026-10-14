@@ -135,5 +135,20 @@ public class PaymentMethod {
     public void setUpdatedBy(Integer updatedBy) {
         this.updatedBy = updatedBy;
     }
-    // chybi to string
+
+    @Override
+    public String toString() {
+        return "PaymentMethod{" +
+                "paymentMethodId=" + paymentMethodId +
+                ", methodName='" + methodName + '\'' +
+                ", methodType=" + methodType +
+                ", methodDescription='" + methodDescription + '\'' +
+                ", deleted=" + deleted +
+                ", deletedAt=" + deletedAt +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", createdBy=" + createdBy +
+                ", updatedBy=" + updatedBy +
+                '}';
+    }
 }

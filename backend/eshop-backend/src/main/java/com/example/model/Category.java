@@ -143,5 +143,19 @@ public class Category {
         this.items = items;
     }
 
-    // chybi to string
+    @Override
+    public String toString() {
+        return "Category{" +
+                "categoryId=" + categoryId +
+                ", categoryName='" + categoryName + '\'' +
+                ", categoryDescription='" + categoryDescription + '\'' +
+                ", active=" + active +
+                ", deleted=" + deleted +
+                ", deletedAt=" + deletedAt +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", createdBy=" + createdBy +
+                ", updatedBy=" + updatedBy +
+                '}';
+    }
 }

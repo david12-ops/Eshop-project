@@ -79,4 +79,17 @@ public class OrderItemDTO {
     public void setOrderDTO(OrderDTO orderDTO) {
         this.orderDTO = orderDTO;
     }
+
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+                ", productId=" + productId +
+                ", quantity=" + quantity +
+                ", lineTotal=" + lineTotal +
+                ", notes='" + notes + '\'' +
+                ", unitPrice=" + unitPrice +
+                ", deleted=" + deleted +
+                ", deletedAt=" + deletedAt +
+                '}';
+    }
 }

@@ -124,5 +124,18 @@ public class OrderItem {
     public void setOrder(Order order) {
         this.order = order;
     }
+
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+                "orderItemId=" + orderItemId +
+                ", productId=" + productId +
+                ", quantity=" + quantity +
+                ", lineTotal=" + lineTotal +
+                ", notes='" + notes + '\'' +
+                ", unitPrice=" + unitPrice +
+                ", deleted=" + deleted +
+                ", deletedAt=" + deletedAt +
+                '}';
+    }
 }
-// chybi to string

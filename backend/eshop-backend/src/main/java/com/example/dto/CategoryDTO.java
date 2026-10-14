@@ -98,4 +98,19 @@ public class CategoryDTO {
     public void setItemsDTO(List<ProductDTO> itemsDTO) {
         this.itemsDTO = itemsDTO;
     }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                ", categoryName='" + categoryName + '\'' +
+                ", categoryDescription='" + categoryDescription + '\'' +
+                ", active=" + active +
+                ", deleted=" + deleted +
+                ", deletedAt=" + deletedAt +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", createdBy=" + createdBy +
+                ", updatedBy=" + updatedBy +
+                '}';
+    }
 }

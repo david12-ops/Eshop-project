@@ -227,5 +227,20 @@ public class Invoice {
         this.discounts = discounts;
     }
 
-    // chybi to string
+    @Override
+    public String toString() {
+        return "Invoice{" +
+                "invoiceId=" + invoiceId +
+                ", invoiceCode='" + invoiceCode + '\'' +
+                ", issueDate=" + issueDate +
+                ", dueDate=" + dueDate +
+                ", paymentDate=" + paymentDate +
+                ", subtotal=" + subtotal +
+                ", taxAmount=" + taxAmount +
+                ", totalAmount=" + totalAmount +
+                ", notes='" + notes + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

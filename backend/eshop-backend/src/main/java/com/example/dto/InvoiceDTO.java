@@ -156,4 +156,20 @@ public class InvoiceDTO {
     public void setDiscountsDTO(Set<DiscountDTO> discountsDTO) {
         this.discountsDTO = discountsDTO;
     }
+
+    @Override
+    public String toString() {
+        return "Invoice{" +
+                ", invoiceCode='" + invoiceCode + '\'' +
+                ", issueDate=" + issueDate +
+                ", dueDate=" + dueDate +
+                ", paymentDate=" + paymentDate +
+                ", subtotal=" + subtotal +
+                ", taxAmount=" + taxAmount +
+                ", totalAmount=" + totalAmount +
+                ", notes='" + notes + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

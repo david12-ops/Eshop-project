@@ -69,4 +69,16 @@ public class InvoiceItemDTO {
     public void setInvoice(InvoiceDTO invoice) {
         this.invoiceDTO = invoice;
     }
+
+    @Override
+    public String toString() {
+        return "InvoiceItem{" +
+                "invoiceItemId=" + invoiceItemId +
+                ", productId=" + productId +
+                ", lineTotal=" + lineTotal +
+                ", quantity=" + quantity +
+                ", notes='" + notes + '\'' +
+                ", unitPrice=" + unitPrice +
+                '}';
+    }
 }

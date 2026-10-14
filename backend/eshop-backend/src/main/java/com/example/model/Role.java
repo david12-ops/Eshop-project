@@ -159,5 +159,19 @@ public class Role {
         this.permissions = permissions;
     }
 
-    // chybi to string
+    @Override
+    public String toString() {
+        return "Role{" +
+                "roleId=" + roleId +
+                ", roleName='" + roleName + '\'' +
+                ", roleType=" + roleType +
+                ", roleDescription='" + roleDescription + '\'' +
+                ", deleted=" + deleted +
+                ", deletedAt=" + deletedAt +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", createdBy=" + createdBy +
+                ", updatedBy=" + updatedBy +
+                '}';
+    }
 }

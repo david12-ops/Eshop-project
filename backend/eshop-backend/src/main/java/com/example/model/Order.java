@@ -242,5 +242,21 @@ public class Order {
         this.discounts = discounts;
     }
 
-    // chybi to string
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderId=" + orderId +
+                ", orderDate=" + orderDate +
+                ", subtotal=" + subtotal +
+                ", taxAmount=" + taxAmount +
+                ", totalAmount=" + totalAmount +
+                ", notes='" + notes + '\'' +
+                ", deleted=" + deleted +
+                ", deletedAt=" + deletedAt +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", createdBy=" + createdBy +
+                ", updatedBy=" + updatedBy +
+                '}';
+    }
 }

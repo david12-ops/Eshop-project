@@ -163,4 +163,21 @@ public class OrderDTO {
     public void setDiscountsDTO(Set<DiscountDTO> discountsDTO) {
         this.discountsDTO = discountsDTO;
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                ", orderDate=" + orderDate +
+                ", subtotal=" + subtotal +
+                ", taxAmount=" + taxAmount +
+                ", totalAmount=" + totalAmount +
+                ", notes='" + notes + '\'' +
+                ", deleted=" + deleted +
+                ", deletedAt=" + deletedAt +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", createdBy=" + createdBy +
+                ", updatedBy=" + updatedBy +
+                '}';
+    }
 }
