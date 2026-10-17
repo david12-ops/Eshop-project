@@ -1,18 +1,19 @@
 package com.example.service_interface;
 
-import java.util.List;
+import com.example.dto.CurrencyDTO;
+import com.example.model.MyUserDetail;
 
-import com.example.model.Currency;
+import java.util.List;
 
 public interface CurrencyService {
 
-    Currency getCurrencyByCode(String code);
+    CurrencyDTO getCurrencyByCode(String code, MyUserDetail userDetail);
 
-    List<Currency> getCurrencies();
+    List<CurrencyDTO> getCurrencies(MyUserDetail userDetail);
 
-    Currency saveCurrency(Currency currency);
+    CurrencyDTO saveCurrency(CurrencyDTO currencyDTO, MyUserDetail userDetail);
 
-    Currency editCurrency(String code, Currency currency);
+    CurrencyDTO editCurrency(String code, CurrencyDTO currencyDTO, MyUserDetail userDetail);
 
-    void deleteCurrencyById(String code);
+    void deleteCurrencyById(String code, MyUserDetail userDetail);
 }

@@ -1,18 +1,19 @@
 package com.example.service_interface;
 
-import java.util.List;
+import com.example.dto.OrderStatusDTO;
+import com.example.model.MyUserDetail;
 
-import com.example.model.OrderStatus;
+import java.util.List;
 
 public interface OrderStatusService {
 
-    OrderStatus getOrderStatusById(Integer id);
+    OrderStatusDTO getOrderStatusById(Integer id, MyUserDetail userDetail);
 
-    List<OrderStatus> getOrderStatuses();
+    List<OrderStatusDTO> getOrderStatuses(MyUserDetail userDetail);
 
-    OrderStatus saveOrderStatus(OrderStatus orderStatus);
+    OrderStatusDTO saveOrderStatus(OrderStatusDTO orderStatusDTO, MyUserDetail userDetail);
 
-    OrderStatus editOrderStatus(Integer id, OrderStatus orderStatus);
+    OrderStatusDTO editOrderStatus(Integer id, OrderStatusDTO orderStatusDTO, MyUserDetail userDetail);
 
-    void deleteOrderStatusById(Integer id);
+    void deleteOrderStatusById(Integer id, MyUserDetail userDetail);
 }

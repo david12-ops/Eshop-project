@@ -1,18 +1,19 @@
 package com.example.service_interface;
 
-import java.util.List;
+import com.example.dto.CategoryDTO;
+import com.example.model.MyUserDetail;
 
-import com.example.model.Category;
+import java.util.List;
 
 public interface CategoryService {
 
-    List<Category> getCategories();
+    List<CategoryDTO> getCategories(MyUserDetail userDetail);
 
-    Category saveCategory(Category category);
+    CategoryDTO saveCategory(CategoryDTO categoryDTO, MyUserDetail userDetail);
 
-    void deleteCategoryById(Integer id);
+    void deleteCategoryById(Integer id, MyUserDetail userDetail);
 
-    Category editCategory(Integer id, Category category);
+    CategoryDTO editCategory(Integer id, CategoryDTO categoryDTO, MyUserDetail userDetail);
 
-    Category getCategoryById(Integer id);
+    CategoryDTO getCategoryById(Integer id, MyUserDetail userDetail);
 }

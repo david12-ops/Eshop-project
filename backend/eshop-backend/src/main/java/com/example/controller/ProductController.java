@@ -2,12 +2,21 @@ package com.example.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.example.model.Product;
+import com.example.dto.ProductDTO;
+import com.example.model.MyUserDetail;
 import com.example.service_interface.ProductService;
 
-@RestController 
+@RestController
 @RequestMapping("/products")
 public class ProductController {
         private final ProductService productService;
@@ -18,33 +27,40 @@ public class ProductController {
 
         // LIST
         @GetMapping
-        public List<Product> listProducts() {
-                return productService.getProducts();
+        public List<ProductDTO> listProducts(@AuthenticationPrincipal MyUserDetail userDetail) {
+                return productService.getProducts(userDetail);
         }
 
         // DETAIL
         @GetMapping("/{id}")
-        public Product productDetail(@PathVariable Integer id) {
-                return productService.getProductById(id);
+        public ProductDTO productDetail(
+                        @PathVariable Integer id,
+                        @AuthenticationPrincipal MyUserDetail userDetail) {
+                return productService.getProductById(id, userDetail);
         }
 
         // CREATE
         @PostMapping("/create")
-        public Product createProduct(@RequestBody Product product) {
-                return productService.saveProduct(product);
+        public ProductDTO createProduct(
+                        @RequestBody ProductDTO productDTO,
+                        @AuthenticationPrincipal MyUserDetail userDetail) {
+                return productService.saveProduct(productDTO, userDetail);
         }
 
         // EDIT
         @PutMapping("/{id}")
-        public Product editProduct(
+        public ProductDTO editProduct(
                         @PathVariable Integer id,
-                        @RequestBody Product product) {
-                return productService.editProduct(id, product);
+                        @RequestBody ProductDTO productDTO,
+                        @AuthenticationPrincipal MyUserDetail userDetail) {
+                return productService.editProduct(id, productDTO, userDetail);
         }
 
         // DELETE
-        @DeleteMapping ("/{id}")
-        public void deleteProduct(@PathVariable Integer id) {
-                productService.deleteProductById(id);
+        @DeleteMapping("/{id}")
+        public void deleteProduct(
+                        @PathVariable Integer id,
+                        @AuthenticationPrincipal MyUserDetail userDetail) {
+                productService.deleteProductById(id, userDetail);
         }
 }

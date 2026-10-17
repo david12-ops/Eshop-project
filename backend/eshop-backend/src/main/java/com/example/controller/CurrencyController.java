@@ -2,9 +2,18 @@ package com.example.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.example.model.Currency;
+import com.example.dto.CurrencyDTO;
+import com.example.model.MyUserDetail;
 import com.example.service_interface.CurrencyService;
 
 @RestController
@@ -18,34 +27,39 @@ public class CurrencyController {
 
     // LIST
     @GetMapping
-    public List<Currency> listCurrencies() {
-        return currencyService.getCurrencies();
+    public List<CurrencyDTO> listCurrencies(@AuthenticationPrincipal MyUserDetail userDetail) {
+        return currencyService.getCurrencies(userDetail);
     }
 
     // DETAIL
     @GetMapping("/{id}")
-    public Currency currencyDetail(@PathVariable String code) {
-        return currencyService.getCurrencyByCode(code);
+    public CurrencyDTO currencyDetail(
+            @PathVariable String code,
+            @AuthenticationPrincipal MyUserDetail userDetail) {
+        return currencyService.getCurrencyByCode(code, userDetail);
     }
 
     // CREATE
     @PostMapping("/create")
-    public Currency createCurrency(@RequestBody Currency currency) {
-        return currencyService.saveCurrency(currency);
+    public CurrencyDTO createCurrency(
+            @RequestBody CurrencyDTO currencyDTO,
+            @AuthenticationPrincipal MyUserDetail userDetail) {
+        return currencyService.saveCurrency(currencyDTO, userDetail);
     }
 
     // EDIT
     @PutMapping("/{id}")
-    public Currency editCurrency(
+    public CurrencyDTO editCurrency(
             @PathVariable String id,
-            @RequestBody Currency currency) {
-        return currencyService.editCurrency(id, currency);
+            @RequestBody CurrencyDTO currencyDTO,
+            @AuthenticationPrincipal MyUserDetail userDetail) {
+        return currencyService.editCurrency(id, currencyDTO, userDetail);
     }
 
     // DELETE
     @DeleteMapping("/{id}")
-    public void deleteCurrency(
-            @PathVariable String id) {
-        currencyService.deleteCurrencyById(id);
+    public void deleteCurrency(@PathVariable String id,
+            @AuthenticationPrincipal MyUserDetail userDetail) {
+        currencyService.deleteCurrencyById(id, userDetail);
     }
 }

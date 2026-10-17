@@ -1,18 +1,19 @@
 package com.example.service_interface;
 
-import java.util.List;
+import com.example.dto.DiscountDTO;
+import com.example.model.MyUserDetail;
 
-import com.example.model.Discount;
+import java.util.List;
 
 public interface DiscountService {
 
-    Discount getDiscountById(Integer id);
+    DiscountDTO getDiscountById(Integer id, MyUserDetail userDetail);
 
-    List<Discount> getDiscounts();
+    List<DiscountDTO> getDiscounts(MyUserDetail userDetail);
 
-    Discount saveDiscount(Discount discount);
+    DiscountDTO saveDiscount(DiscountDTO discountDTO, MyUserDetail userDetail);
 
-    Discount editDiscount(Integer id, Discount discount);
+    DiscountDTO editDiscount(Integer id, DiscountDTO discountDTO, MyUserDetail userDetail);
 
-    void deleteDiscountById(Integer id);
+    void deleteDiscountById(Integer id, MyUserDetail userDetail);
 }

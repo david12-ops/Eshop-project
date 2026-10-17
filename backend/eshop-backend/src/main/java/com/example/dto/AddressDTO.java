@@ -3,6 +3,7 @@ package com.example.dto;
 import java.time.Instant;
 
 public class AddressDTO {
+    private Integer addressId;
     private String streetName;
     private String cityName;
     private String stateName;
@@ -17,6 +18,14 @@ public class AddressDTO {
     private Integer updatedBy;
 
     public AddressDTO() {
+    }
+
+    public Integer getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(Integer addressId) {
+        this.addressId = addressId;
     }
 
     public String getStreetName() {
@@ -118,6 +127,7 @@ public class AddressDTO {
     @Override
     public String toString() {
         return "Address{" +
+                ", addressId='" + addressId + '\'' +
                 ", streetName='" + streetName + '\'' +
                 ", cityName='" + cityName + '\'' +
                 ", stateName='" + stateName + '\'' +

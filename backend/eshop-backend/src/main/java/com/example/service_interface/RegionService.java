@@ -1,18 +1,19 @@
 package com.example.service_interface;
 
-import java.util.List;
+import com.example.dto.RegionDTO;
+import com.example.model.MyUserDetail;
 
-import com.example.model.Region;
+import java.util.List;
 
 public interface RegionService {
 
-    Region getRegionById(Integer id);
+    RegionDTO getRegionById(Integer id, MyUserDetail userDetail);
 
-    List<Region> getRegions();
+    List<RegionDTO> getRegions(MyUserDetail userDetail);
 
-    Region saveRegion(Region region);
+    RegionDTO saveRegion(RegionDTO regionDTO, MyUserDetail userDetail);
 
-    Region editRegion(Integer id, Region region);
+    RegionDTO editRegion(Integer id, RegionDTO regionDTO, MyUserDetail userDetail);
 
-    void deleteRegionById(Integer id);
+    void deleteRegionById(Integer id, MyUserDetail userDetail);
 }

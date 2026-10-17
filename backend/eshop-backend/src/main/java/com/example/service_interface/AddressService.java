@@ -1,18 +1,19 @@
 package com.example.service_interface;
 
-import java.util.List;
+import com.example.dto.AddressDTO;
+import com.example.model.MyUserDetail;
 
-import com.example.model.Address;
+import java.util.List;
 
 public interface AddressService {
 
-    List<Address> getAddresses();
+    List<AddressDTO> getAddresses(MyUserDetail userDetail);
 
-    Address getAddressById(Integer id);
+    AddressDTO getAddressById(Integer id, MyUserDetail userDetail);
 
-    Address saveAddress(Address address);
+    AddressDTO saveAddress(AddressDTO addressDTO, MyUserDetail userDetail);
 
-    Address editAddress(Integer id, Address address);
+    AddressDTO editAddress(Integer id, AddressDTO addressDTO, MyUserDetail userDetail);
 
-    void deleteAddressById(Integer id);
+    void deleteAddressById(Integer id, MyUserDetail userDetail);
 }

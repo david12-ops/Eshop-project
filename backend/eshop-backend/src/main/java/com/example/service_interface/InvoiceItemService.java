@@ -1,18 +1,19 @@
 package com.example.service_interface;
 
-import java.util.List;
+import com.example.dto.InvoiceItemDTO;
+import com.example.model.MyUserDetail;
 
-import com.example.model.InvoiceItem;
+import java.util.List;
 
 public interface InvoiceItemService {
 
-    InvoiceItem getInvoiceItemById(Integer id);
+    InvoiceItemDTO getInvoiceItemById(Integer id, MyUserDetail userDetail);
 
-    List<InvoiceItem> getAllInvoiceItems();
+    List<InvoiceItemDTO> getAllInvoiceItems(MyUserDetail userDetail);
 
-    InvoiceItem saveInvoiceItem(InvoiceItem invoiceItem);
+    InvoiceItemDTO saveInvoiceItem(InvoiceItemDTO invoiceItemDTO, MyUserDetail userDetail);
 
-    InvoiceItem editInvoiceItem(Integer id, InvoiceItem invoiceItem);
+    InvoiceItemDTO editInvoiceItem(Integer id, InvoiceItemDTO invoiceItemDTO, MyUserDetail userDetail);
 
-    void deleteInvoiceItemById(Integer id);
+    void deleteInvoiceItemById(Integer id, MyUserDetail userDetail);
 }

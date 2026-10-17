@@ -3,6 +3,7 @@ package com.example.dto;
 import java.time.Instant;
 
 public class RegionDTO {
+    private Integer regionId;
     private String regionName;
     private CurrencyDTO currencyDTO;
     private Boolean deleted = false;
@@ -13,6 +14,14 @@ public class RegionDTO {
     private Integer updatedBy;
 
     public RegionDTO() {
+    }
+
+    public Integer getRegionId() {
+        return regionId;
+    }
+
+    public void setRegionId(Integer regionId) {
+        this.regionId = regionId;
     }
 
     public String getRegionName() {
@@ -82,6 +91,7 @@ public class RegionDTO {
     @Override
     public String toString() {
         return "Region{" +
+                ", regionId='" + regionId + '\'' +
                 ", regionName='" + regionName + '\'' +
                 ", currency=" + (currencyDTO != null ? currencyDTO.getCurrencyCode() : "null") +
                 ", symbol=" + (currencyDTO != null ? currencyDTO.getSymbol() : "null") +

@@ -1,22 +1,23 @@
 package com.example.service_interface;
 
-import java.util.List;
-
+import com.example.dto.AppUserDTO;
 import com.example.dto.RegisterRequestDTO;
-import com.example.model.AppUser;
+import com.example.model.MyUserDetail;
+
+import java.util.List;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface AppUserService extends UserDetailsService {
 
-    AppUser getAppUserById(Integer id);
+    AppUserDTO getAppUserById(Integer id, MyUserDetail userDetail);
 
-    AppUser saveAppUser(AppUser user);
+    AppUserDTO saveAppUser(AppUserDTO appUserDTO, MyUserDetail userDetail);
 
-    AppUser editAppUser(Integer id, AppUser user);
+    AppUserDTO editAppUser(Integer id, AppUserDTO appUserDTO, MyUserDetail userDetail);
 
-    void deleteAppUserById(Integer id);
+    void deleteAppUserById(Integer id, MyUserDetail userDetail);
 
-    List<AppUser> getAppUsers();
+    List<AppUserDTO> getAppUsers(MyUserDetail userDetail);
 
     void registerUser(RegisterRequestDTO request);
 }

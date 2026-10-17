@@ -1,18 +1,19 @@
 package com.example.service_interface;
 
-import java.util.List;
+import com.example.dto.CustomerDTO;
+import com.example.model.MyUserDetail;
 
-import com.example.model.Customer;
+import java.util.List;
 
 public interface CustomerService {
 
-    Customer getCustomerById(Integer id);
+    CustomerDTO getCustomerById(Integer id, MyUserDetail userDetail);
 
-    List<Customer> getCustomers();
+    List<CustomerDTO> getCustomers(MyUserDetail userDetail);
 
-    Customer saveCustomer(Customer customer);
+    CustomerDTO saveCustomer(CustomerDTO customerDTO, MyUserDetail userDetail);
 
-    Customer editCustomer(Integer id, Customer customer);
+    CustomerDTO editCustomer(Integer id, CustomerDTO customerDTO, MyUserDetail userDetail);
 
-    void deleteCustomerById(Integer id);
+    void deleteCustomerById(Integer id, MyUserDetail userDetail);
 }

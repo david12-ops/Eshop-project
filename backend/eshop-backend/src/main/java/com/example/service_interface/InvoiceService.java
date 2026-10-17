@@ -1,12 +1,13 @@
 package com.example.service_interface;
 
-import java.util.List;
+import com.example.dto.InvoiceDTO;
+import com.example.model.MyUserDetail;
 
-import com.example.model.Invoice;
+import java.util.List;
 
 public interface InvoiceService {
 
-    Invoice getInvoiceById(Integer id);
+    InvoiceDTO getInvoiceById(Integer id, MyUserDetail userDetail);
 
-    List<Invoice> getInvoices();
+    List<InvoiceDTO> getInvoices(MyUserDetail userDetail);
 }

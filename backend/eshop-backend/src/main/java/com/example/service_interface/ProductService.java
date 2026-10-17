@@ -1,18 +1,19 @@
 package com.example.service_interface;
 
-import java.util.List;
+import com.example.dto.ProductDTO;
+import com.example.model.MyUserDetail;
 
-import com.example.model.Product;
+import java.util.List;
 
 public interface ProductService {
 
-    Product getProductById(Integer id);
+    ProductDTO getProductById(Integer id, MyUserDetail userDetail);
 
-    List<Product> getProducts();
+    List<ProductDTO> getProducts(MyUserDetail userDetail);
 
-    Product saveProduct(Product product);
+    ProductDTO saveProduct(ProductDTO productDTO, MyUserDetail userDetail);
 
-    Product editProduct(Integer id, Product product);
+    ProductDTO editProduct(Integer id, ProductDTO productDTO, MyUserDetail userDetail);
 
-    void deleteProductById(Integer id);
+    void deleteProductById(Integer id, MyUserDetail userDetail);
 }

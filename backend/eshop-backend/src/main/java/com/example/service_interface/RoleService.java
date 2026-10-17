@@ -1,26 +1,27 @@
 package com.example.service_interface;
 
-import com.example.model.Role;
+import com.example.dto.RoleDTO;
+import com.example.model.MyUserDetail;
 
 import java.util.List;
 
 public interface RoleService {
 
-    Role saveRole(Role role);
+    RoleDTO saveRole(RoleDTO roleDTO, MyUserDetail userDetail);
 
-    Role findByRoleName(String roleName);
+    RoleDTO findByRoleName(String roleName);
 
-    List<Role> getAllRoles();
+    List<RoleDTO> getAllRoles(MyUserDetail userDetail);
 
-    Role getRoleById(Integer id);
+    RoleDTO getRoleById(Integer id, MyUserDetail userDetail);
 
-    void deleteRoleById(Integer id);
+    void deleteRoleById(Integer id, MyUserDetail userDetail);
 
-    Role editRole(Integer id, Role role);
+    RoleDTO editRole(Integer id, RoleDTO roleDTO, MyUserDetail userDetail);
 
-    Role getRoleWithUsers(Integer id);
+    // RoleDTO getRoleWithUsers(Integer id);
 
-    Role getRoleWithPermissions(Integer id);
+    // RoleDTO getRoleWithPermissions(Integer id);
 
-    Role getRoleWithUsersAndPermissions(Integer id);
+    // RoleDTO getRoleWithUsersAndPermissions(Integer id);
 }

@@ -1,18 +1,19 @@
 package com.example.service_interface;
 
-import java.util.List;
+import com.example.dto.PaymentMethodDTO;
+import com.example.model.MyUserDetail;
 
-import com.example.model.PaymentMethod;
+import java.util.List;
 
 public interface PaymentMethodService {
 
-    PaymentMethod getPaymentMethodById(Integer id);
+    PaymentMethodDTO getPaymentMethodById(Integer id, MyUserDetail userDetail);
 
-    List<PaymentMethod> getPaymentMethods();
+    List<PaymentMethodDTO> getPaymentMethods(MyUserDetail userDetail);
 
-    PaymentMethod savePaymentMethod(PaymentMethod paymentMethod);
+    PaymentMethodDTO savePaymentMethod(PaymentMethodDTO paymentMethodDTO, MyUserDetail userDetail);
 
-    PaymentMethod editPaymentMethod(Integer id, PaymentMethod paymentMethod);
+    PaymentMethodDTO editPaymentMethod(Integer id, PaymentMethodDTO paymentMethodDTO, MyUserDetail userDetail);
 
-    void deletePaymentMethodById(Integer id);
+    void deletePaymentMethodById(Integer id, MyUserDetail userDetail);
 }

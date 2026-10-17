@@ -1,19 +1,20 @@
 package com.example.service_interface;
 
-import com.example.model.AppPermission;
+import com.example.dto.AppPermissionDTO;
+import com.example.model.MyUserDetail;
 import com.example.model.keys.AppPermissionId;
 
 import java.util.List;
 
 public interface AppPermissionService {
 
-    AppPermission saveAppPermission(AppPermission permission);
+    AppPermissionDTO saveAppPermission(AppPermissionDTO permissionDTO, MyUserDetail userDetail);
 
-    AppPermission getAppPermissionById(AppPermissionId id);
+    AppPermissionDTO getAppPermissionById(AppPermissionId id, MyUserDetail userDetail);
 
-    List<AppPermission> getAllAppPermissions();
+    List<AppPermissionDTO> getAllAppPermissions(MyUserDetail userDetail);
 
-    AppPermission editAppPermission(AppPermissionId id, AppPermission permission);
+    AppPermissionDTO editAppPermission(AppPermissionId id, AppPermissionDTO permissionDTO, MyUserDetail userDetail);
 
-    void deleteAppPermissionById(AppPermissionId id);
+    void deleteAppPermissionById(AppPermissionId id, MyUserDetail userDetail);
 }

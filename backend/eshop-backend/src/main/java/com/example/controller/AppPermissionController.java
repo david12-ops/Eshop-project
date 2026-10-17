@@ -2,6 +2,7 @@ package com.example.controller;
 
 import java.util.List;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,13 +12,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.model.AppPermission;
+import com.example.dto.AppPermissionDTO;
+import com.example.model.MyUserDetail;
 import com.example.model.enums.OperationType;
 import com.example.model.enums.ResourceType;
 import com.example.model.keys.AppPermissionId;
 import com.example.service_interface.AppPermissionService;
 
-@RestController 
+@RestController
 @RequestMapping("/app-permissions")
 public class AppPermissionController {
     private final AppPermissionService appPermissionService;
@@ -28,62 +30,69 @@ public class AppPermissionController {
 
     // LIST
     @GetMapping
-    public List<AppPermission> listAppPermissions() {
-        return appPermissionService.getAllAppPermissions();
+    public List<AppPermissionDTO> listAppPermissions(@AuthenticationPrincipal MyUserDetail userDetail) {
+        return appPermissionService.getAllAppPermissions(userDetail);
     }
 
     // DETAIL
     @GetMapping("/{id}")
-    public AppPermission appPermissionDetail(@PathVariable AppPermissionId id) {
-        return appPermissionService.getAppPermissionById(id);
+    public AppPermissionDTO appPermissionDetail(
+            @PathVariable AppPermissionId id,
+            @AuthenticationPrincipal MyUserDetail userDetail) {
+        return appPermissionService.getAppPermissionById(id, userDetail);
     }
 
-    // CREATE 
+    // CREATE
     @PostMapping("/create")
-    public AppPermission createAppPermission(@RequestBody AppPermission appPermission) {
-        return appPermissionService.saveAppPermission(appPermission);
+    public AppPermissionDTO createAppPermission(
+            @RequestBody AppPermissionDTO appPermissionDTO,
+            @AuthenticationPrincipal MyUserDetail userDetail) {
+        return appPermissionService.saveAppPermission(appPermissionDTO, userDetail);
     }
 
     // DETAIL
     @GetMapping("/{roleId}/{resourceType}/{operationType}")
-    public AppPermission appPermissionDetail(
-            @PathVariable Integer roleId,
-            @PathVariable ResourceType resourceType,
-            @PathVariable OperationType operationType) {
-
-        AppPermissionId id = new AppPermissionId(
-                roleId,
-                resourceType,
-                operationType);
-        return appPermissionService.getAppPermissionById(id);
-    }
-
-    @PutMapping("/{roleId}/{resourceType}/{operationType}")
-    public AppPermission editAppPermission(
+    public AppPermissionDTO appPermissionDetail(
             @PathVariable Integer roleId,
             @PathVariable ResourceType resourceType,
             @PathVariable OperationType operationType,
-            @RequestBody AppPermission appPermission) {
+            @AuthenticationPrincipal MyUserDetail userDetail) {
+
+        AppPermissionId id = new AppPermissionId(
+                roleId,
+                resourceType,
+                operationType);
+        return appPermissionService.getAppPermissionById(id, userDetail);
+    }
+
+    @PutMapping("/{roleId}/{resourceType}/{operationType}")
+    public AppPermissionDTO editAppPermission(
+            @PathVariable Integer roleId,
+            @PathVariable ResourceType resourceType,
+            @PathVariable OperationType operationType,
+            @RequestBody AppPermissionDTO appPermissionDTO,
+            @AuthenticationPrincipal MyUserDetail userDetail) {
 
         AppPermissionId id = new AppPermissionId(
                 roleId,
                 resourceType,
                 operationType);
 
-        return appPermissionService.editAppPermission(id, appPermission);
+        return appPermissionService.editAppPermission(id, appPermissionDTO, userDetail);
     }
 
     @DeleteMapping("/{roleId}/{resourceType}/{operationType}")
     public void deleteAppPermission(
             @PathVariable Integer roleId,
             @PathVariable ResourceType resourceType,
-            @PathVariable OperationType operationType) {
+            @PathVariable OperationType operationType,
+            @AuthenticationPrincipal MyUserDetail userDetail) {
 
         AppPermissionId id = new AppPermissionId(
                 roleId,
                 resourceType,
                 operationType);
 
-        appPermissionService.deleteAppPermissionById(id);
+        appPermissionService.deleteAppPermissionById(id, userDetail);
     }
 }

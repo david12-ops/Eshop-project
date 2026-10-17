@@ -2,48 +2,34 @@ package com.example.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.example.model.InvoiceItem;
+import com.example.dto.InvoiceItemDTO;
+import com.example.model.MyUserDetail;
 import com.example.service_interface.InvoiceItemService;
 
-@RestController 
+@RestController
 public class InvoiceItemController {
     private final InvoiceItemService invoiceItemService;
 
-    public InvoiceItemController(InvoiceItemService invoiceItemService){
+    public InvoiceItemController(InvoiceItemService invoiceItemService) {
         this.invoiceItemService = invoiceItemService;
     }
 
     // LIST
-    @GetMapping 
-    public List<InvoiceItem> listInvoiceItems(){
-        return invoiceItemService.getAllInvoiceItems();
+    @GetMapping
+    public List<InvoiceItemDTO> listInvoiceItems(@AuthenticationPrincipal MyUserDetail userDetail) {
+        return invoiceItemService.getAllInvoiceItems(userDetail);
     }
 
     // DETAIL
     @GetMapping("/{id}")
-    public InvoiceItem invoiceItemDetail(@PathVariable Integer id){
-        return invoiceItemService.getInvoiceItemById(id);
-    }
-
-    // CREATE
-    @PostMapping("/create")
-    public InvoiceItem createInvoiceItem(@RequestBody InvoiceItem invoiceItem){
-        return invoiceItemService.saveInvoiceItem(invoiceItem);
-    }
-
-    // UPDATE
-    @PutMapping 
-    public InvoiceItem editInvoiceItem(
-        @PathVariable Integer id,
-        @RequestBody InvoiceItem invoiceItem){
-        return  invoiceItemService.editInvoiceItem(id, invoiceItem);
-    }
-
-    // DELETE
-    @DeleteMapping("/{id}")
-    public void deleteInvoiceItem(@PathVariable Integer id){
-        invoiceItemService.deleteInvoiceItemById(id);
+    public InvoiceItemDTO invoiceItemDetail(
+            @PathVariable Integer id,
+            @AuthenticationPrincipal MyUserDetail userDetail) {
+        return invoiceItemService.getInvoiceItemById(id, userDetail);
     }
 }
