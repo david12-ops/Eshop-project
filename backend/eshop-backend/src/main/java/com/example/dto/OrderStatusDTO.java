@@ -42,7 +42,7 @@ public class OrderStatusDTO {
         this.statusDescription = statusDescription;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

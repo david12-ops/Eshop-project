@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.exception.ResourceNotFoundException;
+import com.example.dto.InvoiceDTO;
 import com.example.exception.BadRequestException;
 import com.example.model.Invoice;
+import com.example.model.MyUserDetail;
 import com.example.repository.InvoiceRepository;
 import com.example.service_interface.InvoiceService;
 
@@ -19,7 +21,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public Invoice getInvoiceById(Integer id) {
+    public InvoiceDTO getInvoiceById(Integer id, MyUserDetail userDetail) {
         if (id == null) {
             throw new BadRequestException("ID must not be null");
         }
@@ -29,7 +31,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public List<Invoice> getInvoices() {
+    public List<InvoiceDTO> getInvoices(MyUserDetail userDetail) {
         return invoiceRepository.findAll();
     }
 }

@@ -94,7 +94,7 @@ public class AppUser {
         this.role = role;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

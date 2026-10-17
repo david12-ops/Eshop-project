@@ -49,7 +49,7 @@ public class AppUserDTO {
         this.roleDTO = roleDTO;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

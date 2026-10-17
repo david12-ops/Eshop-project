@@ -77,7 +77,7 @@ public class CustomerDTO {
         this.customerUserDTO = customerUserDTO;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

@@ -12,15 +12,16 @@ import com.example.model.Currency;
 import com.example.model.MyUserDetail;
 import com.example.repository.CurrencyRepository;
 import com.example.service_interface.CurrencyService;
-import com.example.utils.CurrencyMapper;
+import com.example.utils.utils_interface.ObjectMapper;
 
 @Service
 public class CurrencyServiceImpl implements CurrencyService {
     private final CurrencyRepository currencyRepository;
 
-    private final CurrencyMapper currencyMapper;
+    private final ObjectMapper<Currency, CurrencyDTO> currencyMapper;
 
-    public CurrencyServiceImpl(CurrencyRepository currencyRepository, CurrencyMapper currencyMapper) {
+    public CurrencyServiceImpl(CurrencyRepository currencyRepository,
+            ObjectMapper<Currency, CurrencyDTO> currencyMapper) {
         this.currencyRepository = currencyRepository;
         this.currencyMapper = currencyMapper;
     }
@@ -31,13 +32,13 @@ public class CurrencyServiceImpl implements CurrencyService {
             throw new BadRequestException("Code must not be null");
         }
 
-        return currencyRepository.findById(code).map(currency -> currencyMapper.mapToCurrencyDTO(currency))
+        return currencyRepository.findById(code).map(currency -> currencyMapper.mapToDTO(currency))
                 .orElseThrow(() -> new ResourceNotFoundException("Currency not found with code: " + code));
     }
 
     @Override
     public List<CurrencyDTO> getCurrencies(MyUserDetail userDetail) {
-        return currencyRepository.findAll().stream().map(currency -> currencyMapper.mapToCurrencyDTO(currency))
+        return currencyRepository.findAll().stream().map(currency -> currencyMapper.mapToDTO(currency))
                 .toList();
     }
 
@@ -68,11 +69,11 @@ public class CurrencyServiceImpl implements CurrencyService {
             }
         }
 
-        Currency newCurrency = currencyMapper.mapToCurrencyEntity(currencyDTO);
+        Currency newCurrency = currencyMapper.mapToEntity(currencyDTO);
 
         Currency savedCurrency = currencyRepository.save(newCurrency);
 
-        return currencyMapper.mapToCurrencyDTO(savedCurrency);
+        return currencyMapper.mapToDTO(savedCurrency);
     }
 
     // Soft deletion
@@ -80,7 +81,7 @@ public class CurrencyServiceImpl implements CurrencyService {
     public void deleteCurrencyById(String code, MyUserDetail userDetail) {
         Currency existingCurrency = getCurrencyEntityByCode(code);
 
-        if (existingCurrency.getDeleted())
+        if (existingCurrency.isDeleted())
             return;
 
         currencyRepository.softDeleteById(existingCurrency.getCurrencyCode());
@@ -115,7 +116,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 
         Currency updatedCurrency = currencyRepository.save(currencyToUpdate);
 
-        return currencyMapper.mapToCurrencyDTO(updatedCurrency);
+        return currencyMapper.mapToDTO(updatedCurrency);
     }
 
     private Currency getCurrencyEntityByCode(String code) {

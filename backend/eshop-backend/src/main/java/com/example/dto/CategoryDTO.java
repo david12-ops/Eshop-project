@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryDTO {
+    private Integer categoryId;
     private String categoryName;
     private String categoryDescription;
-    private boolean active = true;
+    private Boolean active = true;
     private Boolean deleted = false;
     private Instant deletedAt;
     private Instant createdAt;
@@ -17,6 +18,14 @@ public class CategoryDTO {
     private List<ProductDTO> itemsDTO = new ArrayList<>();
 
     public CategoryDTO() {
+    }
+
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getCategoryName() {
@@ -35,15 +44,15 @@ public class CategoryDTO {
         this.categoryDescription = categoryDescription;
     }
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 
@@ -102,6 +111,7 @@ public class CategoryDTO {
     @Override
     public String toString() {
         return "Category{" +
+                ", categoryName='" + categoryId + '\'' +
                 ", categoryName='" + categoryName + '\'' +
                 ", categoryDescription='" + categoryDescription + '\'' +
                 ", active=" + active +

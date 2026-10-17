@@ -42,7 +42,7 @@ public class PaymentMethodDTO {
         this.methodDescription = methodDescription;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

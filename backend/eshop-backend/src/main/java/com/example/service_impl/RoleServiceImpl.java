@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.dto.RoleDTO;
 import com.example.exception.BadRequestException;
 import com.example.exception.ResourceNotFoundException;
+import com.example.model.MyUserDetail;
 import com.example.model.Role;
 import com.example.repository.RoleRepository;
 import com.example.service_interface.RoleService;
@@ -21,8 +23,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role saveRole(Role role) {
-        if (role == null) {
+    public RoleDTO saveRole(RoleDTO roleDTO, MyUserDetail userDetail) {
+        if (roleDTO == null) {
             throw new BadRequestException("Role must not be null");
         }
 
@@ -30,39 +32,42 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role findByRoleName(String roleName) {
+    public RoleDTO findByRoleName(String roleName) {
         return roleRepository.findByRoleName(roleName)
                 .orElseThrow(() -> new ResourceNotFoundException("Role not found with name: " + roleName));
     }
 
     @Override
-    public List<Role> getAllRoles() {
+    public List<RoleDTO> getAllRoles(MyUserDetail userDetail) {
         return roleRepository.findAll();
     }
 
-    @Override
-    @Transactional
-    public Role getRoleWithUsers(Integer id) {
-        return roleRepository.findByIdWithUsers(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + id));
-    }
+    // @Override
+    // @Transactional
+    // public RoleDTO getRoleWithUsers(Integer id) {
+    // return roleRepository.findByIdWithUsers(id)
+    // .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " +
+    // id));
+    // }
+
+    // @Override
+    // @Transactional
+    // public RoleDTO getRoleWithPermissions(Integer id) {
+    // return roleRepository.findByIdWithPermissions(id)
+    // .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " +
+    // id));
+    // }
+
+    // @Override
+    // @Transactional
+    // public RoleDTO getRoleWithUsersAndPermissions(Integer id) {
+    // return roleRepository.findByIdWithUsersAndPermissions(id)
+    // .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " +
+    // id));
+    // }
 
     @Override
-    @Transactional
-    public Role getRoleWithPermissions(Integer id) {
-        return roleRepository.findByIdWithPermissions(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + id));
-    }
-
-    @Override
-    @Transactional
-    public Role getRoleWithUsersAndPermissions(Integer id) {
-        return roleRepository.findByIdWithUsersAndPermissions(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + id));
-    }
-
-    @Override
-    public Role getRoleById(Integer id) {
+    public RoleDTO getRoleById(Integer id, MyUserDetail userDetail) {
         if (id == null) {
             throw new BadRequestException("ID must not be null");
         }
@@ -73,18 +78,18 @@ public class RoleServiceImpl implements RoleService {
 
     // Soft deletion
     @Override
-    public void deleteRoleById(Integer id) {
+    public void deleteRoleById(Integer id, MyUserDetail userDetail) {
         Role existingRole = getRoleById(id);
 
-        if (existingRole.getDeleted())
+        if (existingRole.isDeleted())
             return;
 
         roleRepository.softDeleteById(existingRole.getRoleId());
     }
 
     @Override
-    public Role editRole(Integer id, Role role) {
-        if (role == null) {
+    public RoleDTO editRole(Integer id, RoleDTO roleDTO, MyUserDetail userDetail) {
+        if (roleDTO == null) {
             throw new BadRequestException("Role to edit must not be null");
         }
 

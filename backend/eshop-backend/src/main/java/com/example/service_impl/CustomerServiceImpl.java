@@ -5,10 +5,12 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.exception.ResourceNotFoundException;
+import com.example.dto.CustomerDTO;
 import com.example.exception.BadRequestException;
 import com.example.model.Address;
 import com.example.model.AppUser;
 import com.example.model.Customer;
+import com.example.model.MyUserDetail;
 import com.example.repository.CustomerRepository;
 import com.example.service_interface.AddressService;
 import com.example.service_interface.CustomerService;
@@ -28,7 +30,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer getCustomerById(Integer id) {
+    public CustomerDTO getCustomerById(Integer id, MyUserDetail userDetail) {
         if (id == null) {
             throw new BadRequestException("ID must not be null");
         }
@@ -38,13 +40,13 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<Customer> getCustomers() {
+    public List<CustomerDTO> getCustomers(MyUserDetail userDetail) {
         return customerRepository.findAll();
     }
 
     @Override
-    public Customer saveCustomer(Customer customer) {
-        if (customer == null) {
+    public CustomerDTO saveCustomer(CustomerDTO customerDTO, MyUserDetail userDetail) {
+        if (customerDTO == null) {
             throw new BadRequestException("Customer must not be null");
         }
 
@@ -53,18 +55,18 @@ public class CustomerServiceImpl implements CustomerService {
 
     // Soft deletion
     @Override
-    public void deleteCustomerById(Integer id) {
+    public void deleteCustomerById(Integer id, MyUserDetail userDetail) {
         Customer existingCustomer = getCustomerById(id);
 
-        if (existingCustomer.getDeleted())
+        if (existingCustomer.isDeleted())
             return;
 
         customerRepository.softDeleteById(existingCustomer.getCustomerId());
     }
 
     @Override
-    public Customer editCustomer(Integer id, Customer customer) {
-        if (customer == null) {
+    public CustomerDTO editCustomer(Integer id, CustomerDTO customerDTO, MyUserDetail userDetail) {
+        if (customerDTO == null) {
             throw new BadRequestException("Customer to edit must not be null");
         }
 

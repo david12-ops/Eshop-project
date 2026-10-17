@@ -68,7 +68,7 @@ public class OrderDTO {
         this.notes = notes;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

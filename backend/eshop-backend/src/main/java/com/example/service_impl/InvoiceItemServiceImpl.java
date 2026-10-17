@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.exception.ResourceNotFoundException;
+import com.example.dto.InvoiceItemDTO;
 import com.example.exception.BadRequestException;
 import com.example.model.InvoiceItem;
+import com.example.model.MyUserDetail;
 import com.example.repository.InvoiceItemRepository;
 import com.example.service_interface.InvoiceItemService;
 
@@ -19,7 +21,7 @@ public class InvoiceItemServiceImpl implements InvoiceItemService {
     }
 
     @Override
-    public InvoiceItem getInvoiceItemById(Integer id) {
+    public InvoiceItemDTO getInvoiceItemById(Integer id, MyUserDetail userDetail) {
         if (id == null) {
             throw new BadRequestException("ID must not be null");
         }
@@ -29,13 +31,13 @@ public class InvoiceItemServiceImpl implements InvoiceItemService {
     }
 
     @Override
-    public List<InvoiceItem> getAllInvoiceItems() {
+    public List<InvoiceItemDTO> getAllInvoiceItems(MyUserDetail userDetail) {
         return invoiceItemRepository.findAll();
     }
 
     @Override
-    public InvoiceItem saveInvoiceItem(InvoiceItem invoiceItem) {
-        if (invoiceItem == null) {
+    public InvoiceItemDTO saveInvoiceItem(InvoiceItemDTO invoiceItemDTO, MyUserDetail userDetail) {
+        if (invoiceItemDTO == null) {
             throw new BadRequestException("Invoice item must not be null");
         }
 
@@ -43,15 +45,15 @@ public class InvoiceItemServiceImpl implements InvoiceItemService {
     }
 
     @Override
-    public void deleteInvoiceItemById(Integer id) {
+    public void deleteInvoiceItemById(Integer id, MyUserDetail userDetail) {
         InvoiceItem existingInvoiceItem = getInvoiceItemById(id);
 
         invoiceItemRepository.softDeleteById(existingInvoiceItem.getInvoiceItemId());
     }
 
     @Override
-    public InvoiceItem editInvoiceItem(Integer id, InvoiceItem invoiceItem) {
-        if (invoiceItem == null) {
+    public InvoiceItemDTO editInvoiceItem(Integer id, InvoiceItemDTO invoiceItemDTO, MyUserDetail userDetail) {
+        if (invoiceItemDTO == null) {
             throw new BadRequestException("Invoice item to edit must not be null");
         }
 

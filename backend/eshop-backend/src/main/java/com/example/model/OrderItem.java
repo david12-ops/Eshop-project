@@ -101,7 +101,7 @@ public class OrderItem {
         this.unitPrice = unitPrice;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

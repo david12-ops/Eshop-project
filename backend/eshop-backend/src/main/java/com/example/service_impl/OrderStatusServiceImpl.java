@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.exception.ResourceNotFoundException;
+import com.example.dto.OrderStatusDTO;
 import com.example.exception.BadRequestException;
+import com.example.model.MyUserDetail;
 import com.example.model.OrderStatus;
 import com.example.repository.OrderStatusRepository;
 import com.example.service_interface.OrderStatusService;
@@ -19,7 +21,7 @@ public class OrderStatusServiceImpl implements OrderStatusService {
     }
 
     @Override
-    public OrderStatus getOrderStatusById(Integer id) {
+    public OrderStatusDTO getOrderStatusById(Integer id, MyUserDetail userDetail) {
         if (id == null) {
             throw new BadRequestException("ID must not be null");
         }
@@ -29,13 +31,13 @@ public class OrderStatusServiceImpl implements OrderStatusService {
     }
 
     @Override
-    public List<OrderStatus> getOrderStatuses() {
+    public List<OrderStatusDTO> getOrderStatuses(MyUserDetail userDetail) {
         return orderStatusRepository.findAll();
     }
 
     @Override
-    public OrderStatus saveOrderStatus(OrderStatus orderStatus) {
-        if (orderStatus == null) {
+    public OrderStatusDTO saveOrderStatus(OrderStatusDTO orderStatusDTO, MyUserDetail userDetail) {
+        if (orderStatusDTO == null) {
             throw new BadRequestException("Order status must not be null");
         }
 
@@ -44,18 +46,18 @@ public class OrderStatusServiceImpl implements OrderStatusService {
 
     // Soft deletion
     @Override
-    public void deleteOrderStatusById(Integer id) {
+    public void deleteOrderStatusById(Integer id, MyUserDetail userDetail) {
         OrderStatus existingOrderStatus = getOrderStatusById(id);
 
-        if (existingOrderStatus.getDeleted())
+        if (existingOrderStatus.isDeleted())
             return;
 
         orderStatusRepository.softDeleteById(existingOrderStatus.getOrderStatusId());
     }
 
     @Override
-    public OrderStatus editOrderStatus(Integer id, OrderStatus orderStatus) {
-        if (orderStatus == null) {
+    public OrderStatusDTO editOrderStatus(Integer id, OrderStatusDTO orderStatusDTO, MyUserDetail userDetail) {
+        if (orderStatusDTO == null) {
             throw new BadRequestException("Order status to edit must not be null");
         }
 

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.exception.ResourceNotFoundException;
 import com.example.dto.AddressDTO;
+import com.example.dto.RegionDTO;
 import com.example.exception.BadRequestException;
 import com.example.model.Address;
 import com.example.model.MyUserDetail;
@@ -14,19 +15,18 @@ import com.example.model.Region;
 import com.example.repository.AddressRepository;
 import com.example.service_interface.AddressService;
 import com.example.service_interface.RegionService;
-import com.example.utils.AddressMapper;
-import com.example.utils.RegionMapper;
+import com.example.utils.utils_interface.ObjectMapper;
 
 @Service
 public class AddressServiceImpl implements AddressService {
     private final AddressRepository addressRepository;
     private final RegionService regionService;
 
-    private final AddressMapper addressMapper;
-    private final RegionMapper regionMapper;
+    private final ObjectMapper<Address, AddressDTO> addressMapper;
+    private final ObjectMapper<Region, RegionDTO> regionMapper;
 
     public AddressServiceImpl(AddressRepository addressRepository, RegionService regionService,
-            AddressMapper addressMapper, RegionMapper regionMapper) {
+            ObjectMapper<Address, AddressDTO> addressMapper, ObjectMapper<Region, RegionDTO> regionMapper) {
         this.addressRepository = addressRepository;
         this.regionService = regionService;
         this.addressMapper = addressMapper;
@@ -35,7 +35,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public List<AddressDTO> getAddresses(MyUserDetail userDetail) {
-        return addressRepository.findAll().stream().map(address -> addressMapper.mapToAddressDTO(address)).toList();
+        return addressRepository.findAll().stream().map(address -> addressMapper.mapToDTO(address)).toList();
     }
 
     @Override
@@ -45,7 +45,7 @@ public class AddressServiceImpl implements AddressService {
         }
 
         return addressRepository.findById(id).map(address -> {
-            AddressDTO mappedAddressDTO = addressMapper.mapToAddressDTO(address);
+            AddressDTO mappedAddressDTO = addressMapper.mapToDTO(address);
 
             mappedAddressDTO.setAddressId(id);
 
@@ -81,11 +81,11 @@ public class AddressServiceImpl implements AddressService {
             }
         }
 
-        Address newAddress = addressMapper.mapToAddressEntity(addressDTO);
+        Address newAddress = addressMapper.mapToEntity(addressDTO);
 
         Address savedAddress = addressRepository.save(newAddress);
 
-        return addressMapper.mapToAddressDTO(savedAddress);
+        return addressMapper.mapToDTO(savedAddress);
     }
 
     @Override
@@ -109,7 +109,7 @@ public class AddressServiceImpl implements AddressService {
         if (addressDTO.getRegionDTO() != null
                 && addressDTO.getRegionDTO().getRegionId() != null) {
 
-            Region region = regionMapper.mapToRegionEntity(regionService.getRegionById(
+            Region region = regionMapper.mapToEntity(regionService.getRegionById(
                     addressDTO.getRegionDTO().getRegionId(), userDetail));
 
             addressToUpdate.setRegion(region);
@@ -135,7 +135,7 @@ public class AddressServiceImpl implements AddressService {
 
         Address updatedAddress = addressRepository.save(addressToUpdate);
 
-        return addressMapper.mapToAddressDTO(updatedAddress);
+        return addressMapper.mapToDTO(updatedAddress);
     }
 
     // Soft deletion
@@ -143,7 +143,7 @@ public class AddressServiceImpl implements AddressService {
     public void deleteAddressById(Integer id, MyUserDetail userDetail) {
         Address existingAddress = getAddressEntityById(id);
 
-        if (existingAddress.getDeleted())
+        if (existingAddress.isDeleted())
             return;
 
         addressRepository.softDeleteById(existingAddress.getAddressId());

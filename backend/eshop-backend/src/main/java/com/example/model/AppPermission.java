@@ -87,7 +87,7 @@ public class AppPermission {
         this.operationType = operationType;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

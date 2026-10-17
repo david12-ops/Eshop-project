@@ -46,7 +46,7 @@ public class RoleDTO {
         this.roleDescription = roleDescription;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

@@ -56,7 +56,7 @@ public class OrderItemDTO {
         this.unitPrice = unitPrice;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

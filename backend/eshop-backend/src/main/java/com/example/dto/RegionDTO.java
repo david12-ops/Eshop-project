@@ -40,7 +40,7 @@ public class RegionDTO {
         this.currencyDTO = currencyDTO;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

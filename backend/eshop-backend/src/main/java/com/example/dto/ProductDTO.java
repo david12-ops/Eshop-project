@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 public class ProductDTO {
+    private Integer productId;
     private String productName;
     private String productCode;
     private String productDescription;
@@ -21,6 +22,14 @@ public class ProductDTO {
     private Integer updatedBy;
 
     public ProductDTO() {
+    }
+
+    public Integer getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Integer productId) {
+        this.productId = productId;
     }
 
     public String getProductName() {
@@ -87,15 +96,15 @@ public class ProductDTO {
         this.categoryDTO = categoryDTO;
     }
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 
@@ -146,6 +155,7 @@ public class ProductDTO {
     @Override
     public String toString() {
         return "Product{" +
+                ", productId='" + productId + '\'' +
                 ", productName='" + productName + '\'' +
                 ", productCode='" + productCode + '\'' +
                 ", productDescription='" + productDescription + '\'' +

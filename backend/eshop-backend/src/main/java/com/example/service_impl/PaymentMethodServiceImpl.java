@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.exception.ResourceNotFoundException;
+import com.example.dto.PaymentMethodDTO;
 import com.example.exception.BadRequestException;
+import com.example.model.MyUserDetail;
 import com.example.model.PaymentMethod;
 import com.example.repository.PaymentMethodRepository;
 import com.example.service_interface.PaymentMethodService;
@@ -19,7 +21,7 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
     }
 
     @Override
-    public PaymentMethod getPaymentMethodById(Integer id) {
+    public PaymentMethodDTO getPaymentMethodById(Integer id, MyUserDetail userDetail) {
         if (id == null) {
             throw new BadRequestException("ID must not be null");
         }
@@ -29,13 +31,13 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
     }
 
     @Override
-    public List<PaymentMethod> getPaymentMethods() {
+    public List<PaymentMethodDTO> getPaymentMethods(MyUserDetail userDetail) {
         return paymentMethodRepository.findAll();
     }
 
     @Override
-    public PaymentMethod savePaymentMethod(PaymentMethod paymentMethod) {
-        if (paymentMethod == null) {
+    public PaymentMethodDTO savePaymentMethod(PaymentMethodDTO paymentMethodDTO, MyUserDetail userDetail) {
+        if (paymentMethodDTO == null) {
             throw new BadRequestException("Payment method must not be null");
         }
 
@@ -44,18 +46,18 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
 
     // Soft deletion
     @Override
-    public void deletePaymentMethodById(Integer id) {
+    public void deletePaymentMethodById(Integer id, MyUserDetail userDetail) {
         PaymentMethod existingPaymentMethod = getPaymentMethodById(id);
 
-        if (existingPaymentMethod.getDeleted())
+        if (existingPaymentMethod.iusDeleted())
             return;
 
         paymentMethodRepository.softDeleteById(existingPaymentMethod.getPaymentMethodId());
     }
 
     @Override
-    public PaymentMethod editPaymentMethod(Integer id, PaymentMethod paymentMethod) {
-        if (paymentMethod == null) {
+    public PaymentMethodDTO editPaymentMethod(Integer id, PaymentMethodDTO paymentMethodDTO, MyUserDetail userDetail) {
+        if (paymentMethodDTO == null) {
             throw new BadRequestException("Payment method to edit must not be null");
         }
 

@@ -143,7 +143,7 @@ public class Customer {
         this.customerUser = customerUser;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

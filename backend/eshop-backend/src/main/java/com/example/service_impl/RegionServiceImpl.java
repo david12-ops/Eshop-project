@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.dto.CurrencyDTO;
 import com.example.dto.RegionDTO;
 import com.example.exception.BadRequestException;
 import com.example.exception.ResourceNotFoundException;
@@ -14,19 +15,18 @@ import com.example.model.Currency;
 import com.example.repository.RegionRepository;
 import com.example.service_interface.CurrencyService;
 import com.example.service_interface.RegionService;
-import com.example.utils.CurrencyMapper;
-import com.example.utils.RegionMapper;
+import com.example.utils.utils_interface.ObjectMapper;
 
 @Service
 public class RegionServiceImpl implements RegionService {
     private final RegionRepository regionRepository;
     private final CurrencyService currencyService;
 
-    private final RegionMapper regionMapper;
-    private final CurrencyMapper currencyMapper;
+    private final ObjectMapper<Region, RegionDTO> regionMapper;
+    private final ObjectMapper<Currency, CurrencyDTO> currencyMapper;
 
     public RegionServiceImpl(RegionRepository regionRepository, CurrencyService currencyService,
-            RegionMapper regionMapper, CurrencyMapper currencyMapper) {
+            ObjectMapper<Region, RegionDTO> regionMapper, ObjectMapper<Currency, CurrencyDTO> currencyMapper) {
         this.regionRepository = regionRepository;
         this.currencyService = currencyService;
         this.regionMapper = regionMapper;
@@ -40,7 +40,7 @@ public class RegionServiceImpl implements RegionService {
         }
 
         return regionRepository.findById(id).map(region -> {
-            RegionDTO mappedRegionDTO = regionMapper.mapToRegionDTO(region);
+            RegionDTO mappedRegionDTO = regionMapper.mapToDTO(region);
 
             mappedRegionDTO.setRegionId(id);
 
@@ -51,7 +51,7 @@ public class RegionServiceImpl implements RegionService {
 
     @Override
     public List<RegionDTO> getRegions(MyUserDetail userDetail) {
-        return regionRepository.findAll().stream().map(region -> regionMapper.mapToRegionDTO(null)).toList();
+        return regionRepository.findAll().stream().map(region -> regionMapper.mapToDTO(region)).toList();
     }
 
     @Override
@@ -81,22 +81,22 @@ public class RegionServiceImpl implements RegionService {
             }
         }
 
-        Region newRegion = regionMapper.mapToRegionEntity(regionDTO);
+        Region newRegion = regionMapper.mapToEntity(regionDTO);
 
         Region savedRegion = regionRepository.save(newRegion);
 
-        return regionMapper.mapToRegionDTO(savedRegion);
+        return regionMapper.mapToDTO(savedRegion);
     }
 
     // Soft deletion
     @Override
     public void deleteRegionById(Integer id, MyUserDetail userDetail) {
-        Region existingRegion = getRegionEntityById(id);
+        Region regionToDelete = getRegionEntityById(id);
 
-        if (existingRegion.getDeleted())
+        if (regionToDelete.isDeleted())
             return;
 
-        regionRepository.softDeleteById(existingRegion.getRegionId());
+        regionRepository.softDeleteById(regionToDelete.getRegionId());
     }
 
     @Override
@@ -114,7 +114,7 @@ public class RegionServiceImpl implements RegionService {
         if (regionDTO.getCurrencyDTO() != null
                 && regionDTO.getCurrencyDTO().getCurrencyCode() != null) {
 
-            Currency currency = currencyMapper.mapToCurrencyEntity(currencyService.getCurrencyByCode(
+            Currency currency = currencyMapper.mapToEntity(currencyService.getCurrencyByCode(
                     regionDTO.getCurrencyDTO().getCurrencyCode(), userDetail));
 
             regionToUpdate.setCurrency(currency);
@@ -140,7 +140,7 @@ public class RegionServiceImpl implements RegionService {
 
         Region updatedRegion = regionRepository.save(regionToUpdate);
 
-        return regionMapper.mapToRegionDTO(updatedRegion);
+        return regionMapper.mapToDTO(updatedRegion);
     }
 
     private Region getRegionEntityById(Integer id) {

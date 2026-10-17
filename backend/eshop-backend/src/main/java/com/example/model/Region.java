@@ -81,7 +81,7 @@ public class Region {
         this.currency = currency;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

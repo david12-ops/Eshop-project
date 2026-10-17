@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.exception.ResourceNotFoundException;
+import com.example.dto.OrderItemDTO;
 import com.example.exception.BadRequestException;
+import com.example.model.MyUserDetail;
 import com.example.model.OrderItem;
 import com.example.repository.OrderItemRepository;
 import com.example.service_interface.OrderItemService;
@@ -19,7 +21,7 @@ public class OrderItemServiceImpl implements OrderItemService {
     }
 
     @Override
-    public OrderItem getOrderItemById(Integer id) {
+    public OrderItemDTO getOrderItemById(Integer id, MyUserDetail userDetail) {
         if (id == null) {
             throw new BadRequestException("ID must not be null");
         }
@@ -29,13 +31,13 @@ public class OrderItemServiceImpl implements OrderItemService {
     }
 
     @Override
-    public List<OrderItem> getAllOrderItems() {
+    public List<OrderItemDTO> getAllOrderItems(MyUserDetail userDetail) {
         return orderItemRepository.findAll();
     }
 
     @Override
-    public OrderItem saveOrderItem(OrderItem orderItem) {
-        if (orderItem == null) {
+    public OrderItemDTO saveOrderItem(OrderItemDTO orderItemDTO, MyUserDetail userDetail) {
+        if (orderItemDTO == null) {
             throw new BadRequestException("Order item must not be null");
         }
 
@@ -44,18 +46,18 @@ public class OrderItemServiceImpl implements OrderItemService {
 
     // Soft deletion
     @Override
-    public void deleteOrderItemById(Integer id) {
+    public void deleteOrderItemById(Integer id, MyUserDetail userDetail) {
         OrderItem existingOrderItem = getOrderItemById(id);
 
-        if (existingOrderItem.getDeleted())
+        if (existingOrderItem.isDeleted())
             return;
 
         orderItemRepository.softDeleteById(existingOrderItem.getOrderItemId());
     }
 
     @Override
-    public OrderItem editOrderItem(Integer id, OrderItem orderItem) {
-        if (orderItem == null) {
+    public OrderItemDTO editOrderItem(Integer id, OrderItemDTO orderItemDTO, MyUserDetail userDetail) {
+        if (orderItemDTO == null) {
             throw new BadRequestException("Order item to edit must not be null");
         }
 

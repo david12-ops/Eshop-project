@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.exception.ResourceNotFoundException;
+import com.example.dto.DiscountDTO;
 import com.example.exception.BadRequestException;
 import com.example.model.Discount;
+import com.example.model.MyUserDetail;
 import com.example.repository.DiscountRepository;
 import com.example.service_interface.DiscountService;
 
@@ -19,7 +21,7 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
-    public Discount getDiscountById(Integer id) {
+    public DiscountDTO getDiscountById(Integer id, MyUserDetail userDetail) {
         if (id == null) {
             throw new BadRequestException("ID must not be null");
         }
@@ -29,13 +31,13 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
-    public List<Discount> getDiscounts() {
+    public List<DiscountDTO> getDiscounts(MyUserDetail userDetail) {
         return discountRepository.findAll();
     }
 
     @Override
-    public Discount saveDiscount(Discount discount) {
-        if (discount == null) {
+    public DiscountDTO saveDiscount(DiscountDTO discountDTO, MyUserDetail userDetail) {
+        if (discountDTO == null) {
             throw new BadRequestException("Discount must not be null");
         }
 
@@ -44,18 +46,18 @@ public class DiscountServiceImpl implements DiscountService {
 
     // Soft deletion
     @Override
-    public void deleteDiscountById(Integer id) {
+    public void deleteDiscountById(Integer id, MyUserDetail userDetail) {
         Discount existingDiscount = getDiscountById(id);
 
-        // if (existingDiscount.getDeleted())
-        // return;
+        if (existingDiscount.isDeleted())
+            return;
 
         discountRepository.softDeleteById(existingDiscount.getDiscountId());
     }
 
     @Override
-    public Discount editDiscount(Integer id, Discount discount) {
-        if (discount == null) {
+    public DiscountDTO editDiscount(Integer id, DiscountDTO discountDTO, MyUserDetail userDetail) {
+        if (discountDTO == null) {
             throw new BadRequestException("Discount to edit must not be null");
         }
 

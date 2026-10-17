@@ -47,7 +47,7 @@ public class Product {
     private Category category;
 
     @Column(name = "is_active", nullable = false)
-    private boolean active;
+    private Boolean active;
 
     @Column(name = "deleted", nullable = false, columnDefinition = "BOOLEAN NOT NULL DEFAULT FALSE")
     private Boolean deleted = false;
@@ -142,15 +142,15 @@ public class Product {
         this.category = category;
     }
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.exception.ResourceNotFoundException;
+import com.example.dto.AppPermissionDTO;
 import com.example.exception.BadRequestException;
 import com.example.model.AppPermission;
+import com.example.model.MyUserDetail;
 import com.example.model.keys.AppPermissionId;
 import com.example.repository.AppPermissionRepository;
 import com.example.service_interface.AppPermissionService;
@@ -21,16 +23,16 @@ public class AppPermissionServiceImpl implements AppPermissionService {
     }
 
     @Override
-    public AppPermission saveAppPermission(AppPermission permission) {
-        if (permission == null) {
+    public AppPermissionDTO saveAppPermission(AppPermissionDTO appPermissionDTO, MyUserDetail userDetail) {
+        if (appPermissionDTO == null) {
             throw new BadRequestException("Permission must not be null");
         }
 
-        return appPermissionRepository.save(permission);
+        return appPermissionRepository.save(appPermissionDTO);
     }
 
     @Override
-    public AppPermission getAppPermissionById(AppPermissionId id) {
+    public AppPermissionDTO getAppPermissionById(AppPermissionId id, MyUserDetail userDetail) {
         if (id == null) {
             throw new BadRequestException("ID must not be null");
         }
@@ -40,30 +42,31 @@ public class AppPermissionServiceImpl implements AppPermissionService {
     }
 
     @Override
-    public List<AppPermission> getAllAppPermissions() {
+    public List<AppPermissionDTO> getAllAppPermissions(MyUserDetail userDetail) {
         return appPermissionRepository.findAll();
     }
 
     @Override
-    public AppPermission editAppPermission(AppPermissionId id, AppPermission permission) {
-        if (permission == null) {
+    public AppPermissionDTO editAppPermission(AppPermissionId id, AppPermissionDTO appPermissionDTO,
+            MyUserDetail userDetail) {
+        if (appPermissionDTO == null) {
             throw new BadRequestException("Permission to edit must not be null");
         }
 
-        AppPermission existingPAppPermission = getAppPermissionById(id);
+        AppPermissionDTO existingPAppPermissionDTO = getAppPermissionById(id);
 
-        existingPAppPermission.setResourceType(permission.getResourceType());
-        existingPAppPermission.setOperationType(permission.getOperationType());
+        existingPAppPermissionDTO.setResourceType(appPermissionDTO.getResourceType());
+        existingPAppPermissionDTO.setOperationType(appPermissionDTO.getOperationType());
 
-        return appPermissionRepository.save(existingPAppPermission);
+        return appPermissionRepository.save(existingPAppPermissionDTO);
     }
 
     // Soft deletion
     @Override
-    public void deleteAppPermissionById(AppPermissionId id) {
+    public void deleteAppPermissionById(AppPermissionId id, MyUserDetail userDetail) {
         AppPermission existingPAppPermission = getAppPermissionById(id);
 
-        if (existingPAppPermission.getDeleted())
+        if (existingPAppPermission.isDeleted())
             return;
 
         AppPermissionId appPermissionId = new AppPermissionId(

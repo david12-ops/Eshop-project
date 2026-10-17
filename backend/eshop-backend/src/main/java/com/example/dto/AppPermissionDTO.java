@@ -42,7 +42,7 @@ public class AppPermissionDTO {
         this.operationType = operationType;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

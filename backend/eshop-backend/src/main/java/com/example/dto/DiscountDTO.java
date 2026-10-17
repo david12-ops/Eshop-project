@@ -80,7 +80,7 @@ public class DiscountDTO {
         this.validTo = validTo;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

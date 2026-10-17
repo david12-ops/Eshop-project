@@ -146,7 +146,7 @@ public class Order {
         this.notes = notes;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

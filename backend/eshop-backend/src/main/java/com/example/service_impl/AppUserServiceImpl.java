@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.dto.AppUserDTO;
 import com.example.dto.RegisterRequestDTO;
 import com.example.exception.BadRequestException;
 import com.example.exception.ResourceNotFoundException;
@@ -33,7 +34,7 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public AppUser getAppUserById(Integer id) {
+    public AppUserDTO getAppUserById(Integer id, MyUserDetail userDetail) {
         if (id == null) {
             throw new BadRequestException("ID must not be null");
         }
@@ -43,27 +44,27 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public AppUser saveAppUser(AppUser user) {
-        if (user == null) {
+    public AppUserDTO saveAppUser(AppUserDTO appUserDTO, MyUserDetail userDetail) {
+        if (appUserDTO == null) {
             throw new BadRequestException("User must not be null");
         }
 
-        return userRepository.save(user);
+        return userRepository.save(appUserDTO);
     }
 
     // Soft deletion
     @Override
-    public void deleteAppUserById(Integer id) {
-        AppUser existingUser = getAppUserById(id);
+    public void deleteAppUserById(Integer id, MyUserDetail userDetail) {
+        AppUserDTO existingUserDTO = getAppUserById(id);
 
-        if (existingUser.getDeleted())
+        if (existingUserDTO.isDeleted())
             return;
 
-        userRepository.softDeleteById(existingUser.getAppUserId());
+        userRepository.softDeleteById(existingUserDTO.getAppUserId());
     }
 
     @Override
-    public List<AppUser> getAppUsers() {
+    public List<AppUserDTO> getAppUsers(MyUserDetail userDetail) {
         return userRepository.findAll();
     }
 
@@ -75,22 +76,22 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public AppUser editAppUser(Integer id, AppUser user) {
-        if (user == null) {
+    public AppUserDTO editAppUser(Integer id, AppUserDTO appUserDTO, MyUserDetail userDetail) {
+        if (appUserDTO == null) {
             throw new BadRequestException("User to edit must not be null");
         }
 
-        AppUser existingUser = getAppUserById(id);
+        AppUserDTO existingUserDTO = getAppUserById(id);
 
-        existingUser.setUsername(user.getUsername());
-        existingUser.setEmail(user.getEmail());
-        existingUser.setRole(user.getRole());
+        existingUserDTO.setUsername(appUserDTO.getUsername());
+        existingUserDTO.setEmail(appUserDTO.getEmail());
+        existingUserDTO.setRole(appUserDTO.getRole());
 
-        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (appUserDTO.getPassword() != null && !appUserDTO.getPassword().isEmpty()) {
+            existingUserDTO.setPassword(passwordEncoder.encode(appUserDTO.getPassword()));
         }
 
-        return userRepository.save(existingUser);
+        return userRepository.save(existingUserDTO);
     }
 
     @Override

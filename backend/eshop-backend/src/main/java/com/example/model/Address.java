@@ -124,7 +124,7 @@ public class Address {
         this.countryName = countryName;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

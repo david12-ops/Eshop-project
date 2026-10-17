@@ -40,7 +40,7 @@ public class CurrencyDTO {
         this.symbol = symbol;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

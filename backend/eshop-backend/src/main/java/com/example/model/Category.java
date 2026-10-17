@@ -87,7 +87,7 @@ public class Category {
         this.active = active;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 
