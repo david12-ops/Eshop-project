@@ -38,8 +38,8 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     public List<CurrencyDTO> getCurrencies(MyUserDetail userDetail) {
-        return currencyRepository.findAll().stream().map(currency -> currencyMapper.mapToDTO(currency))
-                .toList();
+        return currencyRepository.findAll().stream()
+                .map(currencyMapper::mapToDTO).toList();
     }
 
     @Override
@@ -48,30 +48,16 @@ public class CurrencyServiceImpl implements CurrencyService {
             throw new BadRequestException("Currency must not be null");
         }
 
+        currencyDTO.setCreatedAt(Instant.now());
+        currencyDTO.setUpdatedAt(Instant.now());
+
+        currencyDTO.setCreatedBy(userDetail.getUserId());
+        currencyDTO.setUpdatedBy(userDetail.getUserId());
+
         currencyDTO.setDeleted(false);
         currencyDTO.setDeletedAt(null);
 
-        if (currencyDTO.getCreatedAt() == null) {
-            currencyDTO.setCreatedAt(Instant.now());
-        }
-
-        if (currencyDTO.getUpdatedAt() == null) {
-            currencyDTO.setUpdatedAt(Instant.now());
-        }
-
-        if (userDetail != null) {
-            if (currencyDTO.getCreatedBy() == null) {
-                currencyDTO.setCreatedBy(userDetail.getUserId());
-            }
-
-            if (currencyDTO.getUpdatedBy() == null) {
-                currencyDTO.setUpdatedBy(userDetail.getUserId());
-            }
-        }
-
-        Currency newCurrency = currencyMapper.mapToEntity(currencyDTO);
-
-        Currency savedCurrency = currencyRepository.save(newCurrency);
+        Currency savedCurrency = currencyRepository.save(currencyMapper.mapToEntity(currencyDTO));
 
         return currencyMapper.mapToDTO(savedCurrency);
     }
@@ -79,12 +65,19 @@ public class CurrencyServiceImpl implements CurrencyService {
     // Soft deletion
     @Override
     public void deleteCurrencyById(String code, MyUserDetail userDetail) {
-        Currency existingCurrency = getCurrencyEntityByCode(code);
+        Currency currencyToDelete = getCurrencyEntityByCode(code);
 
-        if (existingCurrency.isDeleted())
+        if (currencyToDelete.isDeleted())
             return;
 
-        currencyRepository.softDeleteById(existingCurrency.getCurrencyCode());
+        currencyToDelete.setUpdatedAt(Instant.now());
+        currencyToDelete.setUpdatedBy(userDetail.getUserId());
+
+        currencyToDelete.setDeleted(true);
+        currencyToDelete.setDeletedAt(Instant.now());
+
+        currencyRepository.save(currencyToDelete);
+        // currencyRepository.softDeleteById(existingCurrency.getCurrencyCode());
     }
 
     @Override
@@ -97,26 +90,12 @@ public class CurrencyServiceImpl implements CurrencyService {
 
         currencyToUpdate.setCurrencyName(currencyDTO.getCurrencyName());
         currencyToUpdate.setSymbol(currencyDTO.getSymbol());
+        currencyToUpdate.setUpdatedAt(Instant.now());
+        currencyToUpdate.setUpdatedBy(userDetail.getUserId());
         currencyToUpdate.setDeleted(false);
         currencyToUpdate.setDeletedAt(null);
 
-        if (currencyDTO.getUpdatedAt() == null) {
-            currencyToUpdate.setUpdatedAt(Instant.now());
-        }
-
-        if (userDetail != null) {
-            if (currencyDTO.getCreatedBy() == null) {
-                currencyToUpdate.setCreatedBy(userDetail.getUserId());
-            }
-
-            if (currencyDTO.getUpdatedBy() == null) {
-                currencyToUpdate.setUpdatedBy(userDetail.getUserId());
-            }
-        }
-
-        Currency updatedCurrency = currencyRepository.save(currencyToUpdate);
-
-        return currencyMapper.mapToDTO(updatedCurrency);
+        return currencyMapper.mapToDTO(currencyRepository.save(currencyToUpdate));
     }
 
     private Currency getCurrencyEntityByCode(String code) {

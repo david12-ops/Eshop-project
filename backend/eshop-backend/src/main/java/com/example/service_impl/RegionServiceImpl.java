@@ -39,19 +39,14 @@ public class RegionServiceImpl implements RegionService {
             throw new BadRequestException("ID must not be null");
         }
 
-        return regionRepository.findById(id).map(region -> {
-            RegionDTO mappedRegionDTO = regionMapper.mapToDTO(region);
-
-            mappedRegionDTO.setRegionId(id);
-
-            return mappedRegionDTO;
-        })
+        return regionRepository.findById(id).map(region -> regionMapper.mapToDTO(region))
                 .orElseThrow(() -> new ResourceNotFoundException("Region not found with id: " + id));
     }
 
     @Override
     public List<RegionDTO> getRegions(MyUserDetail userDetail) {
-        return regionRepository.findAll().stream().map(region -> regionMapper.mapToDTO(region)).toList();
+        return regionRepository.findAll().stream()
+                .map(regionMapper::mapToDTO).toList();
     }
 
     @Override
@@ -60,30 +55,16 @@ public class RegionServiceImpl implements RegionService {
             throw new BadRequestException("Region must not be null");
         }
 
+        regionDTO.setCreatedAt(Instant.now());
+        regionDTO.setUpdatedAt(Instant.now());
+
+        regionDTO.setCreatedBy(userDetail.getUserId());
+        regionDTO.setUpdatedBy(userDetail.getUserId());
+
         regionDTO.setDeleted(false);
         regionDTO.setDeletedAt(null);
 
-        if (regionDTO.getCreatedAt() == null) {
-            regionDTO.setCreatedAt(Instant.now());
-        }
-
-        if (regionDTO.getUpdatedAt() == null) {
-            regionDTO.setUpdatedAt(Instant.now());
-        }
-
-        if (userDetail != null) {
-            if (regionDTO.getCreatedBy() == null) {
-                regionDTO.setCreatedBy(userDetail.getUserId());
-            }
-
-            if (regionDTO.getUpdatedBy() == null) {
-                regionDTO.setUpdatedBy(userDetail.getUserId());
-            }
-        }
-
-        Region newRegion = regionMapper.mapToEntity(regionDTO);
-
-        Region savedRegion = regionRepository.save(newRegion);
+        Region savedRegion = regionRepository.save(regionMapper.mapToEntity(regionDTO));
 
         return regionMapper.mapToDTO(savedRegion);
     }
@@ -96,7 +77,14 @@ public class RegionServiceImpl implements RegionService {
         if (regionToDelete.isDeleted())
             return;
 
-        regionRepository.softDeleteById(regionToDelete.getRegionId());
+        regionToDelete.setUpdatedAt(Instant.now());
+        regionToDelete.setUpdatedBy(userDetail.getUserId());
+
+        regionToDelete.setDeleted(true);
+        regionToDelete.setDeletedAt(Instant.now());
+
+        regionRepository.save(regionToDelete);
+        // regionRepository.softDeleteById(regionToDelete.getRegionId());
     }
 
     @Override
@@ -108,6 +96,8 @@ public class RegionServiceImpl implements RegionService {
         Region regionToUpdate = getRegionEntityById(id);
 
         regionToUpdate.setRegionName(regionDTO.getRegionName());
+        regionToUpdate.setUpdatedAt(Instant.now());
+        regionToUpdate.setUpdatedBy(userDetail.getUserId());
         regionToUpdate.setDeleted(false);
         regionToUpdate.setDeletedAt(null);
 
@@ -124,23 +114,7 @@ public class RegionServiceImpl implements RegionService {
             regionToUpdate.setCurrency(null);
         }
 
-        if (regionDTO.getUpdatedAt() == null) {
-            regionToUpdate.setUpdatedAt(Instant.now());
-        }
-
-        if (userDetail != null) {
-            if (regionDTO.getCreatedBy() == null) {
-                regionToUpdate.setCreatedBy(userDetail.getUserId());
-            }
-
-            if (regionDTO.getUpdatedBy() == null) {
-                regionToUpdate.setUpdatedBy(userDetail.getUserId());
-            }
-        }
-
-        Region updatedRegion = regionRepository.save(regionToUpdate);
-
-        return regionMapper.mapToDTO(updatedRegion);
+        return regionMapper.mapToDTO(regionRepository.save(regionToUpdate));
     }
 
     private Region getRegionEntityById(Integer id) {

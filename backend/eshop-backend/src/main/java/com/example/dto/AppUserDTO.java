@@ -3,6 +3,7 @@ package com.example.dto;
 import java.time.Instant;
 
 public class AppUserDTO {
+    private Integer appUserId;
     private String username;
     private String email;
     private String password;
@@ -15,6 +16,14 @@ public class AppUserDTO {
     private Integer updatedBy;
 
     public AppUserDTO() {
+    }
+
+    public Integer getAppUserId() {
+        return appUserId;
+    }
+
+    public void setAppUserId(Integer appUserId) {
+        this.appUserId = appUserId;
     }
 
     public String getUsername() {
@@ -45,7 +54,7 @@ public class AppUserDTO {
         return roleDTO;
     }
 
-    public void setRole(RoleDTO roleDTO) {
+    public void setRoleDTO(RoleDTO roleDTO) {
         this.roleDTO = roleDTO;
     }
 
@@ -100,6 +109,7 @@ public class AppUserDTO {
     @Override
     public String toString() {
         return "AppUser{" +
+                ", appUserId='" + appUserId + '\'' +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", role=" + roleDTO.toString() +

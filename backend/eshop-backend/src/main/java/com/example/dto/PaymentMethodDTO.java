@@ -5,6 +5,7 @@ import java.time.Instant;
 import com.example.model.enums.PaymentMethodType;
 
 public class PaymentMethodDTO {
+    private Integer paymentMethodId;
     private String methodName;
     private PaymentMethodType methodType;
     private String methodDescription;
@@ -16,6 +17,14 @@ public class PaymentMethodDTO {
     private Integer updatedBy;
 
     public PaymentMethodDTO() {
+    }
+
+    public Integer getPaymentMethodId() {
+        return paymentMethodId;
+    }
+
+    public void setPaymentMethodId(Integer paymentMethodId) {
+        this.paymentMethodId = paymentMethodId;
     }
 
     public String getMethodName() {
@@ -88,5 +97,21 @@ public class PaymentMethodDTO {
 
     public void setUpdatedBy(Integer updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    @Override
+    public String toString() {
+        return "PaymentMethod{" +
+                "paymentMethodId=" + paymentMethodId +
+                ", methodName='" + methodName + '\'' +
+                ", methodType=" + methodType +
+                ", methodDescription='" + methodDescription + '\'' +
+                ", deleted=" + deleted +
+                ", deletedAt=" + deletedAt +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", createdBy=" + createdBy +
+                ", updatedBy=" + updatedBy +
+                '}';
     }
 }

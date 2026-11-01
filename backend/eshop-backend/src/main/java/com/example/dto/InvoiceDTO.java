@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 public class InvoiceDTO {
+    private Integer invoiceId;
     private String invoiceCode;
     private LocalDate issueDate;
     private LocalDate dueDate;
@@ -27,6 +28,14 @@ public class InvoiceDTO {
     private List<InvoiceItemDTO> itemsDTO = new ArrayList<>();
 
     public InvoiceDTO() {
+    }
+
+    public Integer getInvoiceId() {
+        return invoiceId;
+    }
+
+    public void setInvoiceId(Integer invoiceId) {
+        this.invoiceId = invoiceId;
     }
 
     public String getInvoiceCode() {
@@ -160,6 +169,7 @@ public class InvoiceDTO {
     @Override
     public String toString() {
         return "Invoice{" +
+                ", invoiceId='" + invoiceId + '\'' +
                 ", invoiceCode='" + invoiceCode + '\'' +
                 ", issueDate=" + issueDate +
                 ", dueDate=" + dueDate +

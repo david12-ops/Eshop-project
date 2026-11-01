@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class RoleDTO {
+    private Integer roleId;
     private String roleName;
     private RoleType roleType;
     private String roleDescription;
@@ -20,6 +21,14 @@ public class RoleDTO {
     private Set<AppPermissionDTO> permissionsDTO = new HashSet<>();
 
     public RoleDTO() {
+    }
+
+    public Integer getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
     }
 
     public String getRoleName() {
@@ -108,5 +117,21 @@ public class RoleDTO {
 
     public void setPermissionsDTO(Set<AppPermissionDTO> permissionsDTO) {
         this.permissionsDTO = permissionsDTO;
+    }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "roleId=" + roleId +
+                ", roleName='" + roleName + '\'' +
+                ", roleType=" + roleType +
+                ", roleDescription='" + roleDescription + '\'' +
+                ", deleted=" + deleted +
+                ", deletedAt=" + deletedAt +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", createdBy=" + createdBy +
+                ", updatedBy=" + updatedBy +
+                '}';
     }
 }

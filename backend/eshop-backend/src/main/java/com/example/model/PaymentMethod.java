@@ -88,7 +88,7 @@ public class PaymentMethod {
         this.methodDescription = methodDescription;
     }
 
-    public Boolean iusDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

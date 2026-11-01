@@ -1,10 +1,13 @@
 package com.example.service_impl;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.example.exception.ResourceNotFoundException;
+import com.example.dto.AddressDTO;
+import com.example.dto.AppUserDTO;
 import com.example.dto.CustomerDTO;
 import com.example.exception.BadRequestException;
 import com.example.model.Address;
@@ -14,6 +17,7 @@ import com.example.model.MyUserDetail;
 import com.example.repository.CustomerRepository;
 import com.example.service_interface.AddressService;
 import com.example.service_interface.CustomerService;
+import com.example.utils.utils_interface.ObjectMapper;
 import com.example.service_interface.AppUserService;
 
 @Service
@@ -22,11 +26,19 @@ public class CustomerServiceImpl implements CustomerService {
     private final AddressService addressService;
     private final AppUserService appUserService;
 
+    private final ObjectMapper<Customer, CustomerDTO> customerMapper;
+    private final ObjectMapper<Address, AddressDTO> addressMapper;
+    private final ObjectMapper<AppUser, AppUserDTO> appUserMapper;
+
     public CustomerServiceImpl(CustomerRepository customerRepository, AddressService addressService,
-            AppUserService appUserService) {
+            AppUserService appUserService, ObjectMapper<Customer, CustomerDTO> customerMapper,
+            ObjectMapper<Address, AddressDTO> addressMapper, ObjectMapper<AppUser, AppUserDTO> appUserMapper) {
         this.customerRepository = customerRepository;
         this.addressService = addressService;
         this.appUserService = appUserService;
+        this.customerMapper = customerMapper;
+        this.addressMapper = addressMapper;
+        this.appUserMapper = appUserMapper;
     }
 
     @Override
@@ -35,13 +47,14 @@ public class CustomerServiceImpl implements CustomerService {
             throw new BadRequestException("ID must not be null");
         }
 
-        return customerRepository.findById(id)
+        return customerRepository.findById(id).map(customer -> customerMapper.mapToDTO(customer))
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + id));
     }
 
     @Override
     public List<CustomerDTO> getCustomers(MyUserDetail userDetail) {
-        return customerRepository.findAll();
+        return customerRepository.findAll().stream()
+                .map(customerMapper::mapToDTO).toList();
     }
 
     @Override
@@ -50,18 +63,36 @@ public class CustomerServiceImpl implements CustomerService {
             throw new BadRequestException("Customer must not be null");
         }
 
-        return customerRepository.save(customer);
+        customerDTO.setCreatedAt(Instant.now());
+        customerDTO.setUpdatedAt(Instant.now());
+
+        customerDTO.setCreatedBy(userDetail.getUserId());
+        customerDTO.setUpdatedBy(userDetail.getUserId());
+
+        customerDTO.setDeleted(false);
+        customerDTO.setDeletedAt(null);
+
+        Customer savedCustomer = customerRepository.save(customerMapper.mapToEntity(customerDTO));
+
+        return customerMapper.mapToDTO(savedCustomer);
     }
 
     // Soft deletion
     @Override
     public void deleteCustomerById(Integer id, MyUserDetail userDetail) {
-        Customer existingCustomer = getCustomerById(id);
+        Customer customerToDelete = getCustomerEntityById(id);
 
-        if (existingCustomer.isDeleted())
+        if (customerToDelete.isDeleted())
             return;
 
-        customerRepository.softDeleteById(existingCustomer.getCustomerId());
+        customerToDelete.setUpdatedAt(Instant.now());
+        customerToDelete.setUpdatedBy(userDetail.getUserId());
+
+        customerToDelete.setDeleted(true);
+        customerToDelete.setDeletedAt(Instant.now());
+
+        customerRepository.save(customerToDelete);
+        // customerRepository.softDeleteById(existingCustomer.getCustomerId());
     }
 
     @Override
@@ -70,29 +101,53 @@ public class CustomerServiceImpl implements CustomerService {
             throw new BadRequestException("Customer to edit must not be null");
         }
 
-        Customer existingCustomer = getCustomerById(id);
-        Address adddress = addressService.getAddressById(customer.getCustomerAddress().getAddressId());
+        Customer customerToUpdate = getCustomerEntityById(id);
 
-        existingCustomer.setBranchName(customer.getBranchName());
-        existingCustomer.setFirstName(customer.getFirstName());
-        existingCustomer.setLastName(customer.getLastName());
-        existingCustomer.setBirthDate(customer.getBirthDate());
-        existingCustomer.setPhoneNumber(customer.getPhoneNumber());
-        existingCustomer.setCustomerAddress(adddress);
+        customerToUpdate.setBranchName(customerDTO.getBranchName());
+        customerToUpdate.setFirstName(customerDTO.getFirstName());
+        customerToUpdate.setLastName(customerDTO.getLastName());
+        customerToUpdate.setBirthDate(customerDTO.getBirthDate());
+        customerToUpdate.setPhoneNumber(customerDTO.getPhoneNumber());
+        customerToUpdate.setUpdatedAt(Instant.now());
+        customerToUpdate.setUpdatedBy(userDetail.getUserId());
+        customerToUpdate.setDeleted(false);
+        customerToUpdate.setDeletedAt(null);
 
-        if (customer.getCustomerUser() != null
-                && customer.getCustomerUser().getAppUserId() != null) {
+        if (customerDTO.getCustomerUserDTO() != null
+                && customerDTO.getCustomerUserDTO().getAppUserId() != null) {
 
-            AppUser appUser = appUserService.getAppUserById(
-                    customer.getCustomerUser().getAppUserId());
+            AppUser appUser = appUserMapper.mapToEntity(appUserService.getAppUserById(
+                    customerDTO.getCustomerUserDTO().getAppUserId(), userDetail));
 
-            existingCustomer.setCustomerUser(appUser);
+            customerToUpdate.setCustomerUser(appUser);
 
         } else {
 
-            existingCustomer.setCustomerUser(null);
+            customerToUpdate.setCustomerUser(null);
         }
 
-        return customerRepository.save(existingCustomer);
+        if (customerDTO.getCustomerAddressDTO() != null
+                && customerDTO.getCustomerAddressDTO().getAddressId() != null) {
+
+            Address adddress = addressMapper
+                    .mapToEntity(addressService.getAddressById(customerDTO.getCustomerAddressDTO().getAddressId(),
+                            userDetail));
+
+            customerToUpdate.setCustomerAddress(adddress);
+        } else {
+
+            customerToUpdate.setCustomerUser(null);
+        }
+
+        return customerMapper.mapToDTO(customerRepository.save(customerToUpdate));
+    }
+
+    private Customer getCustomerEntityById(Integer id) {
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
+
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + id));
     }
 }

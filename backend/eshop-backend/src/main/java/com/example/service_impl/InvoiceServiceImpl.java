@@ -11,13 +11,17 @@ import com.example.model.Invoice;
 import com.example.model.MyUserDetail;
 import com.example.repository.InvoiceRepository;
 import com.example.service_interface.InvoiceService;
+import com.example.utils.utils_interface.ObjectMapper;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
     private final InvoiceRepository invoiceRepository;
 
-    public InvoiceServiceImpl(InvoiceRepository invoiceRepository) {
+    private final ObjectMapper<Invoice, InvoiceDTO> invoiceMapper;
+
+    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, ObjectMapper<Invoice, InvoiceDTO> invoiceMapper) {
         this.invoiceRepository = invoiceRepository;
+        this.invoiceMapper = invoiceMapper;
     }
 
     @Override
@@ -26,12 +30,13 @@ public class InvoiceServiceImpl implements InvoiceService {
             throw new BadRequestException("ID must not be null");
         }
 
-        return invoiceRepository.findById(id)
+        return invoiceRepository.findById(id).map(invoice -> invoiceMapper.mapToDTO(invoice))
                 .orElseThrow(() -> new ResourceNotFoundException("Invoice not found with id: " + id));
     }
 
     @Override
     public List<InvoiceDTO> getInvoices(MyUserDetail userDetail) {
-        return invoiceRepository.findAll();
+        return invoiceRepository.findAll().stream()
+                .map(invoiceMapper::mapToDTO).toList();
     }
 }

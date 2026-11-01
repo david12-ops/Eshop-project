@@ -67,7 +67,7 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_id")
-    private OrderStatus status;
+    private OrderStatus orderStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
@@ -203,11 +203,11 @@ public class Order {
     }
 
     public OrderStatus getStatus() {
-        return status;
+        return orderStatus;
     }
 
-    public void setStatus(OrderStatus status) {
-        this.status = status;
+    public void setStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public Currency getCurrency() {

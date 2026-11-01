@@ -9,6 +9,8 @@ import com.example.model.Currency;
 import com.example.model.Region;
 import com.example.utils.utils_interface.ObjectMapper;
 
+import org.springframework.lang.NonNull;
+
 @Component
 public class RegionMapperImpl implements ObjectMapper<Region, RegionDTO> {
     private final ObjectMapper<Currency, CurrencyDTO> currencyMapper;
@@ -18,7 +20,13 @@ public class RegionMapperImpl implements ObjectMapper<Region, RegionDTO> {
     }
 
     @Override
+    @NonNull
     public Region mapToEntity(RegionDTO objectDTO) {
+        if (objectDTO == null) {
+            throw new BadRequestException(
+                    "DTO object is required");
+        }
+
         if ((objectDTO.getRegionName() == null || objectDTO.getRegionName().isBlank())
                 || objectDTO.isDeleted() == null
                 || objectDTO.getCurrencyDTO() == null) {

@@ -1,16 +1,25 @@
 package com.example.service_impl;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.exception.ResourceNotFoundException;
+import com.example.dto.AddressDTO;
+import com.example.dto.CurrencyDTO;
+import com.example.dto.CustomerDTO;
+import com.example.dto.DiscountDTO;
 import com.example.dto.OrderDTO;
+import com.example.dto.OrderStatusDTO;
 import com.example.exception.BadRequestException;
 import com.example.model.Address;
 import com.example.model.Currency;
 import com.example.model.Customer;
+import com.example.model.Discount;
 import com.example.model.MyUserDetail;
 import com.example.model.Order;
 import com.example.model.OrderStatus;
@@ -20,6 +29,7 @@ import com.example.service_interface.CurrencyService;
 import com.example.service_interface.CustomerService;
 import com.example.service_interface.OrderService;
 import com.example.service_interface.OrderStatusService;
+import com.example.utils.utils_interface.ObjectMapper;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -29,19 +39,37 @@ public class OrderServiceImpl implements OrderService {
     private final CurrencyService currencyService;
     private final AddressService addressService;
 
+    private final ObjectMapper<Customer, CustomerDTO> customerMapper;
+    private final ObjectMapper<OrderStatus, OrderStatusDTO> orderStatusMapper;
+    private final ObjectMapper<Currency, CurrencyDTO> currencyMapper;
+    private final ObjectMapper<Address, AddressDTO> addressMapper;
+    private final ObjectMapper<Order, OrderDTO> orderMapper;
+    private final ObjectMapper<Discount, DiscountDTO> discountMapper;
+
     public OrderServiceImpl(OrderRepository orderRepository,
             CustomerService customerService, OrderStatusService orderStatusService,
-            CurrencyService currencyService, AddressService addressService) {
+            CurrencyService currencyService, AddressService addressService,
+            ObjectMapper<Customer, CustomerDTO> customerMapper,
+            ObjectMapper<OrderStatus, OrderStatusDTO> orderStatusMapper,
+            ObjectMapper<Currency, CurrencyDTO> currencyMapper, ObjectMapper<Address, AddressDTO> addressMapper,
+            ObjectMapper<Order, OrderDTO> orderMapper, ObjectMapper<Discount, DiscountDTO> discountMapper) {
         this.orderRepository = orderRepository;
         this.customerService = customerService;
         this.orderStatusService = orderStatusService;
         this.currencyService = currencyService;
         this.addressService = addressService;
+        this.customerMapper = customerMapper;
+        this.orderStatusMapper = orderStatusMapper;
+        this.currencyMapper = currencyMapper;
+        this.addressMapper = addressMapper;
+        this.orderMapper = orderMapper;
+        this.discountMapper = discountMapper;
     }
 
     @Override
     public List<OrderDTO> getOrders(MyUserDetail userDetail) {
-        return orderRepository.findAll();
+        return orderRepository.findAll().stream()
+                .map(orderMapper::mapToDTO).toList();
     }
 
     @Override
@@ -50,7 +78,18 @@ public class OrderServiceImpl implements OrderService {
             throw new BadRequestException("Order must not be null");
         }
 
-        return orderRepository.save(order);
+        orderDTO.setCreatedAt(Instant.now());
+        orderDTO.setUpdatedAt(Instant.now());
+
+        orderDTO.setCreatedBy(userDetail.getUserId());
+        orderDTO.setUpdatedBy(userDetail.getUserId());
+
+        orderDTO.setDeleted(false);
+        orderDTO.setDeletedAt(null);
+
+        Order savedOrder = orderRepository.save(orderMapper.mapToEntity(orderDTO));
+
+        return orderMapper.mapToDTO(savedOrder);
     }
 
     @Override
@@ -60,19 +99,26 @@ public class OrderServiceImpl implements OrderService {
             throw new BadRequestException("ID must not be null");
         }
 
-        return orderRepository.findByIdWithItems(id)
+        return orderRepository.findByIdWithItems(id).map(orderWithItems -> orderMapper.mapToDTO(orderWithItems))
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + id));
     }
 
     // Soft deletion
     @Override
     public void deleteOrderById(Integer id, MyUserDetail userDetail) {
-        Order existingOrder = getOrderWithItems(id);
+        Order orderToUpdate = getOrderEntityById(id);
 
-        if (existingOrder.isDeleted())
+        if (orderToUpdate.isDeleted())
             return;
 
-        orderRepository.softDeleteById(existingOrder.getOrderId());
+        orderToUpdate.setUpdatedAt(Instant.now());
+        orderToUpdate.setUpdatedBy(userDetail.getUserId());
+
+        orderToUpdate.setDeleted(true);
+        orderToUpdate.setDeletedAt(Instant.now());
+
+        orderRepository.save(orderToUpdate);
+        // orderRepository.softDeleteById(existingOrder.getOrderId());
     }
 
     @Override
@@ -81,41 +127,64 @@ public class OrderServiceImpl implements OrderService {
             throw new BadRequestException("Order to edit must not be null");
         }
 
-        Order existingOrder = getOrderWithItems(id);
+        Order orderToUpdate = getOrderEntityById(id);
 
         Customer customer = null;
         OrderStatus orderStatus = null;
         Currency currency = null;
         Address address = null;
-        // Set<Discount> discounts = order.getDiscounts(); Missing gui
+        // TODO Check
+        Set<Discount> discounts = null;
 
-        if (order.getCustomer() != null && order.getCustomer().getCustomerId() != null) {
-            customer = customerService.getCustomerById(order.getCustomer().getCustomerId());
+        if (orderDTO.getCustomerDTO() != null) {
+            customer = customerMapper.mapToEntity(
+                    customerService.getCustomerById(orderDTO.getCustomerDTO().getCustomerId(), userDetail));
         }
 
-        if (order.getStatus() != null && order.getStatus().getOrderStatusId() != null) {
-            orderStatus = orderStatusService.getOrderStatusById(order.getStatus().getOrderStatusId());
+        if (orderDTO.getOrderStatusDTO() != null) {
+            orderStatus = orderStatusMapper
+                    .mapToEntity(orderStatusService.getOrderStatusById(orderDTO.getOrderStatusDTO().getOrderStatusId(),
+                            userDetail));
         }
 
-        if (order.getCurrency() != null && order.getCurrency().getCurrencyCode() != null) {
-            currency = currencyService.getCurrencyByCode(order.getCurrency().getCurrencyCode());
+        if (orderDTO.getCurrencyDTO() != null) {
+            currency = currencyMapper.mapToEntity(
+                    currencyService.getCurrencyByCode(orderDTO.getCurrencyDTO().getCurrencyCode(), userDetail));
         }
 
-        if (order.getDeliveryAddress() != null && order.getDeliveryAddress().getAddressId() != null) {
-            address = addressService.getAddressById(order.getDeliveryAddress().getAddressId());
+        if (orderDTO.getDeliveryAddressDTO() != null) {
+            address = addressMapper.mapToEntity(
+                    addressService.getAddressById(orderDTO.getDeliveryAddressDTO().getAddressId(), userDetail));
         }
 
-        existingOrder.setCustomer(customer);
-        existingOrder.setStatus(orderStatus);
-        existingOrder.setCurrency(currency);
-        existingOrder.setDeliveryAddress(address);
+        if (orderDTO.getDiscountsDTO() != null
+                && !orderDTO.getDiscountsDTO().isEmpty()) {
+            discounts = orderDTO.getDiscountsDTO().stream()
+                    .map(discountMapper::mapToEntity)
+                    .collect(Collectors.toSet());
+        }
 
-        existingOrder.setOrderDate(order.getOrderDate());
-        existingOrder.setSubtotal(order.getSubtotal());
-        existingOrder.setTaxAmount(order.getTaxAmount());
-        existingOrder.setTotalAmount(order.getTotalAmount());
-        existingOrder.setNotes(order.getNotes());
+        orderToUpdate.setCustomer(customer);
+        orderToUpdate.setStatus(orderStatus);
+        orderToUpdate.setCurrency(currency);
+        orderToUpdate.setDeliveryAddress(address);
+        orderToUpdate.setDiscounts(discounts);
 
-        return orderRepository.save(existingOrder);
+        orderToUpdate.setOrderDate(orderDTO.getOrderDate());
+        orderToUpdate.setSubtotal(orderDTO.getSubtotal());
+        orderToUpdate.setTaxAmount(orderDTO.getTaxAmount());
+        orderToUpdate.setTotalAmount(orderDTO.getTotalAmount());
+        orderToUpdate.setNotes(orderDTO.getNotes());
+
+        return orderMapper.mapToDTO(orderRepository.save(orderToUpdate));
+    }
+
+    private Order getOrderEntityById(Integer id) {
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
+
+        return orderRepository.findByIdWithItems(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + id));
     }
 }

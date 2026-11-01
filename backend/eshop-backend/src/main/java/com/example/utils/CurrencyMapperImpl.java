@@ -7,11 +7,19 @@ import com.example.exception.BadRequestException;
 import com.example.model.Currency;
 import com.example.utils.utils_interface.ObjectMapper;
 
+import org.springframework.lang.NonNull;
+
 @Component
 public class CurrencyMapperImpl implements ObjectMapper<Currency, CurrencyDTO> {
 
     @Override
+    @NonNull
     public Currency mapToEntity(CurrencyDTO objectDTO) {
+        if (objectDTO == null) {
+            throw new BadRequestException(
+                    "DTO object is required");
+        }
+
         if ((objectDTO.getCurrencyCode() == null || objectDTO.getCurrencyCode().isBlank())
                 || (objectDTO.getCurrencyName() == null || objectDTO.getCurrencyName().isBlank())
                 || objectDTO.isDeleted() == null) {

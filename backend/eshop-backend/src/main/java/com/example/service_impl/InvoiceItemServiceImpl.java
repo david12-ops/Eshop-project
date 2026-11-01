@@ -11,13 +11,18 @@ import com.example.model.InvoiceItem;
 import com.example.model.MyUserDetail;
 import com.example.repository.InvoiceItemRepository;
 import com.example.service_interface.InvoiceItemService;
+import com.example.utils.utils_interface.ObjectMapper;
 
 @Service
 public class InvoiceItemServiceImpl implements InvoiceItemService {
     private final InvoiceItemRepository invoiceItemRepository;
 
-    public InvoiceItemServiceImpl(InvoiceItemRepository invoiceItemRepository) {
+    private final ObjectMapper<InvoiceItem, InvoiceItemDTO> invoiceItemMapper;
+
+    public InvoiceItemServiceImpl(InvoiceItemRepository invoiceItemRepository,
+            ObjectMapper<InvoiceItem, InvoiceItemDTO> invoiceItemMapper) {
         this.invoiceItemRepository = invoiceItemRepository;
+        this.invoiceItemMapper = invoiceItemMapper;
     }
 
     @Override
@@ -26,13 +31,14 @@ public class InvoiceItemServiceImpl implements InvoiceItemService {
             throw new BadRequestException("ID must not be null");
         }
 
-        return invoiceItemRepository.findById(id)
+        return invoiceItemRepository.findById(id).map(invoiceItem -> invoiceItemMapper.mapToDTO(invoiceItem))
                 .orElseThrow(() -> new ResourceNotFoundException("Invoice item not found with id: " + id));
     }
 
     @Override
     public List<InvoiceItemDTO> getAllInvoiceItems(MyUserDetail userDetail) {
-        return invoiceItemRepository.findAll();
+        return invoiceItemRepository.findAll().stream()
+                .map(invoiceItemMapper::mapToDTO).toList();
     }
 
     @Override
@@ -41,14 +47,19 @@ public class InvoiceItemServiceImpl implements InvoiceItemService {
             throw new BadRequestException("Invoice item must not be null");
         }
 
-        return invoiceItemRepository.save(invoiceItem);
+        InvoiceItem savedInvoiceItem = invoiceItemRepository
+                .save(invoiceItemMapper.mapToEntity(invoiceItemDTO));
+
+        return invoiceItemMapper.mapToDTO(invoiceItemRepository.save(savedInvoiceItem));
     }
 
+    // Soft deletion
+    // TODO Deletion update
     @Override
     public void deleteInvoiceItemById(Integer id, MyUserDetail userDetail) {
-        InvoiceItem existingInvoiceItem = getInvoiceItemById(id);
+        InvoiceItem invoiceItemToDelete = getInvoiceItemEmtityById(id);
 
-        invoiceItemRepository.softDeleteById(existingInvoiceItem.getInvoiceItemId());
+        invoiceItemRepository.softDeleteById(invoiceItemToDelete.getInvoiceItemId());
     }
 
     @Override
@@ -57,13 +68,22 @@ public class InvoiceItemServiceImpl implements InvoiceItemService {
             throw new BadRequestException("Invoice item to edit must not be null");
         }
 
-        InvoiceItem existingInvoiceItem = getInvoiceItemById(id);
+        InvoiceItem invoiceItemToUpdate = getInvoiceItemEmtityById(id);
 
-        existingInvoiceItem.setLineTotal(invoiceItem.getLineTotal());
-        existingInvoiceItem.setQuantity(invoiceItem.getQuantity());
-        existingInvoiceItem.setNotes(invoiceItem.getNotes());
-        existingInvoiceItem.setUnitPrice(invoiceItem.getUnitPrice());
+        invoiceItemToUpdate.setLineTotal(invoiceItemDTO.getLineTotal());
+        invoiceItemToUpdate.setQuantity(invoiceItemDTO.getQuantity());
+        invoiceItemToUpdate.setNotes(invoiceItemDTO.getNotes());
+        invoiceItemToUpdate.setUnitPrice(invoiceItemDTO.getUnitPrice());
 
-        return invoiceItemRepository.save(existingInvoiceItem);
+        return invoiceItemMapper.mapToDTO(invoiceItemRepository.save(invoiceItemToUpdate));
+    }
+
+    private InvoiceItem getInvoiceItemEmtityById(Integer id) {
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
+
+        return invoiceItemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Invoice item not found with id: " + id));
     }
 }

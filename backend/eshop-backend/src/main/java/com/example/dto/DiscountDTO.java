@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 
 public class DiscountDTO {
+    private Integer discountId;
     private String discountName;
     private String discountCode;
     private DiscountType discountType;
@@ -22,6 +23,14 @@ public class DiscountDTO {
     private Integer updatedBy;
 
     public DiscountDTO() {
+    }
+
+    public Integer getDiscountId() {
+        return discountId;
+    }
+
+    public void setDiscountId(Integer discountId) {
+        this.discountId = discountId;
     }
 
     public String getDiscountName() {
@@ -131,6 +140,7 @@ public class DiscountDTO {
     @Override
     public String toString() {
         return "Discount{" +
+                ", discountId='" + discountId + '\'' +
                 ", discountName='" + discountName + '\'' +
                 ", discountCode='" + discountCode + '\'' +
                 ", discountType=" + discountType +

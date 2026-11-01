@@ -9,6 +9,8 @@ import com.example.model.Category;
 import com.example.model.Product;
 import com.example.utils.utils_interface.ObjectMapper;
 
+import org.springframework.lang.NonNull;
+
 @Component
 public class CategoryMapperImpl implements ObjectMapper<Category, CategoryDTO> {
     private final ObjectMapper<Product, ProductDTO> productMapper;
@@ -18,7 +20,13 @@ public class CategoryMapperImpl implements ObjectMapper<Category, CategoryDTO> {
     }
 
     @Override
+    @NonNull
     public Category mapToEntity(CategoryDTO objectDTO) {
+        if (objectDTO == null) {
+            throw new BadRequestException(
+                    "DTO object is required");
+        }
+
         if ((objectDTO.getCategoryName() == null || objectDTO.getCategoryName().isBlank())
                 || objectDTO.isActive() == null
                 || objectDTO.isDeleted() == null) {
@@ -36,7 +44,8 @@ public class CategoryMapperImpl implements ObjectMapper<Category, CategoryDTO> {
         category.setUpdatedAt(objectDTO.getUpdatedAt());
         category.setCreatedBy(objectDTO.getCreatedBy());
         category.setUpdatedBy(objectDTO.getUpdatedBy());
-        category.setItems(objectDTO.getItemsDTO().stream().map(product -> productMapper.mapToEntity(product)).toList());
+        category.setItems(
+                objectDTO.getItemsDTO().stream().map(productMapper::mapToEntity).toList());
 
         return category;
     }
@@ -56,7 +65,7 @@ public class CategoryMapperImpl implements ObjectMapper<Category, CategoryDTO> {
         categoryDTO.setCreatedBy(objectEntity.getCreatedBy());
         categoryDTO.setUpdatedBy(objectEntity.getUpdatedBy());
         categoryDTO
-                .setItemsDTO(objectEntity.getItems().stream().map(product -> productMapper.mapToDTO(product)).toList());
+                .setItemsDTO(objectEntity.getItems().stream().map(productMapper::mapToDTO).toList());
 
         return categoryDTO;
     }

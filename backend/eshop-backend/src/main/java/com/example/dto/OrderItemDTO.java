@@ -4,7 +4,8 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 public class OrderItemDTO {
-    private Integer productId;// zde
+    private Integer orderItemId;
+    private Integer productId;
     private Integer quantity;
     private BigDecimal lineTotal;
     private String notes;
@@ -14,6 +15,14 @@ public class OrderItemDTO {
     private OrderDTO orderDTO;
 
     public OrderItemDTO() {
+    }
+
+    public Integer getOrderItemId() {
+        return orderItemId;
+    }
+
+    public void setOrderItemId(Integer orderItemId) {
+        this.orderItemId = orderItemId;
     }
 
     public Integer getProductId() {
@@ -83,6 +92,7 @@ public class OrderItemDTO {
     @Override
     public String toString() {
         return "OrderItem{" +
+                ", orderItemId=" + orderItemId +
                 ", productId=" + productId +
                 ", quantity=" + quantity +
                 ", lineTotal=" + lineTotal +

@@ -38,7 +38,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryDTO> getCategories(MyUserDetail userDetail) {
-        return categoryRepository.findAll().stream().map(category -> categoryMapper.mapToDTO(category)).toList();
+        return categoryRepository.findAll().stream()
+                .map(categoryMapper::mapToDTO).toList();
     }
 
     @Override
@@ -47,31 +48,17 @@ public class CategoryServiceImpl implements CategoryService {
             throw new BadRequestException("Category must not be null");
         }
 
+        categoryDTO.setCreatedAt(Instant.now());
+        categoryDTO.setUpdatedAt(Instant.now());
+
+        categoryDTO.setCreatedBy(userDetail.getUserId());
+        categoryDTO.setUpdatedBy(userDetail.getUserId());
+
         categoryDTO.setActive(false);
         categoryDTO.setDeleted(false);
         categoryDTO.setDeletedAt(null);
 
-        if (categoryDTO.getCreatedAt() == null) {
-            categoryDTO.setCreatedAt(Instant.now());
-        }
-
-        if (categoryDTO.getUpdatedAt() == null) {
-            categoryDTO.setUpdatedAt(Instant.now());
-        }
-
-        if (userDetail != null) {
-            if (categoryDTO.getCreatedBy() == null) {
-                categoryDTO.setCreatedBy(userDetail.getUserId());
-            }
-
-            if (categoryDTO.getUpdatedBy() == null) {
-                categoryDTO.setUpdatedBy(userDetail.getUserId());
-            }
-        }
-
-        Category newCategory = categoryMapper.mapToEntity(categoryDTO);
-
-        Category savedCategory = categoryRepository.save(newCategory);
+        Category savedCategory = categoryRepository.save(categoryMapper.mapToEntity(categoryDTO));
 
         return categoryMapper.mapToDTO(savedCategory);
     }
@@ -79,12 +66,20 @@ public class CategoryServiceImpl implements CategoryService {
     // Soft deletion
     @Override
     public void deleteCategoryById(Integer id, MyUserDetail userDetail) {
-        Category existingCategory = getCategoryEntityById(id);
+        Category categoryToDelete = getCategoryEntityById(id);
 
-        if (existingCategory.isDeleted())
+        if (categoryToDelete.isDeleted())
             return;
 
-        categoryRepository.softDeleteById(existingCategory.getCategoryId());
+        categoryToDelete.setUpdatedAt(Instant.now());
+        categoryToDelete.setUpdatedBy(userDetail.getUserId());
+
+        categoryToDelete.setActive(false);
+        categoryToDelete.setDeleted(true);
+        categoryToDelete.setDeletedAt(Instant.now());
+
+        categoryRepository.save(categoryToDelete);
+        // categoryRepository.softDeleteById(existingCategory.getCategoryId());
     }
 
     @Override
@@ -97,12 +92,12 @@ public class CategoryServiceImpl implements CategoryService {
 
         categoryToUpdate.setCategoryName(categoryDTO.getCategoryName());
         categoryToUpdate.setCategoryDescription(categoryDTO.getCategoryDescription());
+        categoryToUpdate.setUpdatedAt(Instant.now());
+        categoryToUpdate.setUpdatedBy(userDetail.getUserId());
         categoryToUpdate.setDeleted(false);
         categoryToUpdate.setDeletedAt(null);
 
-        Category updatedCategory = categoryRepository.save(categoryToUpdate);
-
-        return categoryMapper.mapToDTO(updatedCategory);
+        return categoryMapper.mapToDTO(categoryRepository.save(categoryToUpdate));
     }
 
     private Category getCategoryEntityById(Integer id) {

@@ -35,7 +35,8 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public List<AddressDTO> getAddresses(MyUserDetail userDetail) {
-        return addressRepository.findAll().stream().map(address -> addressMapper.mapToDTO(address)).toList();
+        return addressRepository.findAll().stream()
+                .map(addressMapper::mapToDTO).toList();
     }
 
     @Override
@@ -44,13 +45,7 @@ public class AddressServiceImpl implements AddressService {
             throw new BadRequestException("ID must not be null");
         }
 
-        return addressRepository.findById(id).map(address -> {
-            AddressDTO mappedAddressDTO = addressMapper.mapToDTO(address);
-
-            mappedAddressDTO.setAddressId(id);
-
-            return mappedAddressDTO;
-        })
+        return addressRepository.findById(id).map(address -> addressMapper.mapToDTO(address))
                 .orElseThrow(() -> new ResourceNotFoundException("Address not found with id: " + id));
     }
 
@@ -60,30 +55,16 @@ public class AddressServiceImpl implements AddressService {
             throw new BadRequestException("Address must not be null");
         }
 
+        addressDTO.setCreatedAt(Instant.now());
+        addressDTO.setUpdatedAt(Instant.now());
+
+        addressDTO.setCreatedBy(userDetail.getUserId());
+        addressDTO.setUpdatedBy(userDetail.getUserId());
+
         addressDTO.setDeleted(false);
         addressDTO.setDeletedAt(null);
 
-        if (addressDTO.getCreatedAt() == null) {
-            addressDTO.setCreatedAt(Instant.now());
-        }
-
-        if (addressDTO.getUpdatedAt() == null) {
-            addressDTO.setUpdatedAt(Instant.now());
-        }
-
-        if (userDetail != null) {
-            if (addressDTO.getCreatedBy() == null) {
-                addressDTO.setCreatedBy(userDetail.getUserId());
-            }
-
-            if (addressDTO.getUpdatedBy() == null) {
-                addressDTO.setUpdatedBy(userDetail.getUserId());
-            }
-        }
-
-        Address newAddress = addressMapper.mapToEntity(addressDTO);
-
-        Address savedAddress = addressRepository.save(newAddress);
+        Address savedAddress = addressRepository.save(addressMapper.mapToEntity(addressDTO));
 
         return addressMapper.mapToDTO(savedAddress);
     }
@@ -94,8 +75,6 @@ public class AddressServiceImpl implements AddressService {
             throw new BadRequestException("Address to edit must not be null");
         }
 
-        // zde u vsech hlidani prav
-
         Address addressToUpdate = getAddressEntityById(id);
 
         addressToUpdate.setStreetName(addressDTO.getStreetName());
@@ -103,6 +82,8 @@ public class AddressServiceImpl implements AddressService {
         addressToUpdate.setStateName(addressDTO.getStateName());
         addressToUpdate.setPostalCode(addressDTO.getPostalCode());
         addressToUpdate.setCountryName(addressDTO.getCountryName());
+        addressToUpdate.setUpdatedAt(Instant.now());
+        addressToUpdate.setUpdatedBy(userDetail.getUserId());
         addressToUpdate.setDeleted(false);
         addressToUpdate.setDeletedAt(null);
 
@@ -119,34 +100,25 @@ public class AddressServiceImpl implements AddressService {
             addressToUpdate.setRegion(null);
         }
 
-        if (addressDTO.getUpdatedAt() == null) {
-            addressToUpdate.setUpdatedAt(Instant.now());
-        }
-
-        if (userDetail != null) {
-            if (addressDTO.getCreatedBy() == null) {
-                addressToUpdate.setCreatedBy(userDetail.getUserId());
-            }
-
-            if (addressDTO.getUpdatedBy() == null) {
-                addressToUpdate.setUpdatedBy(userDetail.getUserId());
-            }
-        }
-
-        Address updatedAddress = addressRepository.save(addressToUpdate);
-
-        return addressMapper.mapToDTO(updatedAddress);
+        return addressMapper.mapToDTO(addressRepository.save(addressToUpdate));
     }
 
     // Soft deletion
     @Override
     public void deleteAddressById(Integer id, MyUserDetail userDetail) {
-        Address existingAddress = getAddressEntityById(id);
+        Address addressToDelete = getAddressEntityById(id);
 
-        if (existingAddress.isDeleted())
+        if (addressToDelete.isDeleted())
             return;
 
-        addressRepository.softDeleteById(existingAddress.getAddressId());
+        addressToDelete.setUpdatedAt(Instant.now());
+        addressToDelete.setUpdatedBy(userDetail.getUserId());
+
+        addressToDelete.setDeleted(true);
+        addressToDelete.setDeletedAt(Instant.now());
+
+        addressRepository.save(addressToDelete);
+        // addressRepository.softDeleteById(existingAddress.getAddressId());
     }
 
     private Address getAddressEntityById(Integer id) {

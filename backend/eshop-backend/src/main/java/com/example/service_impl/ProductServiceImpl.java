@@ -45,7 +45,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> getProducts(MyUserDetail userDetail) {
-        return productRepository.findAll().stream().map(product -> productMapper.mapToDTO(product)).toList();
+        return productRepository.findAll().stream()
+                .map(productMapper::mapToDTO).toList();
     }
 
     @Override
@@ -54,31 +55,17 @@ public class ProductServiceImpl implements ProductService {
             throw new BadRequestException("Product must not be null");
         }
 
+        productDTO.setCreatedAt(Instant.now());
+        productDTO.setUpdatedAt(Instant.now());
+
+        productDTO.setCreatedBy(userDetail.getUserId());
+        productDTO.setUpdatedBy(userDetail.getUserId());
+
         productDTO.setActive(false);
         productDTO.setDeleted(false);
         productDTO.setDeletedAt(null);
 
-        if (productDTO.getCreatedAt() == null) {
-            productDTO.setCreatedAt(Instant.now());
-        }
-
-        if (productDTO.getUpdatedAt() == null) {
-            productDTO.setUpdatedAt(Instant.now());
-        }
-
-        if (userDetail != null) {
-            if (productDTO.getCreatedBy() == null) {
-                productDTO.setCreatedBy(userDetail.getUserId());
-            }
-
-            if (productDTO.getUpdatedBy() == null) {
-                productDTO.setUpdatedBy(userDetail.getUserId());
-            }
-        }
-
-        Product newProduct = productMapper.mapToEntity(productDTO);
-
-        Product savedProduct = productRepository.save(newProduct);
+        Product savedProduct = productRepository.save(productMapper.mapToEntity(productDTO));
 
         return productMapper.mapToDTO(savedProduct);
     }
@@ -86,12 +73,20 @@ public class ProductServiceImpl implements ProductService {
     // Soft deletion
     @Override
     public void deleteProductById(Integer id, MyUserDetail userDetail) {
-        Product existingProduct = getProductEntityById(id);
+        Product productToDelete = getProductEntityById(id);
 
-        if (existingProduct.isDeleted())
+        if (productToDelete.isDeleted())
             return;
 
-        productRepository.softDeleteById(existingProduct.getProductId());
+        productToDelete.setUpdatedAt(Instant.now());
+        productToDelete.setUpdatedBy(userDetail.getUserId());
+
+        productToDelete.setActive(false);
+        productToDelete.setDeleted(true);
+        productToDelete.setDeletedAt(Instant.now());
+
+        productRepository.save(productToDelete);
+        // productRepository.softDeleteById(existingProduct.getProductId());
     }
 
     @Override
@@ -105,6 +100,8 @@ public class ProductServiceImpl implements ProductService {
         productToUpdate.setProductName(productDTO.getProductName());
         productToUpdate.setProductDescription(productDTO.getProductDescription());
         productToUpdate.setRecommendedPrice(productDTO.getRecommendedPrice());
+        productToUpdate.setUpdatedAt(Instant.now());
+        productToUpdate.setUpdatedBy(userDetail.getUserId());
         productToUpdate.setDeleted(false);
         productToUpdate.setDeletedAt(null);
 
@@ -118,23 +115,7 @@ public class ProductServiceImpl implements ProductService {
             productToUpdate.setCategory(null);
         }
 
-        if (productDTO.getUpdatedAt() == null) {
-            productDTO.setUpdatedAt(Instant.now());
-        }
-
-        if (userDetail != null) {
-            if (productDTO.getCreatedBy() == null) {
-                productDTO.setCreatedBy(userDetail.getUserId());
-            }
-
-            if (productDTO.getUpdatedBy() == null) {
-                productDTO.setUpdatedBy(userDetail.getUserId());
-            }
-        }
-
-        Product updatedProduct = productRepository.save(productToUpdate);
-
-        return productMapper.mapToDTO(updatedProduct);
+        return productMapper.mapToDTO(productRepository.save(productToUpdate));
     }
 
     private Product getProductEntityById(Integer id) {

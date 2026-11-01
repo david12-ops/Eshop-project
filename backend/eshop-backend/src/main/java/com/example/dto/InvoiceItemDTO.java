@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class InvoiceItemDTO {
     private Integer invoiceItemId;
-    private Integer productId; // zde
+    private Integer productId;
     private BigDecimal lineTotal;
     private Integer quantity;
     private String notes;
@@ -62,11 +62,11 @@ public class InvoiceItemDTO {
         this.unitPrice = unitPrice;
     }
 
-    public InvoiceDTO getInvoice() {
+    public InvoiceDTO getInvoiceDTO() {
         return invoiceDTO;
     }
 
-    public void setInvoice(InvoiceDTO invoice) {
+    public void setInvoiceDTO(InvoiceDTO invoice) {
         this.invoiceDTO = invoice;
     }
 

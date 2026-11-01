@@ -1,5 +1,6 @@
 package com.example.service_impl;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -12,14 +13,19 @@ import com.example.model.MyUserDetail;
 import com.example.model.keys.AppPermissionId;
 import com.example.repository.AppPermissionRepository;
 import com.example.service_interface.AppPermissionService;
+import com.example.utils.utils_interface.ObjectMapper;
 
 @Service
 public class AppPermissionServiceImpl implements AppPermissionService {
     private final AppPermissionRepository appPermissionRepository;
 
+    private final ObjectMapper<AppPermission, AppPermissionDTO> appPermissionMapper;
+
     public AppPermissionServiceImpl(
-            AppPermissionRepository appPermissionRepository) {
+            AppPermissionRepository appPermissionRepository,
+            ObjectMapper<AppPermission, AppPermissionDTO> appPermissionMapper) {
         this.appPermissionRepository = appPermissionRepository;
+        this.appPermissionMapper = appPermissionMapper;
     }
 
     @Override
@@ -28,7 +34,19 @@ public class AppPermissionServiceImpl implements AppPermissionService {
             throw new BadRequestException("Permission must not be null");
         }
 
-        return appPermissionRepository.save(appPermissionDTO);
+        appPermissionDTO.setCreatedAt(Instant.now());
+        appPermissionDTO.setUpdatedAt(Instant.now());
+
+        appPermissionDTO.setCreatedBy(userDetail.getUserId());
+        appPermissionDTO.setUpdatedBy(userDetail.getUserId());
+
+        appPermissionDTO.setDeleted(false);
+        appPermissionDTO.setDeletedAt(null);
+
+        AppPermission savedAppPermission = appPermissionRepository
+                .save(appPermissionMapper.mapToEntity(appPermissionDTO));
+
+        return appPermissionMapper.mapToDTO(savedAppPermission);
     }
 
     @Override
@@ -37,13 +55,14 @@ public class AppPermissionServiceImpl implements AppPermissionService {
             throw new BadRequestException("ID must not be null");
         }
 
-        return appPermissionRepository.findById(id)
+        return appPermissionRepository.findById(id).map(appPermission -> appPermissionMapper.mapToDTO(appPermission))
                 .orElseThrow(() -> new ResourceNotFoundException("Permission not found with id: " + id));
     }
 
     @Override
     public List<AppPermissionDTO> getAllAppPermissions(MyUserDetail userDetail) {
-        return appPermissionRepository.findAll();
+        return appPermissionRepository.findAll().stream()
+                .map(appPermissionMapper::mapToDTO).toList();
     }
 
     @Override
@@ -53,26 +72,47 @@ public class AppPermissionServiceImpl implements AppPermissionService {
             throw new BadRequestException("Permission to edit must not be null");
         }
 
-        AppPermissionDTO existingPAppPermissionDTO = getAppPermissionById(id);
+        AppPermission appPermissionToDelete = getAppPermissionEntityById(id);
 
-        existingPAppPermissionDTO.setResourceType(appPermissionDTO.getResourceType());
-        existingPAppPermissionDTO.setOperationType(appPermissionDTO.getOperationType());
+        appPermissionToDelete.setResourceType(appPermissionDTO.getResourceType());
+        appPermissionToDelete.setOperationType(appPermissionDTO.getOperationType());
+        appPermissionToDelete.setUpdatedAt(Instant.now());
+        appPermissionToDelete.setUpdatedBy(userDetail.getUserId());
+        appPermissionToDelete.setDeleted(false);
+        appPermissionToDelete.setDeletedAt(null);
 
-        return appPermissionRepository.save(existingPAppPermissionDTO);
+        return appPermissionMapper.mapToDTO(appPermissionRepository.save(appPermissionToDelete));
     }
 
     // Soft deletion
     @Override
     public void deleteAppPermissionById(AppPermissionId id, MyUserDetail userDetail) {
-        AppPermission existingPAppPermission = getAppPermissionById(id);
+        AppPermission appPermissionToDelete = getAppPermissionEntityById(id);
 
-        if (existingPAppPermission.isDeleted())
+        if (appPermissionToDelete.isDeleted())
             return;
 
-        AppPermissionId appPermissionId = new AppPermissionId(
-                existingPAppPermission.getRole().getRoleId(),
-                existingPAppPermission.getResourceType(),
-                existingPAppPermission.getOperationType());
-        appPermissionRepository.softDeleteById(appPermissionId);
+        appPermissionToDelete.setUpdatedAt(Instant.now());
+        appPermissionToDelete.setUpdatedBy(userDetail.getUserId());
+
+        appPermissionToDelete.setDeleted(true);
+        appPermissionToDelete.setDeletedAt(Instant.now());
+
+        // AppPermissionId appPermissionId = new AppPermissionId(
+        // appPermissionToDelete.getRole().getRoleId(),
+        // appPermissionToDelete.getResourceType(),
+        // appPermissionToDelete.getOperationType());
+
+        appPermissionRepository.save(appPermissionToDelete);
+        // appPermissionRepository.softDeleteById(appPermissionId);
+    }
+
+    private AppPermission getAppPermissionEntityById(AppPermissionId id) {
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
+
+        return appPermissionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Permission not found with id: " + id));
     }
 }

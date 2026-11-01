@@ -5,6 +5,7 @@ import java.time.Instant;
 import com.example.model.enums.OrderStatusType;
 
 public class OrderStatusDTO {
+    private Integer orderStatusId;
     private String statusName;
     private OrderStatusType statusType;
     private String statusDescription;
@@ -16,6 +17,14 @@ public class OrderStatusDTO {
     private Integer updatedBy;
 
     public OrderStatusDTO() {
+    }
+
+    public Integer getOrderStatusId() {
+        return orderStatusId;
+    }
+
+    public void setOrderStausId(Integer orderStatusId) {
+        this.orderStatusId = orderStatusId;
     }
 
     public String getStatusName() {
@@ -93,6 +102,7 @@ public class OrderStatusDTO {
     @Override
     public String toString() {
         return "OrderStatus{" +
+                ", orderStatusId='" + orderStatusId + '\'' +
                 ", statusName='" + statusName + '\'' +
                 ", statusType=" + statusType +
                 ", statusDescription='" + statusDescription + '\'' +

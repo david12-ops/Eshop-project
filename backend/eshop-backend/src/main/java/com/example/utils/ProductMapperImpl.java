@@ -9,6 +9,8 @@ import com.example.model.Product;
 import com.example.model.Category;
 import com.example.utils.utils_interface.ObjectMapper;
 
+import org.springframework.lang.NonNull;
+
 @Component
 public class ProductMapperImpl implements ObjectMapper<Product, ProductDTO> {
     private final ObjectMapper<Category, CategoryDTO> categoryMapper;
@@ -18,7 +20,13 @@ public class ProductMapperImpl implements ObjectMapper<Product, ProductDTO> {
     }
 
     @Override
+    @NonNull
     public Product mapToEntity(ProductDTO objectDTO) {
+        if (objectDTO == null) {
+            throw new BadRequestException(
+                    "DTO object is required");
+        }
+
         if ((objectDTO.getProductName() == null || objectDTO.getProductName().isBlank())
                 || (objectDTO.getProductCode() == null || objectDTO.getProductCode().isBlank())
                 || (objectDTO.getProductImageUrl() == null || objectDTO.getProductImageUrl().isBlank())

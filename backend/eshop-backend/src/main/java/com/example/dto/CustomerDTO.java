@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 
 public class CustomerDTO {
+    private Integer customerId;
     private String branchName;
     private String firstName;
     private String lastName;
@@ -19,6 +20,14 @@ public class CustomerDTO {
     private Integer updatedBy;
 
     public CustomerDTO() {
+    }
+
+    public Integer getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Integer customerId) {
+        this.customerId = customerId;
     }
 
     public String getBranchName() {
@@ -128,6 +137,7 @@ public class CustomerDTO {
     @Override
     public String toString() {
         return "Customer{" +
+                ", customerId='" + branchName + '\'' +
                 ", branchName='" + branchName + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

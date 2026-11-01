@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class OrderDTO {
+    private Integer orderId;
     private LocalDate orderDate;
     private BigDecimal subtotal;
     private BigDecimal taxAmount;
@@ -15,7 +16,7 @@ public class OrderDTO {
     private Set<OrderItemDTO> orderItemsDTO = new HashSet<>();
     private Set<DiscountDTO> discountsDTO = new HashSet<>();
     private CurrencyDTO currencyDTO;
-    private OrderStatusDTO statusDTO;
+    private OrderStatusDTO orderStatusDTO;
     private CustomerDTO customerDTO;
     private AddressDTO deliveryAddressDTO;
     private Boolean deleted = false;
@@ -26,6 +27,14 @@ public class OrderDTO {
     private Integer updatedBy;
 
     public OrderDTO() {
+    }
+
+    public Integer getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
     }
 
     public LocalDate getOrderDate() {
@@ -124,12 +133,12 @@ public class OrderDTO {
         this.customerDTO = customerDTO;
     }
 
-    public OrderStatusDTO getStatusDTO() {
-        return statusDTO;
+    public OrderStatusDTO getOrderStatusDTO() {
+        return orderStatusDTO;
     }
 
-    public void setStatusDTO(OrderStatusDTO statusDTO) {
-        this.statusDTO = statusDTO;
+    public void setOrderStatusDTO(OrderStatusDTO orderStatusDTO) {
+        this.orderStatusDTO = orderStatusDTO;
     }
 
     public CurrencyDTO getCurrencyDTO() {
@@ -167,6 +176,7 @@ public class OrderDTO {
     @Override
     public String toString() {
         return "Order{" +
+                ", orderId=" + orderId +
                 ", orderDate=" + orderDate +
                 ", subtotal=" + subtotal +
                 ", taxAmount=" + taxAmount +

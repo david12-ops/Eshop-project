@@ -9,6 +9,8 @@ import com.example.model.Address;
 import com.example.model.Region;
 import com.example.utils.utils_interface.ObjectMapper;
 
+import org.springframework.lang.NonNull;
+
 @Component
 public class AddressMapperImpl implements ObjectMapper<Address, AddressDTO> {
     private final ObjectMapper<Region, RegionDTO> regionMapper;
@@ -18,7 +20,13 @@ public class AddressMapperImpl implements ObjectMapper<Address, AddressDTO> {
     }
 
     @Override
+    @NonNull
     public Address mapToEntity(AddressDTO objectDTO) {
+        if (objectDTO == null) {
+            throw new BadRequestException(
+                    "DTO object is required");
+        }
+
         if ((objectDTO.getStreetName() == null || objectDTO.getStreetName().isBlank())
                 || (objectDTO.getCityName() == null || objectDTO.getCityName().isBlank())
                 || (objectDTO.getStateName() == null || objectDTO.getStateName().isBlank())

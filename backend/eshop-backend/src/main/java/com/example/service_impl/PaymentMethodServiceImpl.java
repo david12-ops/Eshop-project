@@ -1,5 +1,6 @@
 package com.example.service_impl;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -11,13 +12,18 @@ import com.example.model.MyUserDetail;
 import com.example.model.PaymentMethod;
 import com.example.repository.PaymentMethodRepository;
 import com.example.service_interface.PaymentMethodService;
+import com.example.utils.utils_interface.ObjectMapper;
 
 @Service
 public class PaymentMethodServiceImpl implements PaymentMethodService {
     private final PaymentMethodRepository paymentMethodRepository;
 
-    public PaymentMethodServiceImpl(PaymentMethodRepository paymentMethodRepository) {
+    private final ObjectMapper<PaymentMethod, PaymentMethodDTO> paymentMethodMapper;
+
+    public PaymentMethodServiceImpl(PaymentMethodRepository paymentMethodRepository,
+            ObjectMapper<PaymentMethod, PaymentMethodDTO> paymentMethodMapper) {
         this.paymentMethodRepository = paymentMethodRepository;
+        this.paymentMethodMapper = paymentMethodMapper;
     }
 
     @Override
@@ -26,13 +32,14 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
             throw new BadRequestException("ID must not be null");
         }
 
-        return paymentMethodRepository.findById(id)
+        return paymentMethodRepository.findById(id).map(paymentMethod -> paymentMethodMapper.mapToDTO(paymentMethod))
                 .orElseThrow(() -> new ResourceNotFoundException("Payment method not found with id: " + id));
     }
 
     @Override
     public List<PaymentMethodDTO> getPaymentMethods(MyUserDetail userDetail) {
-        return paymentMethodRepository.findAll();
+        return paymentMethodRepository.findAll().stream()
+                .map(paymentMethodMapper::mapToDTO).toList();
     }
 
     @Override
@@ -41,18 +48,37 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
             throw new BadRequestException("Payment method must not be null");
         }
 
-        return paymentMethodRepository.save(paymentMethod);
+        paymentMethodDTO.setCreatedAt(Instant.now());
+        paymentMethodDTO.setUpdatedAt(Instant.now());
+
+        paymentMethodDTO.setCreatedBy(userDetail.getUserId());
+        paymentMethodDTO.setUpdatedBy(userDetail.getUserId());
+
+        paymentMethodDTO.setDeleted(false);
+        paymentMethodDTO.setDeletedAt(null);
+
+        PaymentMethod savedPaymentMethod = paymentMethodRepository
+                .save(paymentMethodMapper.mapToEntity(paymentMethodDTO));
+
+        return paymentMethodMapper.mapToDTO(savedPaymentMethod);
     }
 
     // Soft deletion
     @Override
     public void deletePaymentMethodById(Integer id, MyUserDetail userDetail) {
-        PaymentMethod existingPaymentMethod = getPaymentMethodById(id);
+        PaymentMethod paymentMethodToDelete = getPaymentMethodEntityById(id);
 
-        if (existingPaymentMethod.iusDeleted())
+        if (paymentMethodToDelete.isDeleted())
             return;
 
-        paymentMethodRepository.softDeleteById(existingPaymentMethod.getPaymentMethodId());
+        paymentMethodToDelete.setUpdatedAt(Instant.now());
+        paymentMethodToDelete.setUpdatedBy(userDetail.getUserId());
+
+        paymentMethodToDelete.setDeleted(true);
+        paymentMethodToDelete.setDeletedAt(Instant.now());
+
+        paymentMethodRepository.save(paymentMethodToDelete);
+        // paymentMethodRepository.softDeleteById(existingPaymentMethod.getPaymentMethodId());
     }
 
     @Override
@@ -61,12 +87,25 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
             throw new BadRequestException("Payment method to edit must not be null");
         }
 
-        PaymentMethod existingPaymentMethod = getPaymentMethodById(id);
+        PaymentMethod paymentMethodToUpdate = getPaymentMethodEntityById(id);
 
-        existingPaymentMethod.setMethodName(paymentMethod.getMethodName());
-        existingPaymentMethod.setMethodType(paymentMethod.getMethodType());
-        existingPaymentMethod.setMethodDescription(paymentMethod.getMethodDescription());
+        paymentMethodToUpdate.setMethodName(paymentMethodDTO.getMethodName());
+        paymentMethodToUpdate.setMethodType(paymentMethodDTO.getMethodType());
+        paymentMethodToUpdate.setMethodDescription(paymentMethodDTO.getMethodDescription());
+        paymentMethodToUpdate.setUpdatedAt(Instant.now());
+        paymentMethodToUpdate.setUpdatedBy(userDetail.getUserId());
+        paymentMethodToUpdate.setDeleted(false);
+        paymentMethodToUpdate.setDeletedAt(null);
 
-        return paymentMethodRepository.save(existingPaymentMethod);
+        return paymentMethodMapper.mapToDTO(paymentMethodRepository.save(paymentMethodToUpdate));
+    }
+
+    private PaymentMethod getPaymentMethodEntityById(Integer id) {
+        if (id == null) {
+            throw new BadRequestException("ID must not be null");
+        }
+
+        return paymentMethodRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment method not found with id: " + id));
     }
 }
